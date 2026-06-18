@@ -1,0 +1,48 @@
+import type { LocationNode } from "@/types/world2046";
+import { locationTypesByProblemArea, problemAreas } from "./taxonomies";
+
+const allTypes = problemAreas.flatMap((area) => locationTypesByProblemArea[area]);
+
+export const locations: LocationNode[] = [
+  ["dk-aarhus", "Norden", "Danmark", "Aarhus", 56.1629, 10.2039],
+  ["dk-odense", "Norden", "Danmark", "Odense", 55.4038, 10.4024],
+  ["dk-copenhagen", "Norden", "Danmark", "København", 55.6761, 12.5683],
+  ["se-stockholm", "Norden", "Sverige", "Stockholm", 59.3293, 18.0686],
+  ["de-hamburg", "Europa", "Tyskland", "Hamburg", 53.5511, 9.9937],
+  ["nl-utrecht", "Europa", "Holland", "Utrecht", 52.0907, 5.1214],
+  ["fr-lyon", "Europa", "Frankrig", "Lyon", 45.764, 4.8357],
+  ["es-barcelona", "Europa", "Spanien", "Barcelona", 41.3874, 2.1686],
+  ["it-bologna", "Europa", "Italien", "Bologna", 44.4949, 11.3426],
+  ["pl-gdansk", "Europa", "Polen", "Gdansk", 54.352, 18.6466],
+  ["jp-osaka", "Asien", "Japan", "Osaka", 34.6937, 135.5023],
+  ["kr-seoul", "Asien", "Sydkorea", "Seoul", 37.5665, 126.978],
+  ["ke-nairobi", "Afrika", "Kenya", "Nairobi", -1.2921, 36.8219],
+  ["gh-accra", "Afrika", "Ghana", "Accra", 5.6037, -0.187],
+  ["za-cape-town", "Afrika", "Sydafrika", "Cape Town", -33.9249, 18.4241],
+  ["br-sao-paulo", "Sydamerika", "Brasilien", "São Paulo", -23.5505, -46.6333],
+  ["mx-mexico-city", "Nordamerika", "Mexico", "Mexico City", 19.4326, -99.1332],
+  ["ca-vancouver", "Nordamerika", "Canada", "Vancouver", 49.2827, -123.1207],
+  ["us-austin", "Nordamerika", "USA", "Austin", 30.2672, -97.7431],
+  ["in-bangalore", "Asien", "Indien", "Bangalore", 12.9716, 77.5946],
+  ["sg-singapore", "Asien", "Singapore", "Singapore", 1.3521, 103.8198],
+  ["au-melbourne", "Oceanien", "Australien", "Melbourne", -37.8136, 144.9631],
+  ["nz-wellington", "Oceanien", "New Zealand", "Wellington", -41.2865, 174.7762],
+  ["cl-santiago", "Sydamerika", "Chile", "Santiago", -33.4489, -70.6693],
+  ["fi-helsinki", "Norden", "Finland", "Helsinki", 60.1699, 24.9384],
+  ["pt-lisbon", "Europa", "Portugal", "Lissabon", 38.7223, -9.1393],
+  ["ae-dubai", "Mellemøsten", "Forenede Arabiske Emirater", "Dubai", 25.2048, 55.2708],
+  ["id-jakarta", "Asien", "Indonesien", "Jakarta", -6.2088, 106.8456],
+  ["rw-kigali", "Afrika", "Rwanda", "Kigali", -1.9441, 30.0619],
+  ["ar-buenos-aires", "Sydamerika", "Argentina", "Buenos Aires", -34.6037, -58.3816],
+  ["ee-tallinn", "Europa", "Estland", "Tallinn", 59.437, 24.7536],
+  ["ma-casablanca", "Afrika", "Marokko", "Casablanca", 33.5731, -7.5898],
+].map(([id, region, country, city, lat, lng]) => ({
+  id: id as string,
+  region: region as string,
+  country: country as string,
+  city: city as string,
+  lat: lat as number,
+  lng: lng as number,
+  validLocationTypes: allTypes,
+  validProblemAreas: problemAreas,
+}));

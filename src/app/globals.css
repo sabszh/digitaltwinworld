@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+  --bg: #03172a;
+  --panel: rgba(5, 18, 32, 0.68);
+  --line: rgba(230, 240, 246, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: #f7fbff;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+button,
+textarea {
+  font: inherit;
+}
+
+.glass {
+  border: 1px solid var(--line);
+  background: rgba(5, 18, 32, 0.64);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(20px);
+}
+
+.scanline {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 100% 56px;
+}
