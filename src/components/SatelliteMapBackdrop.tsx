@@ -35,13 +35,13 @@ export function SatelliteMapBackdrop({
           <img key={image.id} src={image.url} alt="" className="h-full w-full object-cover" draggable={false} />
         ))}
       </div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0_18%,rgba(2,11,22,0.28)_44%,rgba(2,11,22,0.78)_100%)]" />
-      <div className="absolute inset-0 bg-slate-950/18" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0_22%,rgba(245,255,250,0.08)_46%,rgba(25,55,58,0.34)_100%)]" />
+      <div className="absolute inset-0 bg-white/[0.04]" />
       <div className="absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/70 shadow-[0_0_42px_rgba(255,255,255,0.28)]">
         <span className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-white/55" />
         <span className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-white/55" />
       </div>
-      <div className="absolute bottom-5 left-5 rounded-xl border border-white/10 bg-slate-950/40 px-3 py-2 text-xs text-white/62 backdrop-blur-md">
+      <div className="surface-panel absolute bottom-5 left-5 rounded-xl px-3 py-2 text-xs text-[var(--muted)]">
         {model.attribution} · z{model.zoom}
       </div>
     </motion.div>

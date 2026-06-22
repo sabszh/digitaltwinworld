@@ -67,9 +67,9 @@ export function MapboxFlyToBackdrop({ dilemma, active }: { dilemma?: GeneratedDi
   return (
     <div className="pointer-events-none absolute inset-0 z-[1] overflow-hidden">
       <div ref={containerRef} className="absolute inset-0" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0_20%,rgba(2,11,22,0.22)_48%,rgba(2,11,22,0.82)_100%)]" />
-      <div className="absolute inset-0 bg-slate-950/10" />
-      <div className="absolute bottom-5 left-5 rounded-xl border border-white/10 bg-slate-950/40 px-3 py-2 text-xs text-white/62 backdrop-blur-md">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0_22%,rgba(245,255,250,0.08)_48%,rgba(25,55,58,0.34)_100%)]" />
+      <div className="absolute inset-0 bg-white/[0.04]" />
+      <div className="surface-panel absolute bottom-5 left-5 rounded-xl px-3 py-2 text-xs text-[var(--muted)]">
         Mapbox Satellite · animated fly-to
       </div>
     </div>

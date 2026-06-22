@@ -106,7 +106,7 @@ function GlobeMesh({ active }: { active?: GeneratedDilemma }) {
             <meshBasicMaterial color="#ffd166" transparent opacity={0.48} side={THREE.DoubleSide} />
           </mesh>
           <Html center distanceFactor={8} transform occlude>
-            <div className="rounded-full border border-amber-200/50 bg-slate-950/75 px-3 py-1.5 text-xs font-semibold text-amber-100 shadow-2xl shadow-black/40 backdrop-blur">
+            <div className="surface-panel rounded-full px-3 py-1.5 text-xs font-medium text-[var(--text)]">
               {activeLabel}
             </div>
           </Html>
@@ -131,10 +131,10 @@ export function WorldGlobe({ active, zoomed = false }: { active?: GeneratedDilem
       </Canvas>
       <div className="pointer-events-none absolute inset-0 scanline bg-[radial-gradient(circle_at_50%_42%,rgba(255,255,255,0.08),transparent_34%)]" />
       {active && (
-        <div className="pointer-events-none absolute right-5 top-5 z-10 hidden rounded-xl border border-white/10 bg-slate-950/38 px-3 py-2 text-right backdrop-blur-md md:block">
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/40">Lokation</p>
-          <p className="mt-1 text-sm font-medium text-white/86">{active.exactPlace?.name ?? `${active.city}, ${active.country}`}</p>
-          <p className="text-sm text-white/54">{active.marker.lat.toFixed(3)}, {active.marker.lng.toFixed(3)}</p>
+        <div className="surface-panel pointer-events-none absolute right-5 top-5 z-10 hidden rounded-xl px-3 py-2 text-right md:block">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--faint)]">Lokation</p>
+          <p className="mt-1 text-sm font-medium text-[var(--text)]">{active.exactPlace?.name ?? `${active.city}, ${active.country}`}</p>
+          <p className="text-sm text-[var(--muted)]">{active.marker.lat.toFixed(3)}, {active.marker.lng.toFixed(3)}</p>
         </div>
       )}
     </div>

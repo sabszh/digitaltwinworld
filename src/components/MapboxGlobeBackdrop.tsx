@@ -153,7 +153,7 @@ export function MapboxGlobeBackdrop({
   return (
     <div className="absolute inset-0 z-0 h-screen w-screen overflow-hidden">
       <div ref={containerRef} className="absolute inset-0 h-full w-full" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_48%_42%,rgba(86,157,202,0.13)_0_18%,rgba(13,64,102,0.18)_42%,rgba(3,22,42,0.68)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_48%_42%,rgba(255,255,255,0.18)_0_24%,rgba(143,199,232,0.12)_50%,rgba(10,35,56,0.28)_100%)]" />
     </div>
   );
 }

@@ -20,6 +20,7 @@ type SessionStore = {
   chooseRole: (role: UserRole) => void;
   generateNext: () => void;
   answer: (choice: Choice, customAnswer?: string) => void;
+  backToDilemma: () => void;
   continueJourney: () => void;
   restart: () => void;
   getResult: () => SessionResult;
@@ -38,20 +39,37 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     set({ role });
     get().generateNext();
   },
-  generateNext: () => {
-    const { role, completedDilemmas } = get();
+  generateNext: async () => {
+    const { role, completedDilemmas, sessionId } = get();
     if (!role) return;
     if (completedDilemmas.length >= SESSION_DILEMMA_COUNT) {
       set({ phase: "report", activeDilemma: undefined });
       return;
     }
-    set({
-      activeDilemma: generateDilemma({ role, previousDilemmas: completedDilemmas, preferredSeverity: completedDilemmas.length === 0 ? "low" : "medium" }),
-      phase: "traveling",
-    });
+    const preferredSeverity = completedDilemmas.length === 0 ? "low" : "medium";
+    const fallbackDilemma = () => generateDilemma({ role, previousDilemmas: completedDilemmas, preferredSeverity });
+
+    set({ activeDilemma: undefined, phase: "traveling" });
+
+    let nextDilemma: GeneratedDilemma;
+    try {
+      const response = await fetch("/api/dilemma", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role, previousDilemmas: completedDilemmas, preferredSeverity }),
+      });
+      if (!response.ok) throw new Error("Failed to generate dilemma");
+      const data = (await response.json()) as { dilemma?: GeneratedDilemma };
+      nextDilemma = data.dilemma ?? fallbackDilemma();
+    } catch {
+      nextDilemma = fallbackDilemma();
+    }
+
+    if (get().sessionId !== sessionId || get().phase !== "traveling") return;
+    set({ activeDilemma: nextDilemma });
     window.setTimeout(() => {
       if (get().phase === "traveling") set({ phase: "dilemma" });
-    }, 4300);
+    }, 1900);
   },
   answer: (choice, customAnswer) => {
     const { activeDilemma, completedDilemmas, valueProfile } = get();
@@ -78,6 +96,26 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       lastChoice: choice,
       lastCustomAnswer: customAnswer,
       phase: "consequence",
+    });
+  },
+  backToDilemma: () => {
+    const { completedDilemmas, valueProfile } = get();
+    const previous = completedDilemmas.at(-1);
+    if (!previous) {
+      set({ phase: "dilemma", lastChoice: undefined, lastCustomAnswer: undefined });
+      return;
+    }
+    const revertedImpacts = normalizeImpacts(
+      Object.fromEntries(
+        Object.entries(previous.valueImpacts).map(([key, value]) => [key, -value]),
+      ) as Partial<ValueProfile>,
+    );
+    set({
+      completedDilemmas: completedDilemmas.slice(0, -1),
+      valueProfile: addProfiles(valueProfile, revertedImpacts),
+      lastChoice: undefined,
+      lastCustomAnswer: undefined,
+      phase: "dilemma",
     });
   },
   continueJourney: () => {

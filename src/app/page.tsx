@@ -23,14 +23,14 @@ export default function Home() {
   const zoomed = store.phase === "traveling" || store.phase === "dilemma" || store.phase === "consequence";
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#03172a]">
+    <main className="relative min-h-screen overflow-hidden bg-[#071016]">
       {hasMapbox ? (
         <MapboxGlobeBackdrop active={store.activeDilemma} zoomed={zoomed} />
       ) : (
         <WorldGlobe active={store.activeDilemma} zoomed={store.phase === "dilemma" || store.phase === "consequence"} />
       )}
-      <div className="pointer-events-none absolute inset-0 z-[2] bg-[radial-gradient(circle_at_57%_40%,rgba(80,148,190,0.1),transparent_34%),linear-gradient(90deg,rgba(2,18,34,0.66),rgba(5,44,76,0.18)_48%,rgba(2,20,38,0.58))]" />
-      <LanguageToggle language={language} onChange={setLanguage} />
+      <div className="pointer-events-none absolute inset-0 z-[2] bg-[radial-gradient(circle_at_55%_38%,rgba(143,199,232,0.1),transparent_32%),linear-gradient(90deg,rgba(3,9,13,0.5),rgba(7,16,22,0.1)_46%,rgba(3,9,13,0.36))]" />
+      {store.phase === "intro" && <LanguageToggle language={language} onChange={setLanguage} />}
       {store.phase !== "intro" && store.phase !== "role-selection" && store.phase !== "report" && <ProgressTracker completed={store.completedDilemmas.length} language={language} />}
       <AnimatePresence mode="wait">
         <motion.div
@@ -45,7 +45,7 @@ export default function Home() {
           {store.phase === "role-selection" && <RoleSelection onSelect={store.chooseRole} language={language} />}
           {store.phase === "traveling" && <TravelTransition dilemma={store.activeDilemma} language={language} />}
           {store.phase === "dilemma" && store.activeDilemma && <DilemmaCard dilemma={store.activeDilemma} onAnswer={store.answer} />}
-          {store.phase === "consequence" && <ConsequenceCard choice={store.lastChoice} customAnswer={store.lastCustomAnswer} onContinue={store.continueJourney} />}
+          {store.phase === "consequence" && <ConsequenceCard choice={store.lastChoice} customAnswer={store.lastCustomAnswer} onBack={store.backToDilemma} onContinue={store.continueJourney} />}
           {store.phase === "report" && <FinalReport result={result} onRestart={store.restart} />}
         </motion.div>
       </AnimatePresence>

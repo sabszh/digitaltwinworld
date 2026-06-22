@@ -32,6 +32,7 @@ export function generateDilemma(input: {
   const isFirst = previous.length === 0;
   const usedIds = new Set(previous.map((item) => item.dilemmaId));
   const usedExactPlaces = new Set(previous.map((item) => item.exactPlaceName).filter(Boolean));
+  const usedCountries = new Set(previous.map((item) => item.country));
 
   const allowedAreas = problemAreas.filter((area) => area !== last?.problemArea);
   const underusedAreas = allowedAreas.filter((area) => previous.filter((item) => item.problemArea === area).length < 2);
@@ -54,7 +55,7 @@ export function generateDilemma(input: {
       place.problemAreas.includes(area) &&
       place.country !== last?.country &&
       !usedExactPlaces.has(place.name) &&
-      (!isFirst || place.country === "Danmark"),
+      (isFirst ? place.country === "Danmark" : place.country !== "Danmark" && !usedCountries.has(place.country)),
   );
   const exactPlace = exactPlaceCandidates.length ? pick(exactPlaceCandidates) : undefined;
   const type: LocationType = exactPlace?.locationType ?? pick(template.validLocationTypes);
@@ -63,11 +64,20 @@ export function generateDilemma(input: {
       location.validProblemAreas.includes(area) &&
       location.validLocationTypes.includes(type) &&
       location.country !== last?.country &&
+      (isFirst ? location.country === "Danmark" : location.country !== "Danmark" && !usedCountries.has(location.country)),
+  );
+  const relaxedLocationCandidates = locations.filter(
+    (location) =>
+      location.validProblemAreas.includes(area) &&
+      location.validLocationTypes.includes(type) &&
+      location.country !== last?.country &&
       (!isFirst || location.country === "Danmark"),
   );
   const location =
     (exactPlace && locations.find((item) => item.country === exactPlace.country && item.city === exactPlace.city)) ??
-    (isFirst ? locations.find((item) => item.country === "Danmark" && item.city === "Aarhus") ?? pick(locationCandidates) : pick(locationCandidates));
+    (isFirst
+      ? locations.find((item) => item.country === "Danmark" && item.city === "Aarhus") ?? pick(locationCandidates)
+      : pick(locationCandidates.length ? locationCandidates : relaxedLocationCandidates));
   const technology = pick(template.technologies);
   const values = {
     role: input.role,

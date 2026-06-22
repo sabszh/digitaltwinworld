@@ -2,9 +2,18 @@
 
 :root {
   color-scheme: dark;
-  --bg: #03172a;
-  --panel: rgba(5, 18, 32, 0.68);
-  --line: rgba(230, 240, 246, 0.14);
+  --bg: #071016;
+  --panel: rgba(10, 22, 29, 0.84);
+  --panel-soft: rgba(13, 30, 38, 0.72);
+  --card: rgba(255, 255, 255, 0.07);
+  --control: rgba(255, 255, 255, 0.1);
+  --line: rgba(230, 242, 238, 0.16);
+  --text: #f7f3ea;
+  --muted: rgba(217, 228, 225, 0.72);
+  --faint: rgba(217, 228, 225, 0.46);
+  --accent: #8fc7e8;
+  --accent-warm: #f2c879;
+  --shadow: rgba(0, 0, 0, 0.34);
 }
 
 * {
@@ -16,11 +25,15 @@ body {
   min-height: 100%;
   margin: 0;
   background: var(--bg);
-  color: #f7fbff;
+  color: var(--text);
 }
 
 body {
   overflow-x: hidden;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  letter-spacing: 0;
+  text-rendering: geometricPrecision;
 }
 
 button,
@@ -30,9 +43,33 @@ textarea {
 
 .glass {
   border: 1px solid var(--line);
-  background: rgba(5, 18, 32, 0.64);
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
-  backdrop-filter: blur(20px);
+  background: var(--panel);
+  box-shadow: 0 24px 80px var(--shadow);
+  backdrop-filter: blur(20px) saturate(1.12);
+}
+
+.surface-panel {
+  border: 1px solid var(--line);
+  background: linear-gradient(145deg, rgba(16, 35, 43, 0.9), rgba(7, 18, 25, 0.86));
+  box-shadow: 0 24px 80px var(--shadow);
+  backdrop-filter: blur(20px) saturate(1.12);
+  -webkit-backdrop-filter: blur(20px) saturate(1.12);
+}
+
+.surface-card {
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+
+.surface-control {
+  border: 1px solid var(--line);
+  background: var(--control);
+  transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.surface-control:hover {
+  border-color: rgba(143, 199, 232, 0.56);
+  background: rgba(143, 199, 232, 0.13);
 }
 
 .scanline {
