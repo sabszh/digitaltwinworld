@@ -1,12 +1,44 @@
 "use client";
 
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import type { Choice } from "@/types/world2046";
+import { valueLabels } from "@/data/taxonomies";
+import type { Choice, GeneratedDilemma } from "@/types/world2046";
 
-export function ConsequenceCard({ choice, customAnswer, onBack, onContinue }: { choice?: Choice; customAnswer?: string; onBack: () => void; onContinue: () => void }) {
+export function ConsequenceCard({
+  choice,
+  dilemma,
+  customAnswer,
+  onBack,
+  onContinue,
+}: {
+  choice?: Choice;
+  dilemma?: GeneratedDilemma;
+  customAnswer?: string;
+  onBack: () => void;
+  onContinue: () => void;
+}) {
+  const prioritizedValues = Object.entries(choice?.valueImpacts ?? {})
+    .filter(([, impact]) => typeof impact === "number" && impact > 0)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 2)
+    .map(([key]) => valueLabels[key as keyof typeof valueLabels].toLowerCase());
+
+  const valuePhrase =
+    prioritizedValues.length === 0
+      ? "en mere afvejet retning"
+      : prioritizedValues.length === 1
+        ? prioritizedValues[0]
+        : `${prioritizedValues[0]} og ${prioritizedValues[1]}`;
+  const place = dilemma?.exactPlace?.name ?? dilemma?.locationType ?? "stedet";
+  const technology = dilemma?.technology ?? "teknologien";
+
   const text = customAnswer
-    ? "Du valgte en egen løsning. Den tæller som en lokal og gennemsigtig vej, hvor mennesker stadig er med til at forme systemet."
-    : "Du valgte en løsning, hvor teknologien ikke bare fjernes, men får rammer. Det styrker tillid og handling, men kræver ansvar fra dem, der bruger systemet.";
+    ? `Din egen løsning gør ${place} til et lokalt forsøg, hvor ${technology} får tydeligere rammer. Det kan skabe mere ejerskab, men kræver at nogen følger op, når hverdagen ændrer sig.`
+    : choice?.consequence
+      ? choice.consequence
+    : choice
+      ? `${choice.label} gør ${technology} til et mere aktivt valg på ${place}. Det styrker ${valuePhrase}, men flytter også ansvar til dem, der skal justere løsningen i hverdagen.`
+      : "Du valgte en løsning, hvor teknologien får tydeligere rammer. Det styrker retningen, men kræver stadig ansvar fra dem, der bruger systemet.";
 
   return (
     <section className="relative z-20 grid min-h-screen place-items-center px-6">

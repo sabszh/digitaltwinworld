@@ -56,6 +56,7 @@ export type Choice = {
   id: string;
   label: string;
   description?: string;
+  consequence?: string;
   valueImpacts: Partial<ValueProfile>;
 };
 

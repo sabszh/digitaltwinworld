@@ -34,7 +34,7 @@ export function CustomAnswerInput({ onSubmit }: { onSubmit: (text: string) => vo
       {text.trim() && (
         <button
           onClick={() => onSubmit(text.trim())}
-        className="mt-3 inline-flex rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg shadow-sky-950/20"
+          className="mt-3 inline-flex rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg shadow-sky-950/20"
         >
           Brug egen løsning
         </button>
@@ -49,28 +49,22 @@ export function DilemmaCard({ dilemma, onAnswer }: { dilemma: GeneratedDilemma; 
     <section className="relative z-20 flex h-dvh items-end justify-center px-4 py-4 pt-20 md:items-center md:justify-end md:px-8 md:py-5">
       <div className="surface-panel flex max-h-full w-full max-w-[min(560px,calc(100vw-2rem))] flex-col overflow-hidden rounded-3xl p-5 md:p-5">
         <div className="min-h-0 overflow-y-auto overscroll-contain pr-2 [scrollbar-gutter:stable]">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <div className="flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.16em] text-[var(--faint)]">
-                <span>2046</span>
-                <span>{dilemma.country}, {dilemma.city}</span>
+          <div className="flex items-start gap-3">
+            <div className="surface-card flex min-w-0 flex-1 items-start gap-3 rounded-2xl p-3.5">
+              <span className="mt-0.5 text-base text-[var(--accent)]">⌖</span>
+              <div className="min-w-0">
+                <p className="truncate text-[15px] font-semibold text-[var(--text)]">{dilemma.exactPlace?.name ?? dilemma.locationType}</p>
+                <p className="mt-0.5 truncate text-xs text-[var(--muted)]">
+                  {dilemma.exactPlace?.address ?? `${dilemma.city}, ${dilemma.country}`}
+                </p>
               </div>
-              <h2 className="mt-2 text-[28px] font-semibold leading-tight text-[var(--text)] md:text-[34px]">{dilemma.title}</h2>
             </div>
             <span className="shrink-0 rounded-full border border-[rgba(143,199,232,0.28)] bg-[rgba(143,199,232,0.1)] px-2.5 py-1 text-xs font-medium text-[var(--accent)]">
               {dilemma.problemArea.split(" og ")[0]}
             </span>
           </div>
 
-          <div className="surface-card mt-3.5 flex items-start gap-3 rounded-2xl p-3.5">
-            <span className="mt-0.5 text-base text-[var(--accent)]">⌖</span>
-            <div>
-              <p className="text-[15px] font-semibold text-[var(--text)]">{dilemma.exactPlace?.name ?? dilemma.locationType}</p>
-              <p className="mt-0.5 text-xs text-[var(--muted)]">
-                {dilemma.exactPlace?.address ?? `${dilemma.marker.lat.toFixed(5)}, ${dilemma.marker.lng.toFixed(5)}`}
-              </p>
-            </div>
-          </div>
+          <h2 className="mt-4 text-[28px] font-semibold leading-tight text-[var(--text)] md:text-[34px]">{dilemma.title}</h2>
 
           <p className="mt-4 text-[15px] font-normal leading-6 text-[var(--muted)]">{dilemma.scenePrompt}</p>
 

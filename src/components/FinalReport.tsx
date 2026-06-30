@@ -12,9 +12,9 @@ export function FinalReport({ result, onRestart }: { result: SessionResult; onRe
   const copy = () => navigator.clipboard.writeText(JSON.stringify(result, null, 2));
 
   return (
-    <section className="relative z-20 min-h-screen px-4 py-24 md:px-8">
-      <div className="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[1fr_0.9fr]">
-        <div className="surface-panel rounded-[2rem] p-6 md:p-8">
+    <section className="relative z-20 h-dvh overflow-y-auto px-4 py-8 md:px-8 md:py-10">
+      <div className="mx-auto grid max-w-6xl items-start gap-5 lg:grid-cols-[1fr_0.9fr]">
+        <div className="surface-panel max-h-[calc(100dvh-4rem)] overflow-y-auto rounded-[2rem] p-6 md:max-h-[calc(100dvh-5rem)] md:p-8">
           <p className="font-mono text-sm uppercase tracking-[0.18em] text-[var(--accent)]">Din rapport</p>
           <h1 className="mt-3 text-4xl font-semibold text-[var(--text)] md:text-6xl">Din verden i 2046</h1>
           <p className="mt-6 text-xl font-normal leading-8 text-[var(--muted)]">{result.generatedSummary}</p>
@@ -29,7 +29,7 @@ export function FinalReport({ result, onRestart }: { result: SessionResult; onRe
             <button onClick={onRestart} className="surface-control inline-flex items-center gap-2 rounded-full px-5 py-3 font-semibold text-[var(--text)]"><RotateCcw size={17} /> Restart</button>
           </div>
         </div>
-        <div className="surface-panel rounded-[2rem] p-6 md:p-8">
+        <div className="surface-panel max-h-[calc(100dvh-4rem)] overflow-y-auto rounded-[2rem] p-6 md:max-h-[calc(100dvh-5rem)] md:p-8">
           <h2 className="text-2xl font-semibold text-[var(--text)]">Værdiprofil</h2>
           <div className="mt-5"><ValueProfileChart profile={result.valueProfile} /></div>
           <h3 className="mt-8 font-semibold text-[var(--text)]">Dominerende værdier</h3>

@@ -42,7 +42,7 @@ const isString = (value: unknown): value is string => typeof value === "string" 
 const isNumber = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value);
 
 function isChoice(value: unknown): value is Choice {
-  if (!isRecord(value) || !isString(value.id) || !isString(value.label) || !isRecord(value.valueImpacts)) return false;
+  if (!isRecord(value) || !isString(value.id) || !isString(value.label) || !isString(value.consequence) || !isRecord(value.valueImpacts)) return false;
   return Object.entries(value.valueImpacts).every(([key, impact]) => valueKeys.includes(key as keyof ValueProfile) && isNumber(impact) && impact >= -2 && impact <= 2);
 }
 
@@ -113,7 +113,8 @@ Opgave:
 1. Vælg et realistisk, konkret sted på jorden, der matcher ét problemområde og én lokationstype.
 2. Stedet må gerne være globalt og varieret, men undgå lande/problemområder brugt lige før.
 3. Generér et dilemma, der specifikt udspringer af stedet, byen og lokationstypen.
-4. Skriv på dansk, kort og præcist.
+4. Generér også en konkret konsekvens for hver svarmulighed.
+5. Skriv på dansk, kort og præcist.
 
 Brugerrolle: ${input.role}
 Foretrukken severity: ${input.preferredSeverity}
@@ -134,7 +135,14 @@ Krav:
 - title må højst være 54 tegn.
 - Hver choice.label må højst være 46 tegn.
 - Hver choice.description må højst være 86 tegn.
+- Hver choice.consequence må højst være 190 tegn.
 - Undgå lange forklaringer, institutionshistorik og gentagelser af stednavn.
+- Undgå at title, scenePrompt og question siger det samme med andre ord.
+- title skal være en spændingsfuld overskrift, ikke bare "{teknologi} i {lokation}".
+- scenePrompt skal beskrive situationen og friktionen, ikke gentage titlen.
+- question skal spørge til den konkrete beslutning, ikke gentage teknologiens navn hvis den allerede står i title.
+- choice.consequence skal nævne den lokale effekt af netop dét valg: hvem får mere/mindre ansvar, hvad ændres i hverdagen, og hvilken ny risiko opstår.
+- choice.consequence må ikke starte med "Du valgte", og må ikke være generisk værditekst.
 - Undgå katastrofer, vold, traumer og horror.
 - Dilemmaet skal være realistisk i 2046, konkret og lokalt forankret.
 - Lav præcis 4 svarmuligheder.
@@ -167,6 +175,7 @@ const responseSchema = {
           id: { type: "string", enum: ["a", "b", "c", "d"] },
           label: { type: "string", maxLength: 46 },
           description: { type: "string", maxLength: 86 },
+          consequence: { type: "string", maxLength: 190 },
           valueImpacts: {
             type: "object",
             additionalProperties: false,
@@ -174,7 +183,7 @@ const responseSchema = {
             required: valueKeys,
           },
         },
-        required: ["id", "label", "description", "valueImpacts"],
+        required: ["id", "label", "description", "consequence", "valueImpacts"],
       },
     },
     tags: { type: "array", items: { type: "string" } },

@@ -45,7 +45,15 @@ export default function Home() {
           {store.phase === "role-selection" && <RoleSelection onSelect={store.chooseRole} language={language} />}
           {store.phase === "traveling" && <TravelTransition dilemma={store.activeDilemma} language={language} />}
           {store.phase === "dilemma" && store.activeDilemma && <DilemmaCard dilemma={store.activeDilemma} onAnswer={store.answer} />}
-          {store.phase === "consequence" && <ConsequenceCard choice={store.lastChoice} customAnswer={store.lastCustomAnswer} onBack={store.backToDilemma} onContinue={store.continueJourney} />}
+          {store.phase === "consequence" && (
+            <ConsequenceCard
+              choice={store.lastChoice}
+              dilemma={store.activeDilemma}
+              customAnswer={store.lastCustomAnswer}
+              onBack={store.backToDilemma}
+              onContinue={store.continueJourney}
+            />
+          )}
           {store.phase === "report" && <FinalReport result={result} onRestart={store.restart} />}
         </motion.div>
       </AnimatePresence>

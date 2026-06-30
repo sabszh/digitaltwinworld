@@ -33,7 +33,7 @@ export const uiText = {
     introMeta: "5 dilemmaer. 7 minutter. Én fremtidsverden.",
     roleQuestion: "Hvem rejser du som?",
     left: "tilbage",
-    finding: "Finder næste sted",
+    finding: "Finder lokation",
   },
   en: {
     introBody:
@@ -42,6 +42,6 @@ export const uiText = {
     introMeta: "5 dilemmas. 7 minutes. One future world.",
     roleQuestion: "Who are you travelling as?",
     left: "left",
-    finding: "Finding next place",
+    finding: "Finding location",
   },
 } satisfies Record<Language, Record<string, string>>;

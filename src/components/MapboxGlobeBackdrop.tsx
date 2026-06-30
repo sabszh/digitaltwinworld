@@ -36,7 +36,6 @@ export function MapboxGlobeBackdrop({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
-  const markerRef = useRef<mapboxgl.Marker | null>(null);
   const activeRef = useRef<GeneratedDilemma | undefined>(active);
   const spinningRef = useRef(true);
 
@@ -97,7 +96,6 @@ export function MapboxGlobeBackdrop({
     map.on("moveend", spinGlobe);
 
     return () => {
-      markerRef.current?.remove();
       map.remove();
       mapRef.current = null;
     };
@@ -106,9 +104,6 @@ export function MapboxGlobeBackdrop({
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-
-    markerRef.current?.remove();
-    markerRef.current = null;
 
     if (!active) {
       spinningRef.current = true;
@@ -134,18 +129,6 @@ export function MapboxGlobeBackdrop({
       curve: 1.5,
       essential: true,
     });
-
-    const markerElement = document.createElement("div");
-    markerElement.className = "relative h-12 w-12 rounded-full border border-white/85 shadow-[0_0_32px_rgba(255,255,255,0.35)]";
-    markerElement.innerHTML =
-      '<span class="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-white/65"></span><span class="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-white/65"></span>';
-
-    window.setTimeout(() => {
-      if (activeRef.current?.id !== active.id || !mapRef.current) return;
-      markerRef.current = new mapboxgl.Marker({ element: markerElement, anchor: "center" })
-        .setLngLat([active.marker.lng, active.marker.lat])
-        .addTo(map);
-    }, 2100);
   }, [active, zoomed]);
 
   if (!process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN) return null;
