@@ -34,6 +34,13 @@ export const uiText = {
     roleQuestion: "Hvem rejser du som?",
     left: "tilbage",
     finding: "Finder lokation",
+    scrollHint: "Scroll for at begynde",
+    introSectionTwoLine1: "Fem dilemmaer venter i fremtidens byer, hjem og institutioner.",
+    introSectionTwoLine2: "Dine valg former, hvordan World 2046 kommer til at se ud.",
+    introSectionThreeLine1: "Du er klar til at rejse.",
+    introSectionThreeLine2: "Bliv ved med at scrolle for at lande i 2046.",
+    introReadyQuestion: "Er du klar til at rejse?",
+    introScrollLabel: "Scroll",
   },
   en: {
     introBody:
@@ -43,5 +50,12 @@ export const uiText = {
     roleQuestion: "Who are you travelling as?",
     left: "left",
     finding: "Finding location",
+    scrollHint: "Scroll to begin",
+    introSectionTwoLine1: "Five dilemmas are waiting in the cities, homes and institutions of the future.",
+    introSectionTwoLine2: "Your choices shape what World 2046 will look like.",
+    introSectionThreeLine1: "You're ready to travel.",
+    introSectionThreeLine2: "Keep scrolling to land in 2046.",
+    introReadyQuestion: "Are you ready to travel?",
+    introScrollLabel: "Scroll",
   },
 } satisfies Record<Language, Record<string, string>>;

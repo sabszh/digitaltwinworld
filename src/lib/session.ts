@@ -69,7 +69,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     set({ activeDilemma: nextDilemma });
     window.setTimeout(() => {
       if (get().phase === "traveling") set({ phase: "dilemma" });
-    }, 1900);
+    }, 3200);
   },
   answer: (choice, customAnswer) => {
     const { activeDilemma, completedDilemmas, valueProfile } = get();
