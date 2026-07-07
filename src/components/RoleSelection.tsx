@@ -2,6 +2,7 @@
 
 import type { Language } from "@/lib/i18n";
 import { roleLabels, uiText } from "@/lib/i18n";
+import { worldSound } from "@/lib/sound";
 import type { UserRole } from "@/types/world2046";
 
 const visibleRoles: UserRole[] = ["Ung", "Forælder", "Lærer / pædagog", "Arbejdsgiver", "Medarbejder", "For alle"];
@@ -16,7 +17,10 @@ export function RoleSelection({ onSelect, language }: { onSelect: (role: UserRol
           {visibleRoles.map((role) => (
             <button
               key={role}
-              onClick={() => onSelect(role)}
+              onClick={() => {
+                worldSound.playButtonTap();
+                onSelect(role);
+              }}
               className="surface-control rounded-2xl px-4 py-4 text-left text-lg font-medium text-[var(--text)] hover:-translate-y-0.5"
             >
               {roleLabels[language][role]}

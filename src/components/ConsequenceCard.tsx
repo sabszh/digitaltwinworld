@@ -2,6 +2,7 @@
 
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { valueLabels } from "@/data/taxonomies";
+import { worldSound } from "@/lib/sound";
 import type { Choice, GeneratedDilemma } from "@/types/world2046";
 
 export function ConsequenceCard({
@@ -48,10 +49,22 @@ export function ConsequenceCard({
         <p className="mt-5 text-lg font-normal leading-8 text-[var(--muted)]">{text}</p>
         {customAnswer && <p className="surface-card mt-4 rounded-2xl p-4 font-normal text-[var(--muted)]">{customAnswer}</p>}
         <div className="mt-7 flex flex-wrap gap-3">
-          <button onClick={onBack} className="surface-control inline-flex items-center gap-3 rounded-full px-5 py-3 font-semibold text-[var(--text)]">
+          <button
+            onClick={() => {
+              worldSound.playButtonTap();
+              onBack();
+            }}
+            className="surface-control inline-flex items-center gap-3 rounded-full px-5 py-3 font-semibold text-[var(--text)]"
+          >
             <ArrowLeft size={18} /> Tilbage
           </button>
-          <button onClick={onContinue} className="inline-flex items-center gap-3 rounded-full bg-[var(--accent)] px-5 py-3 font-semibold text-slate-950 shadow-lg shadow-sky-950/20">
+          <button
+            onClick={() => {
+              worldSound.playButtonTap();
+              onContinue();
+            }}
+            className="inline-flex items-center gap-3 rounded-full bg-[var(--accent)] px-5 py-3 font-semibold text-slate-950 shadow-lg shadow-sky-950/20"
+          >
             Rejs videre <ArrowRight size={18} />
           </button>
         </div>

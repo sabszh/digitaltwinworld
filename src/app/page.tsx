@@ -9,10 +9,12 @@ import { LanguageToggle } from "@/components/LanguageToggle";
 import { MapboxGlobeBackdrop } from "@/components/MapboxGlobeBackdrop";
 import { ProgressTracker } from "@/components/ProgressTracker";
 import { RoleSelection } from "@/components/RoleSelection";
+import { SoundEffects } from "@/components/SoundEffects";
 import { TravelTransition } from "@/components/TravelTransition";
 import { WorldGlobe } from "@/components/WorldGlobe";
 import type { Language } from "@/lib/i18n";
 import { useSessionStore } from "@/lib/session";
+import { worldSound } from "@/lib/sound";
 import { useRef, useState } from "react";
 
 export default function Home() {
@@ -28,11 +30,15 @@ export default function Home() {
     (store.phase === "traveling" && !store.activeDilemma);
   const handleStartJourney = () => {
     introProgressRef.current = 1;
+    void worldSound.unlock().then(() => {
+      worldSound.playStartJourney();
+    });
     store.start();
   };
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-black">
+      <SoundEffects activeDilemma={store.activeDilemma} phase={store.phase} />
       {hasMapbox ? (
         <MapboxGlobeBackdrop active={store.activeDilemma} zoomed={zoomed} introProgressRef={shouldHoldIntroGlobe ? introProgressRef : undefined} />
       ) : (

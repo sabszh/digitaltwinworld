@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CalendarClock, MapPin, Mic, Sparkles, UserRound } from "lucide-react";
+import { worldSound } from "@/lib/sound";
 import type { Choice, GeneratedDilemma } from "@/types/world2046";
 
 const rolePersona: Record<string, string> = {
@@ -37,7 +38,10 @@ function buildActionQuestion(dilemma: GeneratedDilemma) {
 export function ChoiceButton({ choice, index, onChoose }: { choice: Choice; index: number; onChoose: (choice: Choice) => void }) {
   return (
     <button
-      onClick={() => onChoose(choice)}
+      onClick={() => {
+        worldSound.playButtonTap();
+        onChoose(choice);
+      }}
       className="surface-control group grid grid-cols-[2.25rem_1fr] items-start gap-x-3.5 rounded-2xl px-3.5 py-3 text-left hover:-translate-y-0.5"
     >
       <span className="grid h-9 w-9 place-items-center rounded-full border border-white/18 bg-white/[0.06] text-sm text-[var(--muted)] transition group-hover:border-[var(--accent)] group-hover:text-[var(--text)]">
@@ -64,7 +68,10 @@ export function CustomAnswerInput({ onSubmit }: { onSubmit: (text: string) => vo
       />
       {text.trim() && (
         <button
-          onClick={() => onSubmit(text.trim())}
+          onClick={() => {
+            worldSound.playButtonTap();
+            onSubmit(text.trim());
+          }}
           className="mt-3 inline-flex rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg shadow-sky-950/20"
         >
           Brug egen løsning
