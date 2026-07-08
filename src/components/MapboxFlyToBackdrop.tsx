@@ -5,15 +5,24 @@ import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import type { GeneratedDilemma } from "@/types/world2046";
 
+const orbitMsPerRevolution = 52000;
+const easeOutCubic = (n: number) => 1 - Math.pow(1 - n, 3);
+
 export function MapboxFlyToBackdrop({ dilemma, active }: { dilemma?: GeneratedDilemma; active: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markerRef = useRef<mapboxgl.Marker | null>(null);
+  const orbitingRef = useRef(false);
+  const orbitTimeoutRef = useRef<number | undefined>(undefined);
+  const orbitFrameRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     const token = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
     if (!active || !dilemma || !containerRef.current || !token) return;
 
+    window.clearTimeout(orbitTimeoutRef.current);
+    window.cancelAnimationFrame(orbitFrameRef.current ?? 0);
+    orbitingRef.current = false;
     mapboxgl.accessToken = token;
     mapRef.current?.remove();
 
@@ -32,17 +41,50 @@ export function MapboxFlyToBackdrop({ dilemma, active }: { dilemma?: GeneratedDi
     mapRef.current = map;
 
     map.on("load", () => {
+      const targetZoom = dilemma.exactPlace ? 16.2 : 13.4;
+      const targetPitch = 58;
+      const targetBearing = dilemma.marker.lng >= 8 ? -22 : 22;
+      const flyDuration = 3600;
+
+      const orbitArea = () => {
+        const startBearing = map.getBearing();
+        const startedAt = performance.now();
+
+        const orbitFrame = (now: number) => {
+          if (!orbitingRef.current) return;
+
+          const elapsed = now - startedAt;
+          const bearing = startBearing + (elapsed / orbitMsPerRevolution) * 360;
+          map.jumpTo({
+            center: [dilemma.marker.lng, dilemma.marker.lat],
+            zoom: targetZoom,
+            bearing,
+            pitch: targetPitch,
+          });
+
+          orbitFrameRef.current = window.requestAnimationFrame(orbitFrame);
+        };
+
+        orbitFrameRef.current = window.requestAnimationFrame(orbitFrame);
+      };
+
       window.setTimeout(() => {
         map.flyTo({
           center: [dilemma.marker.lng, dilemma.marker.lat],
-          zoom: dilemma.exactPlace ? 16.2 : 13.4,
-          bearing: 0,
-          pitch: 0,
-          speed: 0.58,
-          curve: 1.35,
+          zoom: targetZoom,
+          bearing: targetBearing,
+          pitch: targetPitch,
+          duration: flyDuration,
+          curve: 1.85,
+          easing: easeOutCubic,
           essential: true,
         });
       }, 250);
+
+      orbitTimeoutRef.current = window.setTimeout(() => {
+        orbitingRef.current = true;
+        orbitArea();
+      }, flyDuration + 500);
 
       window.setTimeout(() => {
         const markerElement = document.createElement("div");
@@ -55,6 +97,9 @@ export function MapboxFlyToBackdrop({ dilemma, active }: { dilemma?: GeneratedDi
     });
 
     return () => {
+      window.clearTimeout(orbitTimeoutRef.current);
+      window.cancelAnimationFrame(orbitFrameRef.current ?? 0);
+      orbitingRef.current = false;
       markerRef.current?.remove();
       markerRef.current = null;
       map.remove();

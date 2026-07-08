@@ -9,11 +9,13 @@ import { LanguageToggle } from "@/components/LanguageToggle";
 import { MapboxGlobeBackdrop } from "@/components/MapboxGlobeBackdrop";
 import { ProgressTracker } from "@/components/ProgressTracker";
 import { RoleSelection } from "@/components/RoleSelection";
+import { SoundEffects } from "@/components/SoundEffects";
 import { TravelTransition } from "@/components/TravelTransition";
 import { WorldGlobe } from "@/components/WorldGlobe";
 import type { Language } from "@/lib/i18n";
 import { useSessionStore } from "@/lib/session";
-import { useState } from "react";
+import { worldSound } from "@/lib/sound";
+import { useRef, useState } from "react";
 
 export default function Home() {
   const [language, setLanguage] = useState<Language>("da");
@@ -21,27 +23,47 @@ export default function Home() {
   const result = store.getResult();
   const hasMapbox = Boolean(process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN);
   const zoomed = store.phase === "traveling" || store.phase === "dilemma" || store.phase === "consequence";
+  const introProgressRef = useRef(0);
+  const shouldHoldIntroGlobe =
+    store.phase === "intro" ||
+    store.phase === "role-selection" ||
+    (store.phase === "traveling" && !store.activeDilemma);
+  const handleStartJourney = () => {
+    introProgressRef.current = 1;
+    void worldSound.unlock().then(() => {
+      worldSound.playStartJourney();
+    });
+    store.start();
+  };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#071016]">
+    <main className="relative min-h-screen overflow-hidden bg-black">
+      <SoundEffects activeDilemma={store.activeDilemma} phase={store.phase} />
       {hasMapbox ? (
-        <MapboxGlobeBackdrop active={store.activeDilemma} zoomed={zoomed} />
+        <MapboxGlobeBackdrop active={store.activeDilemma} zoomed={zoomed} introProgressRef={shouldHoldIntroGlobe ? introProgressRef : undefined} />
       ) : (
-        <WorldGlobe active={store.activeDilemma} zoomed={store.phase === "dilemma" || store.phase === "consequence"} />
+        <WorldGlobe
+          active={store.activeDilemma}
+          zoomed={store.phase === "dilemma" || store.phase === "consequence"}
+          introProgressRef={shouldHoldIntroGlobe ? introProgressRef : undefined}
+        />
       )}
-      <div className="pointer-events-none absolute inset-0 z-[2] bg-[radial-gradient(circle_at_55%_38%,rgba(143,199,232,0.1),transparent_32%),linear-gradient(90deg,rgba(3,9,13,0.5),rgba(7,16,22,0.1)_46%,rgba(3,9,13,0.36))]" />
+      <div className="bg-starfield pointer-events-none absolute inset-0 z-[1]" />
+      <div className="bg-aurora pointer-events-none absolute inset-0 z-[1]" />
+      <div className="pointer-events-none absolute inset-0 z-[2] bg-[linear-gradient(90deg,rgba(0,0,0,0.42),rgba(0,0,0,0.04)_46%,rgba(0,0,0,0.32))]" />
+      <div className="bg-vignette pointer-events-none absolute inset-0 z-[2]" />
       {store.phase === "intro" && <LanguageToggle language={language} onChange={setLanguage} />}
       {store.phase !== "intro" && store.phase !== "role-selection" && store.phase !== "report" && <ProgressTracker completed={store.completedDilemmas.length} language={language} />}
       <AnimatePresence mode="wait">
         <motion.div
           key={store.phase + (store.activeDilemma?.id ?? "")}
-          initial={{ opacity: 0, y: 18 }}
+          initial={{ opacity: 0, y: store.phase === "traveling" ? 0 : 18 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -14 }}
+          exit={{ opacity: 0, y: store.phase === "traveling" ? 0 : -14 }}
           transition={{ duration: 0.45 }}
           className="relative z-10"
         >
-          {store.phase === "intro" && <IntroScreen onStart={store.start} language={language} />}
+          {store.phase === "intro" && <IntroScreen onStart={handleStartJourney} language={language} introProgressRef={introProgressRef} />}
           {store.phase === "role-selection" && <RoleSelection onSelect={store.chooseRole} language={language} />}
           {store.phase === "traveling" && <TravelTransition dilemma={store.activeDilemma} language={language} />}
           {store.phase === "dilemma" && store.activeDilemma && <DilemmaCard dilemma={store.activeDilemma} onAnswer={store.answer} />}

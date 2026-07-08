@@ -22,10 +22,24 @@ function rotationForLatLng(lat: number, lng: number) {
   return new THREE.Quaternion().setFromUnitVectors(localPoint, new THREE.Vector3(0, 0, 1));
 }
 
-function CameraRig({ active, zoomed }: { active?: GeneratedDilemma; zoomed: boolean }) {
+function CameraRig({
+  active,
+  zoomed,
+  introProgressRef,
+}: {
+  active?: GeneratedDilemma;
+  zoomed: boolean;
+  introProgressRef?: React.MutableRefObject<number>;
+}) {
   const { camera } = useThree();
 
   useFrame(() => {
+    if (introProgressRef && !active && !zoomed) {
+      const p = Math.min(Math.max(introProgressRef.current, 0), 1);
+      const targetZ = 5.8 - p * 2.6;
+      camera.position.lerp(new THREE.Vector3(0, 0, targetZ), 0.08);
+      return;
+    }
     const targetZ = zoomed || active ? 2.85 : 5.8;
     camera.position.lerp(new THREE.Vector3(0, 0, targetZ), 0.055);
   });
@@ -116,7 +130,15 @@ function GlobeMesh({ active }: { active?: GeneratedDilemma }) {
   );
 }
 
-export function WorldGlobe({ active, zoomed = false }: { active?: GeneratedDilemma; zoomed?: boolean }) {
+export function WorldGlobe({
+  active,
+  zoomed = false,
+  introProgressRef,
+}: {
+  active?: GeneratedDilemma;
+  zoomed?: boolean;
+  introProgressRef?: React.MutableRefObject<number>;
+}) {
   return (
     <div className="absolute inset-0 z-0">
       <Canvas camera={{ position: [0, 0, zoomed ? 4.2 : 5.6], fov: 45 }}>
@@ -126,7 +148,7 @@ export function WorldGlobe({ active, zoomed = false }: { active?: GeneratedDilem
         <pointLight position={[-3, -2, 2]} intensity={1.2} color="#ffd166" />
         <Stars radius={70} depth={35} count={1100} factor={3} saturation={0} fade speed={0.35} />
         <GlobeMesh active={active} />
-        <CameraRig active={active} zoomed={zoomed} />
+        <CameraRig active={active} zoomed={zoomed} introProgressRef={introProgressRef} />
         <OrbitControls enablePan={false} enableZoom={false} autoRotate={false} />
       </Canvas>
       <div className="pointer-events-none absolute inset-0 scanline bg-[radial-gradient(circle_at_50%_42%,rgba(255,255,255,0.08),transparent_34%)]" />
