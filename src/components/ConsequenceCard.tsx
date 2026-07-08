@@ -1,7 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { VoiceInput } from "@/components/VoiceInput";
 import { valueLabels } from "@/data/taxonomies";
+import type { Language } from "@/lib/i18n";
+import { uiText } from "@/lib/i18n";
 import { worldSound } from "@/lib/sound";
 import type { Choice, GeneratedDilemma } from "@/types/world2046";
 
@@ -9,15 +13,21 @@ export function ConsequenceCard({
   choice,
   dilemma,
   customAnswer,
+  language,
   onBack,
   onContinue,
 }: {
   choice?: Choice;
   dilemma?: GeneratedDilemma;
   customAnswer?: string;
+  language: Language;
   onBack: () => void;
-  onContinue: () => void;
+  onContinue: (reflection: string, viaVoice: boolean) => void;
 }) {
+  const text = uiText[language];
+  const [reflection, setReflection] = useState("");
+  const [reflectionViaVoice, setReflectionViaVoice] = useState(false);
+
   const prioritizedValues = Object.entries(choice?.valueImpacts ?? {})
     .filter(([, impact]) => typeof impact === "number" && impact > 0)
     .sort(([, a], [, b]) => b - a)
@@ -33,7 +43,7 @@ export function ConsequenceCard({
   const place = dilemma?.exactPlace?.name ?? dilemma?.locationType ?? "stedet";
   const technology = dilemma?.technology ?? "teknologien";
 
-  const text = customAnswer
+  const consequenceText = customAnswer
     ? `Din egen løsning gør ${place} til et lokalt forsøg, hvor ${technology} får tydeligere rammer. Det kan skabe mere ejerskab, men kræver at nogen følger op, når hverdagen ændrer sig.`
     : choice?.consequence
       ? choice.consequence
@@ -42,12 +52,33 @@ export function ConsequenceCard({
       : "Du valgte en løsning, hvor teknologien får tydeligere rammer. Det styrker retningen, men kræver stadig ansvar fra dem, der bruger systemet.";
 
   return (
-    <section className="relative z-20 grid min-h-screen place-items-center px-6">
+    <section className="relative z-20 grid min-h-screen place-items-center px-6 py-10">
       <div className="surface-panel max-w-2xl rounded-[2rem] p-7 md:p-9">
-        <p className="font-mono text-sm uppercase tracking-[0.18em] text-[var(--accent-warm)]">Konsekvens</p>
-        <h2 className="mt-3 text-3xl font-semibold text-[var(--text)]">{customAnswer ? "Din egen vej" : choice?.label}</h2>
-        <p className="mt-5 text-lg font-normal leading-8 text-[var(--muted)]">{text}</p>
+        <p className="font-mono text-sm uppercase tracking-[0.18em] text-[var(--accent-warm)]">{text.consequenceKicker}</p>
+        <h2 className="font-editorial mt-3 text-3xl font-semibold italic text-[var(--text)]">{customAnswer ? text.consequenceOwnPath : choice?.label}</h2>
+        <p className="mt-5 text-lg font-normal leading-8 text-[var(--muted)]">{consequenceText}</p>
         {customAnswer && <p className="surface-card mt-4 rounded-2xl p-4 font-normal text-[var(--muted)]">{customAnswer}</p>}
+
+        <div className="surface-card mt-6 rounded-2xl p-4">
+          <p className="text-sm font-medium text-[var(--muted)]">{text.reflectionPrompt}</p>
+          <textarea
+            value={reflection}
+            onChange={(event) => setReflection(event.target.value)}
+            rows={1}
+            placeholder={text.reflectionPlaceholder}
+            className="mt-2 w-full resize-none bg-transparent text-[15px] text-[var(--text)] outline-none placeholder:text-[var(--faint)]"
+          />
+          <div className="mt-2">
+            <VoiceInput
+              language={language}
+              onTranscript={(transcript) => {
+                setReflectionViaVoice(true);
+                setReflection((current) => (current ? `${current} ${transcript}` : transcript));
+              }}
+            />
+          </div>
+        </div>
+
         <div className="mt-7 flex flex-wrap gap-3">
           <button
             onClick={() => {
@@ -56,16 +87,16 @@ export function ConsequenceCard({
             }}
             className="surface-control inline-flex items-center gap-3 rounded-full px-5 py-3 font-semibold text-[var(--text)]"
           >
-            <ArrowLeft size={18} /> Tilbage
+            <ArrowLeft size={18} /> {text.back}
           </button>
           <button
             onClick={() => {
               worldSound.playButtonTap();
-              onContinue();
+              onContinue(reflection, reflectionViaVoice);
             }}
             className="inline-flex items-center gap-3 rounded-full bg-[var(--accent)] px-5 py-3 font-semibold text-slate-950 shadow-lg shadow-sky-950/20"
           >
-            Rejs videre <ArrowRight size={18} />
+            {text.continueJourney} <ArrowRight size={18} />
           </button>
         </div>
       </div>

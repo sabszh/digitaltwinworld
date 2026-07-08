@@ -1,13 +1,14 @@
 import { dilemmaTemplates } from "@/data/dilemmaTemplates";
 import { locationTypesByProblemArea, problemAreas, userRoles } from "@/data/taxonomies";
 import { generateDilemma } from "@/lib/randomizer";
-import type { Choice, CompletedDilemma, FutureTechnology, GeneratedDilemma, LocationType, ProblemArea, UserRole, ValueProfile } from "@/types/world2046";
+import type { Choice, CompletedDilemma, FutureTechnology, GeneratedDilemma, LocationType, Persona, ProblemArea, UserRole, ValueProfile } from "@/types/world2046";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
 type DilemmaRequest = {
   role: UserRole;
+  persona?: Persona;
   previousDilemmas: CompletedDilemma[];
   preferredSeverity: "low" | "medium";
 };
@@ -96,6 +97,8 @@ function validateAiDilemma(value: unknown, input: DilemmaRequest): GeneratedDile
     role: input.role,
     marker: { lat: value.marker.lat, lng: value.marker.lng },
     exactPlace,
+    landingScene: isString(value.landingScene) && value.landingScene.length <= 260 ? value.landingScene : undefined,
+    landingDetail: isString(value.landingDetail) && value.landingDetail.length <= 90 ? value.landingDetail : undefined,
   };
 }
 
@@ -106,17 +109,21 @@ function buildPrompt(input: DilemmaRequest) {
     input.previousDilemmas.length === 0
       ? "Dette er runde 1: country SKAL være Danmark."
       : `Dette er runde ${input.previousDilemmas.length + 1}: country MÅ IKKE være Danmark og MÅ IKKE være et af disse lande: ${usedCountries.join(", ")}. Vælg et større, plausibelt sted i en anden verdensregion.`;
+  const personaContext = input.persona
+    ? `Personaen brugeren rejser som: "${input.persona.title}" — ${input.persona.text}`
+    : `Brugerrolle: ${input.role}`;
 
   return `Du designer World 2046, en dansk interaktiv fremtidssimulation.
 
 Opgave:
 1. Vælg et realistisk, konkret sted på jorden, der matcher ét problemområde og én lokationstype.
 2. Stedet må gerne være globalt og varieret, men undgå lande/problemområder brugt lige før.
-3. Generér et dilemma, der specifikt udspringer af stedet, byen og lokationstypen.
+3. Generér et dilemma, der specifikt udspringer af stedet, byen og lokationstypen, og som taler direkte til personaen nedenfor.
 4. Generér også en konkret konsekvens for hver svarmulighed.
-5. Skriv på dansk, kort og præcist.
+5. Generér en kort sanselig landingsscene: vejr/lyd/lugt og én konkret situation i gang, ingen beslutning endnu.
+6. Skriv på dansk, kort og præcist.
 
-Brugerrolle: ${input.role}
+${personaContext}
 Foretrukken severity: ${input.preferredSeverity}
 Geografiregel: ${geographyRule}
 Tidligere dilemmaer:
@@ -131,7 +138,9 @@ Krav:
 - Vælg ét reelt eller meget plausibelt offentligt/urbant sted med navn, by, land og omtrentlige koordinater.
 - Overhold geografireglen præcist. Hvis den siger uden for Danmark, må country aldrig være Danmark.
 - scenePrompt må højst være 170 tegn og må kun indeholde én ide.
-- question må højst være 130 tegn.
+- question må højst være 130 tegn og SKAL starte med "Hvordan kan jeg" eller "Hvordan vil jeg", talt fra personaens perspektiv — ikke et binært ja/nej-spørgsmål.
+- landingScene må højst være 260 tegn: 2.-persons sanselig ankomst (sted, år, vejr/lyd), én konkret situation i gang, ingen beslutning.
+- landingDetail må højst være 90 tegn: én ren vejr- eller lyddetalje.
 - title må højst være 54 tegn.
 - Hver choice.label må højst være 46 tegn.
 - Hver choice.description må højst være 86 tegn.
@@ -211,8 +220,10 @@ const responseSchema = {
       },
       required: ["id", "name", "address"],
     },
+    landingScene: { type: "string", maxLength: 260 },
+    landingDetail: { type: "string", maxLength: 90 },
   },
-  required: ["id", "problemArea", "validLocationTypes", "targetGroups", "technologies", "severity", "title", "scenePrompt", "question", "choices", "tags", "country", "city", "region", "locationType", "technology", "marker", "exactPlace"],
+  required: ["id", "problemArea", "validLocationTypes", "targetGroups", "technologies", "severity", "title", "scenePrompt", "question", "choices", "tags", "country", "city", "region", "locationType", "technology", "marker", "exactPlace", "landingScene", "landingDetail"],
 };
 
 export async function POST(request: Request) {
@@ -223,6 +234,7 @@ export async function POST(request: Request) {
 
   const input: DilemmaRequest = {
     role: body.role,
+    persona: body.persona,
     previousDilemmas: body.previousDilemmas,
     preferredSeverity: body.preferredSeverity === "medium" ? "medium" : "low",
   };

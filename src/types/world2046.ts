@@ -1,4 +1,4 @@
-export type AppPhase = "intro" | "role-selection" | "traveling" | "dilemma" | "consequence" | "report";
+export type AppPhase = "intro" | "persona" | "traveling" | "landing" | "dilemma" | "consequence" | "report";
 
 export type UserRole =
   | "Ung"
@@ -108,6 +108,8 @@ export type GeneratedDilemma = DilemmaTemplate & {
   role: UserRole;
   marker: { lat: number; lng: number };
   exactPlace?: ExactPlace;
+  landingScene?: string;
+  landingDetail?: string;
 };
 
 export type CompletedDilemma = {
@@ -123,7 +125,36 @@ export type CompletedDilemma = {
   selectedChoiceId: string;
   selectedChoiceLabel: string;
   customAnswer?: string;
+  answeredByVoice?: boolean;
+  reflection?: string;
+  reflectionViaVoice?: boolean;
   valueImpacts: ValueProfile;
+};
+
+export type PersonaAnswers = {
+  role: UserRole;
+  matters: string;
+  hopeFear: string;
+  mattersViaVoice?: boolean;
+  hopeFearViaVoice?: boolean;
+};
+
+export type Persona = {
+  role: UserRole;
+  title: string;
+  text: string;
+  traits: string[];
+  answers: PersonaAnswers;
+  source: "openai" | "fallback";
+};
+
+export type FutureProfileReport = {
+  headline: string;
+  narrative: string;
+  quotes: { quote: string; context: string }[];
+  patterns: string[];
+  reflectionNote: string;
+  source: "openai" | "fallback";
 };
 
 export type SessionResult = {
@@ -131,7 +162,9 @@ export type SessionResult = {
   createdAt: string;
   year: 2046;
   role: UserRole;
+  persona?: Persona;
   completedDilemmas: CompletedDilemma[];
   valueProfile: ValueProfile;
   generatedSummary: string;
+  futureReport?: FutureProfileReport;
 };
