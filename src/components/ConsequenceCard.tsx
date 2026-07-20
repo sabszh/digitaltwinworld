@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { VoiceInput } from "@/components/VoiceInput";
-import { valueLabels } from "@/data/taxonomies";
+import { simplifyTextForAudience } from "@/lib/audience";
 import type { Language } from "@/lib/i18n";
 import { uiText } from "@/lib/i18n";
 import { worldSound } from "@/lib/sound";
@@ -25,59 +24,29 @@ export function ConsequenceCard({
   onContinue: (reflection: string, viaVoice: boolean) => void;
 }) {
   const text = uiText[language];
-  const [reflection, setReflection] = useState("");
-  const [reflectionViaVoice, setReflectionViaVoice] = useState(false);
-
-  const prioritizedValues = Object.entries(choice?.valueImpacts ?? {})
-    .filter(([, impact]) => typeof impact === "number" && impact > 0)
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, 2)
-    .map(([key]) => valueLabels[key as keyof typeof valueLabels].toLowerCase());
-
-  const valuePhrase =
-    prioritizedValues.length === 0
-      ? "en mere afvejet retning"
-      : prioritizedValues.length === 1
-        ? prioritizedValues[0]
-        : `${prioritizedValues[0]} og ${prioritizedValues[1]}`;
   const place = dilemma?.exactPlace?.name ?? dilemma?.locationType ?? "stedet";
-  const technology = dilemma?.technology ?? "teknologien";
+  const technology = dilemma ? simplifyTextForAudience(dilemma.role, dilemma.technology) : "teknologien";
 
   const consequenceText = customAnswer
-    ? `Din egen løsning gør ${place} til et lokalt forsøg, hvor ${technology} får tydeligere rammer. Det kan skabe mere ejerskab, men kræver at nogen følger op, når hverdagen ændrer sig.`
+    ? simplifyTextForAudience(dilemma?.role ?? "For alle", `Din løsning giver ${technology} tydeligere rammer på ${place}.`)
     : choice?.consequence
-      ? choice.consequence
+      ? simplifyTextForAudience(dilemma?.role ?? "For alle", choice.consequence.split(".")[0] + ".")
     : choice
-      ? `${choice.label} gør ${technology} til et mere aktivt valg på ${place}. Det styrker ${valuePhrase}, men flytter også ansvar til dem, der skal justere løsningen i hverdagen.`
-      : "Du valgte en løsning, hvor teknologien får tydeligere rammer. Det styrker retningen, men kræver stadig ansvar fra dem, der bruger systemet.";
+      ? simplifyTextForAudience(dilemma?.role ?? "For alle", `${choice.label} ændrer balancen mellem mennesker og ${technology}.`)
+      : "Dit valg ændrer retningen.";
 
   return (
-    <section className="relative z-20 grid min-h-screen place-items-center px-6 py-10">
-      <div className="surface-panel max-w-2xl rounded-[2rem] p-7 md:p-9">
-        <p className="font-mono text-sm uppercase tracking-[0.18em] text-[var(--accent-warm)]">{text.consequenceKicker}</p>
+    // Desaturation reveal: enters desaturated, floods back to full colour
+    <motion.section
+      className="relative z-20 grid min-h-screen place-items-center px-6 py-10"
+      initial={{ filter: "saturate(0.12)" }}
+      animate={{ filter: "saturate(1)" }}
+      transition={{ duration: 1.0, ease: "easeOut" }}
+    >
+      <div className="surface-panel consequence-card max-w-xl p-7 md:p-8">
+        <p className="consequence-eyebrow">{dilemma?.exactPlace?.name ?? dilemma?.city ?? text.consequenceKicker}</p>
         <h2 className="font-editorial mt-3 text-3xl font-semibold italic text-[var(--text)]">{customAnswer ? text.consequenceOwnPath : choice?.label}</h2>
-        <p className="mt-5 text-lg font-normal leading-8 text-[var(--muted)]">{consequenceText}</p>
-        {customAnswer && <p className="surface-card mt-4 rounded-2xl p-4 font-normal text-[var(--muted)]">{customAnswer}</p>}
-
-        <div className="surface-card mt-6 rounded-2xl p-4">
-          <p className="text-sm font-medium text-[var(--muted)]">{text.reflectionPrompt}</p>
-          <textarea
-            value={reflection}
-            onChange={(event) => setReflection(event.target.value)}
-            rows={1}
-            placeholder={text.reflectionPlaceholder}
-            className="mt-2 w-full resize-none bg-transparent text-[15px] text-[var(--text)] outline-none placeholder:text-[var(--faint)]"
-          />
-          <div className="mt-2">
-            <VoiceInput
-              language={language}
-              onTranscript={(transcript) => {
-                setReflectionViaVoice(true);
-                setReflection((current) => (current ? `${current} ${transcript}` : transcript));
-              }}
-            />
-          </div>
-        </div>
+        <p className="mt-5 text-lg font-normal leading-7 text-[var(--muted)]">{consequenceText}</p>
 
         <div className="mt-7 flex flex-wrap gap-3">
           <button
@@ -92,14 +61,14 @@ export function ConsequenceCard({
           <button
             onClick={() => {
               worldSound.playButtonTap();
-              onContinue(reflection, reflectionViaVoice);
+              onContinue("", false);
             }}
-            className="inline-flex items-center gap-3 rounded-full bg-[var(--accent)] px-5 py-3 font-semibold text-slate-950 shadow-lg shadow-sky-950/20"
+            className="consequence-primary inline-flex items-center gap-3 rounded-full px-5 py-3 font-semibold"
           >
             {text.continueJourney} <ArrowRight size={18} />
           </button>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

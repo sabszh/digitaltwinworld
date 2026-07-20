@@ -17,6 +17,7 @@ import type {
 import { generateDilemma } from "./randomizer";
 import { buildLocalPersona } from "./persona";
 import { addProfiles, buildFallbackReport, generateSummary, normalizeImpacts } from "./profileScoring";
+import { UX_TIMING } from "./uxTiming";
 
 type SessionStore = {
   phase: AppPhase;
@@ -81,16 +82,20 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     }
     const preferredSeverity = completedDilemmas.length === 0 ? "low" : "medium";
     const fallbackDilemma = () => generateDilemma({ role, previousDilemmas: completedDilemmas, preferredSeverity });
+    const travelStartedAt = Date.now();
 
     set({ activeDilemma: undefined, phase: "traveling" });
 
     let nextDilemma: GeneratedDilemma;
     try {
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), UX_TIMING.dilemmaFetchTimeoutMs);
       const response = await fetch("/api/dilemma", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ role, persona, previousDilemmas: completedDilemmas, preferredSeverity }),
-      });
+        signal: controller.signal,
+      }).finally(() => window.clearTimeout(timeout));
       if (!response.ok) throw new Error("Failed to generate dilemma");
       const data = (await response.json()) as { dilemma?: GeneratedDilemma };
       nextDilemma = data.dilemma ?? fallbackDilemma();
@@ -98,11 +103,16 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       nextDilemma = fallbackDilemma();
     }
 
+    const elapsed = Date.now() - travelStartedAt;
+    if (elapsed < UX_TIMING.minimumTravelLoadingMs) {
+      await new Promise((resolve) => window.setTimeout(resolve, UX_TIMING.minimumTravelLoadingMs - elapsed));
+    }
+
     if (get().sessionId !== sessionId || get().phase !== "traveling") return;
     set({ activeDilemma: nextDilemma });
     window.setTimeout(() => {
       if (get().phase === "traveling") set({ phase: "landing" });
-    }, 3200);
+    }, UX_TIMING.destinationRevealHoldMs);
   },
   enterDilemma: () => {
     if (get().phase === "landing") set({ phase: "dilemma" });

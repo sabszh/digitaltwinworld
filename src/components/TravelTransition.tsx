@@ -1,28 +1,28 @@
 "use client";
 
-import { AnimatePresence, motion, useMotionValue, useMotionValueEvent, animate } from "framer-motion";
-import { useEffect, useState } from "react";
+import { motion, useMotionValue, useMotionValueEvent, animate } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { MapPin, PlaneLanding } from "lucide-react";
 import { AiLoader } from "@/components/ui/ai-loader";
+import { WarpCanvas } from "@/components/WarpCanvas";
 import type { Language } from "@/lib/i18n";
 import { uiText } from "@/lib/i18n";
+import { UX_TIMING } from "@/lib/uxTiming";
 import type { GeneratedDilemma, Persona } from "@/types/world2046";
 
 function FlipDigit({ digit }: { digit: string }) {
   return (
-    <span className="relative inline-flex h-10 w-7 shrink-0 items-center justify-center overflow-hidden rounded-md bg-[var(--night)] shadow-[inset_0_-2px_4px_rgba(0,0,0,0.4)]">
+    <span className="flip-digit">
       <span aria-hidden className="absolute inset-x-0 top-1/2 h-px bg-black/40" />
-      <AnimatePresence mode="popLayout" initial={false}>
-        <motion.span
-          key={digit}
-          initial={{ y: "-100%" }}
-          animate={{ y: "0%" }}
-          exit={{ y: "100%" }}
-          transition={{ duration: 0.22, ease: "easeOut" }}
-          className="absolute inset-0 flex items-center justify-center font-mono text-xl tabular-nums text-[var(--cloud)]"
-        >
-          {digit}
-        </motion.span>
-      </AnimatePresence>
+      <motion.span
+        key={digit}
+        initial={{ opacity: 0.42, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.18, ease: "easeOut" }}
+        className="absolute inset-0 flex items-center justify-center font-mono text-xl tabular-nums text-[var(--cloud)]"
+      >
+        {digit}
+      </motion.span>
     </span>
   );
 }
@@ -30,17 +30,28 @@ function FlipDigit({ digit }: { digit: string }) {
 function YearCounter() {
   const year = useMotionValue(2026);
   const [display, setDisplay] = useState("2026");
+  const [isGlitching, setIsGlitching] = useState(false);
+  const glitchFiredRef = useRef(false);
 
-  useMotionValueEvent(year, "change", (value) => setDisplay(String(Math.round(value))));
+  useMotionValueEvent(year, "change", (value) => {
+    const rounded = Math.round(value);
+    setDisplay(String(rounded).padStart(4, "0").slice(-4));
+    // Trigger chromatic aberration glitch as we hit 2046
+    if (rounded >= 2046 && !glitchFiredRef.current) {
+      glitchFiredRef.current = true;
+      setIsGlitching(true);
+      setTimeout(() => setIsGlitching(false), 620);
+    }
+  });
 
   useEffect(() => {
-    const controls = animate(year, 2046, { duration: 2.4, ease: "easeInOut" });
+    const controls = animate(year, 2046, { duration: UX_TIMING.yearCounterMs / 1000, ease: "easeInOut" });
     return () => controls.stop();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <span className="inline-flex gap-1">
+    <span className={`year-counter inline-flex gap-1 ${isGlitching ? "year-glitch" : ""}`}>
       {display.split("").map((digit, index) => (
         <FlipDigit key={index} digit={digit} />
       ))}
@@ -50,7 +61,6 @@ function YearCounter() {
 
 export function TravelTransition({
   dilemma,
-  persona,
   language,
   isFirstTrip,
 }: {
@@ -68,18 +78,15 @@ export function TravelTransition({
 
     return (
       <div className="pointer-events-none fixed inset-0 z-20 flex h-screen items-center justify-center overflow-hidden px-6">
-        <motion.div
-          aria-hidden
-          className="absolute inset-0 bg-[rgba(255,255,255,0.14)]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-        />
+        {/* Warp star streaks */}
+        <WarpCanvas />
+
+        <div aria-hidden className="absolute inset-0 bg-[rgba(0,0,0,0.32)]" />
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="relative text-center"
+          className="relative z-20 text-center"
         >
           <motion.div
             aria-hidden
@@ -101,29 +108,13 @@ export function TravelTransition({
 
   return (
     <div className="pointer-events-none relative z-20 flex min-h-screen items-center justify-center px-6">
-      <motion.div initial={{ opacity: 0, y: 10, scale: 0.99 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="surface-panel relative w-full max-w-lg overflow-hidden rounded-3xl p-7 text-center">
-        <motion.div
-          aria-hidden
-          className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-70"
-          initial={{ scaleX: 0.25 }}
-          animate={{ scaleX: [0.25, 1, 0.25] }}
-          transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <div className="mx-auto grid h-12 w-12 place-items-center rounded-full border border-[rgba(143,199,232,0.28)] bg-[rgba(143,199,232,0.08)]">
-          <motion.span
-            className="block h-2.5 w-2.5 rounded-full bg-[var(--accent)] shadow-[0_0_24px_rgba(143,199,232,0.72)]"
-            animate={{ scale: [1, 1.28, 1], opacity: [0.72, 1, 0.72] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          />
+      <motion.div initial={{ opacity: 0, y: 10, scale: 0.99 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="approach-card">
+        <div className="approach-card-head">
+          <span><PlaneLanding className="h-4 w-4" aria-hidden="true" /> {text.travelArrivingKicker}</span>
+          <span>2046</span>
         </div>
-        <p className="mt-5 font-mono text-xs uppercase tracking-[0.18em] text-[var(--accent)]">{text.travelArrivingKicker}</p>
-        <p className="mt-3 text-3xl font-semibold leading-tight text-[var(--text)]">{destination}</p>
-        <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-[var(--muted)]">{context}</p>
-        {persona && (
-          <p className="mx-auto mt-4 max-w-sm text-sm leading-6 text-[var(--faint)]">
-            {text.travelArrivingAs} <span className="text-[var(--muted)]">{persona.title}</span>
-          </p>
-        )}
+        <h2><MapPin className="h-5 w-5" aria-hidden="true" /> {destination}</h2>
+        <p>{context}</p>
       </motion.div>
     </div>
   );

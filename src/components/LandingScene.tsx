@@ -2,14 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { CalendarClock, MapPin, UserRound } from "lucide-react";
+import { ArrowRight, CalendarClock, MapPin, PlaneLanding, UserRound } from "lucide-react";
 import type { Language } from "@/lib/i18n";
 import { uiText } from "@/lib/i18n";
 import { worldSound } from "@/lib/sound";
+import { UX_TIMING } from "@/lib/uxTiming";
 import type { GeneratedDilemma, Persona } from "@/types/world2046";
-
-const AUTO_ADVANCE_MS = 8000;
-const BUTTON_DELAY_MS = 4000;
 
 export function LandingScene({
   dilemma,
@@ -26,10 +24,11 @@ export function LandingScene({
   const [showButton, setShowButton] = useState(false);
   const place = dilemma.exactPlace?.name ?? dilemma.city;
   const scene = dilemma.landingScene ?? `Du lander i ${place}, 2046.`;
+  const headline = language === "da" ? "Ankomst registreret" : "Arrival registered";
 
   useEffect(() => {
-    const buttonTimer = window.setTimeout(() => setShowButton(true), BUTTON_DELAY_MS);
-    const advanceTimer = window.setTimeout(() => onEnter(), AUTO_ADVANCE_MS);
+    const buttonTimer = window.setTimeout(() => setShowButton(true), UX_TIMING.arrivalCtaDelayMs);
+    const advanceTimer = window.setTimeout(() => onEnter(), UX_TIMING.arrivalCardHoldMs);
     return () => {
       window.clearTimeout(buttonTimer);
       window.clearTimeout(advanceTimer);
@@ -43,44 +42,30 @@ export function LandingScene({
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="surface-panel w-full max-w-lg rounded-3xl p-6 md:p-7"
+        className="arrival-card w-full max-w-lg"
       >
-        <div className="flex flex-wrap gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-black/15 px-2.5 py-1 text-xs font-medium text-[var(--muted)]">
-            <CalendarClock className="h-3.5 w-3.5 text-[var(--accent)]" aria-hidden="true" />
-            {text.landingYear}
+        <div className="arrival-card-head">
+          <span className="arrival-card-kicker">
+            <PlaneLanding className="h-4 w-4" aria-hidden="true" />
+            {headline}
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-black/15 px-2.5 py-1 text-xs font-medium text-[var(--muted)]">
-            <MapPin className="h-3.5 w-3.5 text-[var(--accent)]" aria-hidden="true" />
-            {place}
-          </span>
-          {persona && (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-black/15 px-2.5 py-1 text-xs font-medium text-[var(--muted)]">
-              <UserRound className="h-3.5 w-3.5 text-[var(--accent)]" aria-hidden="true" />
-              {persona.title}
-            </span>
-          )}
+          <span className="arrival-card-code">WLD-01</span>
+        </div>
+        <h2>{place}</h2>
+        <div className="arrival-card-meta">
+          <span><CalendarClock className="h-3.5 w-3.5" aria-hidden="true" /> {text.landingYear}</span>
+          <span><MapPin className="h-3.5 w-3.5" aria-hidden="true" /> {dilemma.problemArea}</span>
+          {persona && <span><UserRound className="h-3.5 w-3.5" aria-hidden="true" /> {persona.title}</span>}
         </div>
 
         <motion.p
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-5 text-[19px] font-normal leading-7 text-[var(--text)] md:text-[21px]"
+          className="arrival-card-scene"
         >
           {scene}
         </motion.p>
-
-        {dilemma.landingDetail && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
-            className="mt-3 text-sm italic text-[var(--faint)]"
-          >
-            {dilemma.landingDetail}
-          </motion.p>
-        )}
 
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: showButton ? 1 : 0, y: showButton ? 0 : 8 }} transition={{ duration: 0.4 }}>
           <button
@@ -89,9 +74,9 @@ export function LandingScene({
               onEnter();
             }}
             style={{ pointerEvents: showButton ? "auto" : "none" }}
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-3 font-semibold text-slate-950 shadow-lg shadow-sky-950/20"
+            className="arrival-card-cta"
           >
-            {text.landingEnter}
+            {text.landingEnter} <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </button>
         </motion.div>
       </motion.div>

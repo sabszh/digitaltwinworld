@@ -2,9 +2,10 @@ import { dilemmaTemplates } from "@/data/dilemmaTemplates";
 import { exactPlaces } from "@/data/exactPlaces";
 import { locations } from "@/data/locations";
 import { problemAreas } from "@/data/taxonomies";
+import { getAudienceProfile, tailorDilemmaCopyForAudience } from "@/lib/audience";
 import type { CompletedDilemma, GeneratedDilemma, LocationType, ProblemArea, UserRole } from "@/types/world2046";
 
-const pick = <T>(items: T[]) => items[Math.floor(Math.random() * items.length)];
+const pick = <T>(items: readonly T[]) => items[Math.floor(Math.random() * items.length)];
 
 const atmosphereByArea: Partial<Record<ProblemArea, string>> = {
   "Uddannelse og læring": "Der er lav summen i rummet, og skærme justerer sig efter menneskene omkring dem.",
@@ -24,6 +25,24 @@ const weatherSnippets = [
   "Varmen ligger tæt over asfalten.",
   "Det er tidlig morgen, og lyset er blidt.",
 ];
+
+const storyDetailsByAudience = {
+  school: [
+    "En gruppe elever står med deres tablets i hånden, mens læreren beder alle forklare valget med egne ord.",
+    "Nogle børn synes teknologien er sjov, andre bliver stille, fordi systemet allerede har gættet deres næste svar.",
+    "I klassens workshop skal I prøve løsningen selv, før I beslutter, hvor meget den må fylde i skoledagen.",
+  ],
+  professional: [
+    "På skærmen ses både borgernes ventetid, medarbejdernes arbejdspres og de regler, systemet forsøger at balancere.",
+    "En projektleder, en frontmedarbejder og en borgerrepræsentant læser samme anbefaling, men ser tre forskellige risici.",
+    "Løsningen er klar til drift, men ansvaret for fejl, forklaringer og fravalg er endnu ikke placeret.",
+  ],
+  public: [
+    "Folk stopper op, prøver løsningen og begynder hurtigt at diskutere, om den føles hjælpsom, sjov eller lidt for nærgående.",
+    "Børn peger, voksne tester, og teknologien virker først enkel, indtil man opdager hvad den lærer om hverdagen.",
+    "Det ligner næsten en leg, men valget afgør, hvem der får mere frihed, og hvem der skal stole på systemet.",
+  ],
+} as const;
 
 const compatibleLocationTypes: Partial<Record<LocationType, LocationType[]>> = {
   kommune: ["kommune", "rådhus", "digital borgerservice"],
@@ -46,6 +65,7 @@ export function generateDilemma(input: {
   previousDilemmas: CompletedDilemma[];
   preferredSeverity: "low" | "medium";
 }): GeneratedDilemma {
+  const audience = getAudienceProfile(input.role);
   const previous = input.previousDilemmas;
   const last = previous.at(-1);
   const isFirst = previous.length === 0;
@@ -53,7 +73,8 @@ export function generateDilemma(input: {
   const usedExactPlaces = new Set(previous.map((item) => item.exactPlaceName).filter(Boolean));
   const usedCountries = new Set(previous.map((item) => item.country));
 
-  const allowedAreas = problemAreas.filter((area) => area !== last?.problemArea);
+  const preferredAreas = audience.preferredProblemAreas.filter((area) => area !== last?.problemArea);
+  const allowedAreas = (preferredAreas.length ? preferredAreas : problemAreas).filter((area) => area !== last?.problemArea);
   const underusedAreas = allowedAreas.filter((area) => previous.filter((item) => item.problemArea === area).length < 2);
   const danishPoiAreas = [
     ...new Set(
@@ -65,19 +86,29 @@ export function generateDilemma(input: {
   const area: ProblemArea = isFirst ? pick(danishPoiAreas.length ? danishPoiAreas : ["Uddannelse og læring"]) : pick(underusedAreas.length ? underusedAreas : allowedAreas);
 
   const templateCandidates = dilemmaTemplates.filter(
-    (template) => template.problemArea === area && template.severity === input.preferredSeverity && !usedIds.has(template.id),
+    (template) =>
+      template.problemArea === area &&
+      template.severity === input.preferredSeverity &&
+      !usedIds.has(template.id) &&
+      template.targetGroups.some((group) => audience.targetGroups.includes(group)),
   );
-  const template = pick(templateCandidates.length ? templateCandidates : dilemmaTemplates.filter((item) => item.problemArea === area && !usedIds.has(item.id)));
+  const template = pick(
+    templateCandidates.length
+      ? templateCandidates
+      : dilemmaTemplates.filter((item) => item.problemArea === area && !usedIds.has(item.id)),
+  );
+  const preferredValidLocationTypes = template.validLocationTypes.filter((type) => audience.preferredLocationTypes.includes(type));
+  const validLocationTypes = preferredValidLocationTypes.length ? preferredValidLocationTypes : template.validLocationTypes;
   const exactPlaceCandidates = exactPlaces.filter(
     (place) =>
-      matchesAnyLocationType(place.locationType, template.validLocationTypes) &&
+      matchesAnyLocationType(place.locationType, validLocationTypes) &&
       place.problemAreas.includes(area) &&
       place.country !== last?.country &&
       !usedExactPlaces.has(place.name) &&
       (isFirst ? place.country === "Danmark" : place.country !== "Danmark" && !usedCountries.has(place.country)),
   );
   const exactPlace = exactPlaceCandidates.length ? pick(exactPlaceCandidates) : undefined;
-  const type: LocationType = exactPlace?.locationType ?? pick(template.validLocationTypes);
+  const type: LocationType = exactPlace?.locationType ?? pick(validLocationTypes);
   const locationCandidates = locations.filter(
     (location) =>
       location.validProblemAreas.includes(area) &&
@@ -108,10 +139,12 @@ export function generateDilemma(input: {
   const place = exactPlace?.name ?? location.city;
   const atmosphere = atmosphereByArea[area] ?? "Stedet føles både genkendeligt og fremmed, som om nutiden er blevet skruet en anelse frem.";
   const weather = pick(weatherSnippets);
+  const storyDetail = pick(storyDetailsByAudience[audience.id]);
 
-  return {
+  return tailorDilemmaCopyForAudience({
     ...template,
-    scenePrompt: interpolate(template.scenePrompt, values),
+    targetGroups: [...new Set([...template.targetGroups, ...audience.targetGroups])],
+    scenePrompt: `${interpolate(template.scenePrompt, values)} ${storyDetail}`,
     question: interpolate(template.question, values),
     country: exactPlace?.country ?? location.country,
     city: exactPlace?.city ?? location.city,
@@ -121,7 +154,7 @@ export function generateDilemma(input: {
     role: input.role,
     marker: { lat: exactPlace?.lat ?? location.lat, lng: exactPlace?.lng ?? location.lng },
     exactPlace,
-    landingScene: `Du lander i ${place}, 2046. ${weather} ${atmosphere}`,
+    landingScene: `Du lander i ${place}, 2046. ${weather} ${atmosphere} ${storyDetail}`,
     landingDetail: weather,
-  };
+  });
 }

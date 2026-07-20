@@ -36,11 +36,11 @@ function CameraRig({
   useFrame(() => {
     if (introProgressRef && !active && !zoomed) {
       const p = Math.min(Math.max(introProgressRef.current, 0), 1);
-      const targetZ = 5.8 - p * 2.6;
+      const targetZ = 5.15 - p * 2.35;
       camera.position.lerp(new THREE.Vector3(0, 0, targetZ), 0.08);
       return;
     }
-    const targetZ = zoomed || active ? 2.85 : 5.8;
+    const targetZ = active && zoomed ? 3.6 : zoomed ? 4.2 : 5.15;
     camera.position.lerp(new THREE.Vector3(0, 0, targetZ), 0.055);
   });
 
@@ -68,7 +68,7 @@ function GlobeMesh({ active }: { active?: GeneratedDilemma }) {
     if (targetQuaternion) {
       group.current.quaternion.slerp(targetQuaternion, 0.055);
     } else {
-      group.current.rotation.y += 0.0035;
+      group.current.rotation.y += 0.0012;
       group.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.2) * 0.04;
     }
     if (clouds.current) clouds.current.rotation.y += 0.0007;
@@ -141,7 +141,7 @@ export function WorldGlobe({
 }) {
   return (
     <div className="absolute inset-0 z-0">
-      <Canvas camera={{ position: [0, 0, zoomed ? 4.2 : 5.6], fov: 45 }}>
+      <Canvas camera={{ position: [0, 0, zoomed ? 4.2 : 5.15], fov: 45 }}>
         <color attach="background" args={["#020b16"]} />
         <ambientLight intensity={0.32} />
         <directionalLight position={[4.5, 2.2, 5]} intensity={4.2} color="#ffffff" />
