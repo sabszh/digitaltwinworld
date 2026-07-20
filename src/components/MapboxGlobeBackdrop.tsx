@@ -3,12 +3,13 @@
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
+import { inferSoundscapeTags } from "@/lib/sound";
 import type { GeneratedDilemma } from "@/types/world2046";
 
-const secondsPerRevolution = 130;
+const secondsPerRevolution = 260;
 const maxSpinZoom = 4.2;
 const slowSpinZoom = 2.6;
-const orbitMsPerRevolution = 52000;
+const orbitMsPerRevolution = 240000;
 const easeOutCubic = (n: number) => 1 - Math.pow(1 - n, 3);
 
 const labelFreeSatelliteStyle: mapboxgl.StyleSpecification = {
@@ -29,6 +30,99 @@ const labelFreeSatelliteStyle: mapboxgl.StyleSpecification = {
   ],
 };
 
+// Interpolate N points along the great-circle path between two [lng, lat] coords
+function interpolateGreatCircle(
+  from: [number, number],
+  to: [number, number],
+  steps = 80
+): [number, number][] {
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const toDeg = (rad: number) => (rad * 180) / Math.PI;
+
+  const lat1 = toRad(from[1]);
+  const lng1 = toRad(from[0]);
+  const lat2 = toRad(to[1]);
+  const lng2 = toRad(to[0]);
+
+  const d = 2 * Math.asin(
+    Math.sqrt(
+      Math.pow(Math.sin((lat2 - lat1) / 2), 2) +
+      Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin((lng2 - lng1) / 2), 2)
+    )
+  );
+
+  if (d === 0) return [from];
+
+  return Array.from({ length: steps + 1 }, (_, i) => {
+    const f = i / steps;
+    const A = Math.sin((1 - f) * d) / Math.sin(d);
+    const B = Math.sin(f * d) / Math.sin(d);
+    const x = A * Math.cos(lat1) * Math.cos(lng1) + B * Math.cos(lat2) * Math.cos(lng2);
+    const y = A * Math.cos(lat1) * Math.sin(lng1) + B * Math.cos(lat2) * Math.sin(lng2);
+    const z = A * Math.sin(lat1) + B * Math.sin(lat2);
+    const lat = toDeg(Math.atan2(z, Math.sqrt(x * x + y * y)));
+    const lng = toDeg(Math.atan2(y, x));
+    return [lng, lat] as [number, number];
+  });
+}
+
+function getFogForDilemma(dilemma: GeneratedDilemma) {
+  const tags = inferSoundscapeTags(dilemma);
+
+  if (tags.includes("coastal")) {
+    return {
+      color: "rgb(90, 140, 180)",
+      "high-color": "rgb(130, 178, 210)",
+      "horizon-blend": 0.18,
+      "space-color": "rgb(5, 9, 26)",
+      "star-intensity": 0.32,
+    };
+  }
+  if (tags.includes("desert")) {
+    return {
+      color: "rgb(170, 128, 68)",
+      "high-color": "rgb(210, 172, 110)",
+      "horizon-blend": 0.22,
+      "space-color": "rgb(18, 10, 4)",
+      "star-intensity": 0.5,
+    };
+  }
+  if (tags.includes("industrial")) {
+    return {
+      color: "rgb(38, 54, 76)",
+      "high-color": "rgb(72, 102, 136)",
+      "horizon-blend": 0.11,
+      "space-color": "rgb(4, 7, 18)",
+      "star-intensity": 0.28,
+    };
+  }
+  if (tags.includes("care") || tags.includes("hopeful")) {
+    return {
+      color: "rgb(110, 135, 160)",
+      "high-color": "rgb(152, 185, 210)",
+      "horizon-blend": 0.17,
+      "space-color": "rgb(5, 9, 26)",
+      "star-intensity": 0.42,
+    };
+  }
+  // Default: urban / high-tech — crisp blue
+  return {
+    color: "rgb(20, 52, 92)",
+    "high-color": "rgb(72, 132, 190)",
+    "horizon-blend": 0.14,
+    "space-color": "rgb(6, 10, 28)",
+    "star-intensity": 0.45,
+  };
+}
+
+const DEFAULT_FOG = {
+  color: "rgb(20, 52, 92)",
+  "high-color": "rgb(72, 132, 190)",
+  "horizon-blend": 0.14,
+  "space-color": "rgb(6, 10, 28)",
+  "star-intensity": 0.45,
+};
+
 export function MapboxGlobeBackdrop({
   active,
   zoomed,
@@ -45,6 +139,10 @@ export function MapboxGlobeBackdrop({
   const orbitingRef = useRef(false);
   const orbitTimeoutRef = useRef<number | undefined>(undefined);
   const orbitFrameRef = useRef<number | undefined>(undefined);
+  // Track previous center for flight path arc
+  const prevCenterRef = useRef<[number, number]>([8, 38]);
+  const pathFrameRef = useRef<number | undefined>(undefined);
+  const styleLoadedRef = useRef(false);
 
   useEffect(() => {
     activeRef.current = active;
@@ -60,7 +158,7 @@ export function MapboxGlobeBackdrop({
       container: containerRef.current,
       style: labelFreeSatelliteStyle,
       center: [8, 38],
-      zoom: 1.78,
+      zoom: 1.95,
       bearing: 0,
       pitch: 0,
       interactive: false,
@@ -90,13 +188,31 @@ export function MapboxGlobeBackdrop({
     };
 
     map.on("style.load", () => {
-      map.setFog({
-        color: "rgb(20, 52, 92)",
-        "high-color": "rgb(72, 132, 190)",
-        "horizon-blend": 0.14,
-        "space-color": "rgb(6, 10, 28)",
-        "star-intensity": 0.45,
+      styleLoadedRef.current = true;
+      map.setFog(DEFAULT_FOG);
+
+      // Add flight path source + layer
+      map.addSource("flight-path", {
+        type: "geojson",
+        data: { type: "Feature", geometry: { type: "LineString", coordinates: [] }, properties: {} },
       });
+
+      map.addLayer({
+        id: "flight-path-line",
+        type: "line",
+        source: "flight-path",
+        paint: {
+          "line-color": "rgba(143, 199, 232, 0.65)",
+          "line-width": 1.4,
+          "line-opacity": 1,
+          "line-blur": 0.5,
+        },
+        layout: {
+          "line-cap": "round",
+          "line-join": "round",
+        },
+      });
+
       spinGlobe();
     });
 
@@ -105,7 +221,9 @@ export function MapboxGlobeBackdrop({
     return () => {
       window.clearTimeout(orbitTimeoutRef.current);
       window.cancelAnimationFrame(orbitFrameRef.current ?? 0);
+      window.cancelAnimationFrame(pathFrameRef.current ?? 0);
       orbitingRef.current = false;
+      styleLoadedRef.current = false;
       map.remove();
       mapRef.current = null;
     };
@@ -118,18 +236,20 @@ export function MapboxGlobeBackdrop({
     spinningRef.current = false;
     map.stop();
 
-    const startZoom = 1.78;
-    const endZoom = 3.65;
+    const startZoom = 2.08;
+    const endZoom = 3.82;
     const startPitch = 0;
     const endPitch = 34;
     const startBearing = 0;
     const endBearing = 58;
+    const startedAt = performance.now();
 
     let frameId: number;
     const tick = () => {
       const p = Math.min(Math.max(introProgressRef.current, 0), 1);
+      const rotationDrift = ((performance.now() - startedAt) / 1000) * 0.9;
       map.jumpTo({
-        center: [8, 38],
+        center: [8 - rotationDrift, 34],
         zoom: startZoom + (endZoom - startZoom) * p,
         pitch: startPitch + (endPitch - startPitch) * p,
         bearing: startBearing + (endBearing - startBearing) * p,
@@ -151,10 +271,21 @@ export function MapboxGlobeBackdrop({
 
     window.clearTimeout(orbitTimeoutRef.current);
     window.cancelAnimationFrame(orbitFrameRef.current ?? 0);
+    window.cancelAnimationFrame(pathFrameRef.current ?? 0);
     orbitingRef.current = false;
 
     if (!active) {
       spinningRef.current = true;
+      // Reset fog and clear path
+      if (styleLoadedRef.current) {
+        map.setFog(DEFAULT_FOG);
+        (map.getSource("flight-path") as mapboxgl.GeoJSONSource | undefined)?.setData({
+          type: "Feature",
+          geometry: { type: "LineString", coordinates: [] },
+          properties: {},
+        });
+      }
+      prevCenterRef.current = [8, 38];
       map.easeTo({
         center: [8, 38],
         zoom: 1.78,
@@ -169,10 +300,56 @@ export function MapboxGlobeBackdrop({
     spinningRef.current = false;
     map.stop();
 
+    // Update fog for destination
+    if (styleLoadedRef.current) {
+      map.setFog(getFogForDilemma(active));
+    }
+
     const targetZoom = active.exactPlace ? (zoomed ? 16.35 : 15.4) : zoomed ? 13.6 : 12.8;
     const targetPitch = zoomed ? 58 : 46;
     const targetBearing = active.marker.lng >= 8 ? -24 : 24;
     const flyDuration = zoomed ? 5400 : 4600;
+
+    const destCoords: [number, number] = [active.marker.lng, active.marker.lat];
+    const fromCoords: [number, number] = [...prevCenterRef.current];
+
+    // Draw flight path arc progressively over the flyTo duration
+    if (styleLoadedRef.current && fromCoords[0] !== destCoords[0]) {
+      const allPoints = interpolateGreatCircle(fromCoords, destCoords, 80);
+      let revealed = 1;
+
+      // Clear old path first
+      (map.getSource("flight-path") as mapboxgl.GeoJSONSource | undefined)?.setData({
+        type: "Feature",
+        geometry: { type: "LineString", coordinates: [allPoints[0]] },
+        properties: {},
+      });
+
+      const drawFrame = () => {
+        revealed = Math.min(revealed + 2, allPoints.length);
+        (map.getSource("flight-path") as mapboxgl.GeoJSONSource | undefined)?.setData({
+          type: "Feature",
+          geometry: { type: "LineString", coordinates: allPoints.slice(0, revealed) },
+          properties: {},
+        });
+        if (revealed < allPoints.length) {
+          pathFrameRef.current = window.requestAnimationFrame(drawFrame);
+        } else {
+          // Fade out arc after orbit starts
+          window.setTimeout(() => {
+            (map.getSource("flight-path") as mapboxgl.GeoJSONSource | undefined)?.setData({
+              type: "Feature",
+              geometry: { type: "LineString", coordinates: [] },
+              properties: {},
+            });
+          }, flyDuration + 2000);
+        }
+      };
+
+      pathFrameRef.current = window.requestAnimationFrame(drawFrame);
+    }
+
+    prevCenterRef.current = destCoords;
 
     const orbitArea = () => {
       const startBearing = map.getBearing();

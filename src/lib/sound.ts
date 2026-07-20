@@ -390,6 +390,126 @@ class WorldSoundEngine {
     rumble.stop(now + 6.2);
   }
 
+  playTimeMachineCharge() {
+    const context = this.context;
+    if (!context || !this.sfx) return;
+
+    const sfx = this.sfx;
+    const now = context.currentTime;
+    const noise = context.createBufferSource();
+    const filter = context.createBiquadFilter();
+    const noiseGain = context.createGain();
+    const pulse = context.createOscillator();
+    const lfo = context.createOscillator();
+    const lfoGain = context.createGain();
+    const pulseGain = context.createGain();
+    const swell = context.createOscillator();
+    const swellGain = context.createGain();
+
+    noise.buffer = createNoiseBuffer(context, 2.7);
+    filter.type = "bandpass";
+    filter.frequency.setValueAtTime(120, now);
+    filter.frequency.exponentialRampToValueAtTime(2400, now + 2.5);
+    filter.Q.value = 2.2;
+    noiseGain.gain.setValueAtTime(0.0001, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.16, now + 2.2);
+    noiseGain.gain.setTargetAtTime(0.0001, now + 2.4, 0.18);
+
+    pulse.type = "triangle";
+    pulse.frequency.value = 220;
+    lfo.type = "sine";
+    lfo.frequency.setValueAtTime(1, now);
+    lfo.frequency.exponentialRampToValueAtTime(8, now + 2.5);
+    lfoGain.gain.value = 60;
+    pulseGain.gain.setValueAtTime(0.0001, now);
+    pulseGain.gain.exponentialRampToValueAtTime(0.05, now + 2.3);
+    pulseGain.gain.setTargetAtTime(0.0001, now + 2.4, 0.18);
+
+    swell.type = "sine";
+    swell.frequency.setValueAtTime(55, now);
+    swell.frequency.exponentialRampToValueAtTime(110, now + 2.6);
+    swellGain.gain.setValueAtTime(0.0001, now);
+    swellGain.gain.exponentialRampToValueAtTime(0.1, now + 2.4);
+    swellGain.gain.setTargetAtTime(0.0001, now + 2.5, 0.2);
+
+    lfo.connect(lfoGain);
+    lfoGain.connect(pulse.frequency);
+    pulse.connect(pulseGain);
+    pulseGain.connect(sfx);
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(sfx);
+    swell.connect(swellGain);
+    swellGain.connect(sfx);
+
+    noise.start(now);
+    noise.stop(now + 2.7);
+    pulse.start(now);
+    pulse.stop(now + 2.7);
+    lfo.start(now);
+    lfo.stop(now + 2.7);
+    swell.start(now);
+    swell.stop(now + 2.7);
+  }
+
+  playLandingArrival() {
+    const context = this.context;
+    if (!context || !this.sfx) return;
+
+    const sfx = this.sfx;
+    const now = context.currentTime;
+    const noise = context.createBufferSource();
+    const filter = context.createBiquadFilter();
+    const noiseGain = context.createGain();
+
+    noise.buffer = createNoiseBuffer(context, 1.9);
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(1800, now);
+    filter.frequency.exponentialRampToValueAtTime(300, now + 1.8);
+    noiseGain.gain.setValueAtTime(0.12, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.8);
+
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(sfx);
+    noise.start(now);
+    noise.stop(now + 1.9);
+
+    [196, 247, 330].forEach((frequency, index) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.value = frequency;
+      gain.gain.setValueAtTime(0.0001, now + 0.2 + index * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.045, now + 0.8 + index * 0.1);
+      gain.gain.setTargetAtTime(0.0001, now + 1.6, 0.5);
+      oscillator.connect(gain);
+      gain.connect(sfx);
+      oscillator.start(now + 0.2 + index * 0.08);
+      oscillator.stop(now + 2.4);
+    });
+  }
+
+  playRecordTick(on: boolean) {
+    const context = this.context;
+    if (!context || !this.sfx) return;
+
+    const sfx = this.sfx;
+    const now = context.currentTime;
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(on ? 520 : 380, now);
+    oscillator.frequency.exponentialRampToValueAtTime(on ? 780 : 260, now + 0.09);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.06, now + 0.02);
+    gain.gain.setTargetAtTime(0.0001, now + 0.08, 0.06);
+    oscillator.connect(gain);
+    gain.connect(sfx);
+    oscillator.start(now);
+    oscillator.stop(now + 0.22);
+  }
+
   playDilemmaReveal() {
     const context = this.context;
     if (!context || !this.sfx) return;

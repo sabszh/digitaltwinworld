@@ -7,6 +7,7 @@ import type { AppPhase, GeneratedDilemma } from "@/types/world2046";
 export function SoundEffects({ activeDilemma, phase }: { activeDilemma?: GeneratedDilemma; phase: AppPhase }) {
   const lastDilemmaIdRef = useRef<string | undefined>(undefined);
   const lastRevealIdRef = useRef<string | undefined>(undefined);
+  const lastLandingIdRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     if (phase === "traveling" && !activeDilemma) {
@@ -25,6 +26,13 @@ export function SoundEffects({ activeDilemma, phase }: { activeDilemma?: Generat
   }, [activeDilemma, phase]);
 
   useEffect(() => {
+    if (phase !== "landing" || !activeDilemma || lastLandingIdRef.current === activeDilemma.id) return;
+
+    lastLandingIdRef.current = activeDilemma.id;
+    worldSound.playLandingArrival();
+  }, [activeDilemma, phase]);
+
+  useEffect(() => {
     if (phase !== "dilemma" || !activeDilemma || lastRevealIdRef.current === activeDilemma.id) return;
 
     lastRevealIdRef.current = activeDilemma.id;
@@ -32,7 +40,7 @@ export function SoundEffects({ activeDilemma, phase }: { activeDilemma?: Generat
   }, [activeDilemma, phase]);
 
   useEffect(() => {
-    if ((phase === "dilemma" || phase === "consequence") && activeDilemma) {
+    if ((phase === "landing" || phase === "dilemma" || phase === "consequence") && activeDilemma) {
       worldSound.startSoundscape(inferSoundscapeTags(activeDilemma));
       return;
     }
