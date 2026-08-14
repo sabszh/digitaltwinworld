@@ -28,9 +28,6 @@ export function ItineraryStrip({
             key={index}
             className={`itinerary-stop ${isCurrent ? "itinerary-stop--current" : ""} ${!isDone && !isCurrent ? "itinerary-stop--upcoming" : ""}`}
           >
-            <span className="ticket-label !mb-0.5">
-              Gate {String(index + 1).padStart(2, "0")}
-            </span>
             <span className="flex items-center gap-1 font-semibold text-[var(--text)]">
               {isCurrent && <MapPin className="h-3 w-3 text-[var(--accent)]" aria-hidden="true" />}
               {city ?? "TBD"}

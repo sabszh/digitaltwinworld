@@ -2,12 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import { inferSoundscapeTags, worldSound } from "@/lib/sound";
+import { RadioAmbience } from "@/components/RadioAmbience";
 import type { AppPhase, GeneratedDilemma } from "@/types/world2046";
 
 export function SoundEffects({ activeDilemma, phase }: { activeDilemma?: GeneratedDilemma; phase: AppPhase }) {
   const lastDilemmaIdRef = useRef<string | undefined>(undefined);
   const lastRevealIdRef = useRef<string | undefined>(undefined);
   const lastLandingIdRef = useRef<string | undefined>(undefined);
+  const lastConsequenceIdRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     if (phase === "traveling" && !activeDilemma) {
@@ -16,6 +18,13 @@ export function SoundEffects({ activeDilemma, phase }: { activeDilemma?: Generat
     }
 
     worldSound.stopScanLoop();
+  }, [activeDilemma, phase]);
+
+  useEffect(() => {
+    if (phase !== "consequence" || !activeDilemma || lastConsequenceIdRef.current === activeDilemma.id) return;
+
+    lastConsequenceIdRef.current = activeDilemma.id;
+    worldSound.playConsequenceReveal();
   }, [activeDilemma, phase]);
 
   useEffect(() => {
@@ -48,5 +57,5 @@ export function SoundEffects({ activeDilemma, phase }: { activeDilemma?: Generat
     worldSound.stopSoundscape();
   }, [activeDilemma, phase]);
 
-  return null;
+  return <RadioAmbience activeDilemma={activeDilemma} phase={phase} />;
 }

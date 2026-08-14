@@ -395,6 +395,682 @@ textarea {
   filter: drop-shadow(0 16px 42px rgba(2, 15, 31, 0.62));
 }
 
+.intro-hero-promise {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 1rem;
+  width: min(46rem, calc(100vw - 3rem));
+  margin: clamp(1.35rem, 3.5vh, 2.6rem) auto 0;
+  padding: 0.9rem 1.35rem;
+  border: 1px solid rgba(226, 244, 255, 0.42);
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(4, 19, 38, 0.74), rgba(6, 28, 52, 0.9) 50%, rgba(4, 19, 38, 0.74));
+  box-shadow: 0 14px 42px rgba(2, 15, 31, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px) saturate(1.15);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+  color: #ffffff;
+  text-align: center;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.78);
+}
+
+.intro-hero-promise strong {
+  flex: 0 0 auto;
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(0.68rem, 0.95vw, 0.82rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.intro-hero-promise span {
+  font-family: var(--font-editorial), serif;
+  font-size: clamp(0.95rem, 1.35vw, 1.15rem);
+  line-height: 1.45;
+  color: rgba(248, 252, 255, 0.96);
+}
+
+@media (max-width: 767px) {
+  .intro-hero-promise {
+    align-items: center;
+    flex-direction: column;
+    gap: 0.35rem;
+    border-radius: 1.1rem;
+  }
+}
+
+/* Final boarding-pass reference overrides (kept last so they win over the
+   broader ticket and responsive component rules above). */
+main[data-phase="persona"] .bp-head {
+  min-height: 5.4rem;
+  padding: 1.05rem 1.5rem 1rem;
+  border-bottom: 1px solid rgba(8, 43, 88, 0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(242, 248, 253, 0.74));
+}
+
+main[data-phase="persona"] .bp-brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 0.95rem;
+}
+
+main[data-phase="persona"] .bp-brand-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+main[data-phase="persona"] .bp-brand-mark {
+  display: grid;
+  width: 3.5rem;
+  height: 3.5rem;
+  place-items: center;
+  border: 1px solid rgba(60, 131, 207, 0.4);
+  border-radius: 50%;
+  color: #2d70bf;
+  background: radial-gradient(circle, rgba(214, 239, 251, 0.42), rgba(255, 255, 255, 0.7));
+}
+
+main[data-phase="persona"] .bp-brand-mark svg {
+  width: 2.25rem;
+  height: 2.25rem;
+  stroke-width: 1.35;
+}
+
+main[data-phase="persona"] .bp-brand {
+  display: block;
+  font-size: clamp(1.55rem, 2.7vw, 2.3rem);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+}
+
+main[data-phase="persona"] .bp-tagline {
+  display: block;
+  margin-top: 0.38rem;
+  color: #2c5f99;
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+main[data-phase="persona"] .bp-pass-label,
+main[data-phase="persona"] .ticket-label {
+  color: #3576c4;
+  font-weight: 700;
+}
+
+main[data-phase="persona"] .bp-route {
+  display: grid;
+  grid-template-columns: minmax(7rem, 1fr) 2.25rem minmax(7rem, 1fr) minmax(5rem, 0.72fr) minmax(10rem, 1.15fr);
+  align-items: center;
+  gap: 0.85rem;
+  min-height: 8.6rem;
+  padding: 1.15rem 1.5rem;
+  border-bottom: 1px solid rgba(8, 43, 88, 0.1);
+}
+
+main[data-phase="persona"] .bp-route::after {
+  display: none;
+}
+
+main[data-phase="persona"] .bp-code {
+  font-size: clamp(2.25rem, 4.5vw, 3.35rem);
+  line-height: 0.95;
+  color: #071d38;
+}
+
+main[data-phase="persona"] .bp-arrow {
+  color: #4d91e5;
+  font-size: 2rem;
+  opacity: 1;
+  text-align: center;
+}
+
+main[data-phase="persona"] .bp-flight-info {
+  margin-left: 0;
+}
+
+main[data-phase="persona"] .bp-flight-col {
+  text-align: left;
+}
+
+main[data-phase="persona"] .bp-flight-val {
+  color: #071d38;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+main[data-phase="persona"] .bp-route-map {
+  position: relative;
+  height: 4.5rem;
+  overflow: hidden;
+  opacity: 0.85;
+  background: radial-gradient(circle at 18% 52%, rgba(90, 150, 220, 0.3) 0 1.5px, transparent 2px) 0 0 / 0.48rem 0.48rem;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 34%, transparent 75%);
+  mask-image: radial-gradient(ellipse at center, #000 34%, transparent 75%);
+}
+
+main[data-phase="persona"] .bp-route-map::before {
+  content: "";
+  position: absolute;
+  left: 14%;
+  top: 55%;
+  width: 70%;
+  height: 1px;
+  background: #4d91e5;
+  transform: rotate(-25deg);
+  transform-origin: left center;
+}
+
+main[data-phase="persona"] .bp-route-map::after {
+  content: "";
+  position: absolute;
+  left: 13%;
+  top: 52%;
+  width: 0.6rem;
+  height: 0.6rem;
+  border: 2px solid #4d91e5;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 9.2rem -4.1rem 0 -1px #4d91e5;
+}
+
+main[data-phase="persona"] .bp-fields {
+  gap: 0;
+  padding: 0.35rem 0.85rem 1rem;
+}
+
+main[data-phase="persona"] .ticket-field {
+  min-height: 6.5rem;
+  padding: 1rem 0.85rem;
+  border-right: 1px solid rgba(8, 43, 88, 0.1);
+  border-bottom: 0;
+}
+
+main[data-phase="persona"] .ticket-field-body {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 100%;
+}
+
+main[data-phase="persona"] .ticket-field-icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: #edf4fc;
+  color: #367ad0;
+}
+
+main[data-phase="persona"] .ticket-field-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  stroke-width: 1.7;
+}
+
+main[data-phase="persona"] .ticket-field-copy {
+  min-width: 0;
+}
+
+main[data-phase="persona"] .ticket-field strong {
+  font-size: 1rem;
+  line-height: 1.15;
+}
+
+main[data-phase="persona"] .ticket-field-check {
+  display: grid;
+  width: 1.55rem;
+  height: 1.55rem;
+  margin-left: auto;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: #347bd6;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+main[data-phase="persona"] .bp-stub {
+  gap: 0.9rem;
+  padding: 1.35rem 1.35rem 1.1rem 2.25rem;
+  border-left: 1px dashed rgba(8, 43, 88, 0.22);
+  background: radial-gradient(circle at 85% 16%, rgba(214, 239, 251, 0.28), transparent 38%), rgba(255, 255, 255, 0.54);
+}
+
+main[data-phase="persona"] .bp-stub::before {
+  display: none;
+}
+
+main[data-phase="persona"] .bp-stub-route {
+  gap: 0.2rem;
+  margin-top: 0.2rem;
+}
+
+main[data-phase="persona"] .bp-stub-route strong {
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.92rem;
+  letter-spacing: 0.02em;
+}
+
+main[data-phase="persona"] .bp-seat-box {
+  min-width: 8rem;
+  margin-top: 0.35rem;
+  border-color: rgba(60, 131, 207, 0.34);
+  background: rgba(255, 255, 255, 0.78);
+}
+
+main[data-phase="persona"] .bp-seat-box span {
+  padding: 0.45rem 0.55rem 0.3rem;
+  color: #3576c4;
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+main[data-phase="persona"] .bp-seat-box strong {
+  padding: 0.25rem 0.55rem 0.35rem;
+  border-color: rgba(60, 131, 207, 0.34);
+  color: #071d38;
+  font-family: var(--font-body), sans-serif;
+  font-size: 2.7rem;
+  line-height: 1;
+}
+
+main[data-phase="persona"] .bp-seat-box em {
+  padding: 0.4rem 0.55rem;
+  background: #4a8fdd;
+  color: #fff;
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.7rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+main[data-phase="persona"] .bp-stub-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.55rem;
+  color: #7da4cf;
+}
+
+main[data-phase="persona"] .bp-stub-divider span {
+  height: 1px;
+  flex: 1;
+  background: repeating-linear-gradient(90deg, rgba(60, 131, 207, 0.4) 0 3px, transparent 3px 6px);
+}
+
+main[data-phase="persona"] .bp-stub-divider svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  stroke-width: 1.25;
+}
+
+main[data-phase="persona"] .bp-stub-code {
+  position: relative;
+  padding-bottom: 4.4rem;
+  color: #173966;
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.035em;
+}
+
+main[data-phase="persona"] .bp-stub-code::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3.25rem;
+  background: repeating-linear-gradient(90deg, #071d38 0 3px, transparent 3px 6px, #071d38 6px 10px, transparent 10px 13px);
+  opacity: 0.95;
+}
+
+@media (max-width: 767px) {
+  main[data-phase="persona"] .bp-route {
+    grid-template-columns: minmax(5rem, 1fr) 1.75rem minmax(5rem, 1fr);
+  }
+
+  main[data-phase="persona"] .bp-flight-info,
+  main[data-phase="persona"] .bp-route-map {
+    display: none;
+  }
+
+  main[data-phase="persona"] .bp-fields {
+    padding-inline: 0.45rem;
+  }
+
+  main[data-phase="persona"] .ticket-field {
+    border-right: 0;
+    border-bottom: 1px solid rgba(8, 43, 88, 0.1);
+  }
+}
+
+/* Boarding pass reference treatment: a crisp airline document with blue
+   navigation cues, a branded lockup and a stronger stub hierarchy. */
+main[data-phase="persona"] .bp-head {
+  min-height: 5.4rem;
+  padding: 1.05rem 1.5rem 1rem;
+  border-bottom: 1px solid rgba(8, 43, 88, 0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(242, 248, 253, 0.74));
+}
+
+main[data-phase="persona"] .bp-brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 0.95rem;
+}
+
+main[data-phase="persona"] .bp-brand-mark {
+  display: grid;
+  width: 3.5rem;
+  height: 3.5rem;
+  place-items: center;
+  border: 1px solid rgba(60, 131, 207, 0.4);
+  border-radius: 50%;
+  color: #2d70bf;
+  background: radial-gradient(circle, rgba(214, 239, 251, 0.42), rgba(255, 255, 255, 0.7));
+}
+
+main[data-phase="persona"] .bp-brand-mark svg {
+  width: 2.25rem;
+  height: 2.25rem;
+  stroke-width: 1.35;
+}
+
+main[data-phase="persona"] .bp-brand {
+  display: block;
+  font-size: clamp(1.55rem, 2.7vw, 2.3rem);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+}
+
+main[data-phase="persona"] .bp-tagline {
+  display: block;
+  margin-top: 0.38rem;
+  color: #2c5f99;
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+main[data-phase="persona"] .bp-ticket-meta {
+  color: rgba(7, 29, 56, 0.72);
+}
+
+main[data-phase="persona"] .bp-pass-label,
+main[data-phase="persona"] .ticket-label {
+  color: #3576c4;
+  font-weight: 700;
+}
+
+main[data-phase="persona"] .bp-route {
+  display: grid;
+  grid-template-columns: minmax(7rem, 1fr) 2.25rem minmax(7rem, 1fr) minmax(5rem, 0.72fr) minmax(10rem, 1.15fr);
+  align-items: center;
+  gap: 0.85rem;
+  min-height: 8.6rem;
+  padding: 1.15rem 1.5rem;
+  border-bottom: 1px solid rgba(8, 43, 88, 0.1);
+}
+
+main[data-phase="persona"] .bp-route::after {
+  display: none;
+}
+
+main[data-phase="persona"] .bp-code {
+  font-size: clamp(2.25rem, 4.5vw, 3.35rem);
+  line-height: 0.95;
+  color: #071d38;
+}
+
+main[data-phase="persona"] .bp-arrow {
+  color: #4d91e5;
+  font-size: 2rem;
+  opacity: 1;
+  text-align: center;
+}
+
+main[data-phase="persona"] .bp-flight-info {
+  margin-left: 0;
+}
+
+main[data-phase="persona"] .bp-flight-col {
+  text-align: left;
+}
+
+main[data-phase="persona"] .bp-flight-val {
+  color: #071d38;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+main[data-phase="persona"] .bp-route-map {
+  position: relative;
+  height: 4.5rem;
+  overflow: hidden;
+  opacity: 0.85;
+  background: radial-gradient(circle at 18% 52%, rgba(90, 150, 220, 0.3) 0 1.5px, transparent 2px) 0 0 / 0.48rem 0.48rem;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 34%, transparent 75%);
+  mask-image: radial-gradient(ellipse at center, #000 34%, transparent 75%);
+}
+
+main[data-phase="persona"] .bp-route-map::before {
+  content: "";
+  position: absolute;
+  left: 14%;
+  top: 55%;
+  width: 70%;
+  height: 1px;
+  background: #4d91e5;
+  box-shadow: 0 0 0 1px rgba(77, 145, 229, 0.08);
+  transform: rotate(-25deg);
+  transform-origin: left center;
+}
+
+main[data-phase="persona"] .bp-route-map::after {
+  content: "";
+  position: absolute;
+  left: 13%;
+  top: 52%;
+  width: 0.6rem;
+  height: 0.6rem;
+  border: 2px solid #4d91e5;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 9.2rem -4.1rem 0 -1px #4d91e5;
+}
+
+main[data-phase="persona"] .bp-fields {
+  gap: 0;
+  padding: 0.35rem 0.85rem 1rem;
+}
+
+main[data-phase="persona"] .ticket-field {
+  min-height: 6.5rem;
+  padding: 1rem 0.85rem;
+  border-right: 1px solid rgba(8, 43, 88, 0.1);
+  border-bottom: 0;
+}
+
+main[data-phase="persona"] .ticket-field-body {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 100%;
+  position: relative;
+}
+
+main[data-phase="persona"] .ticket-field-icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: #edf4fc;
+  color: #367ad0;
+}
+
+main[data-phase="persona"] .ticket-field-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  stroke-width: 1.7;
+}
+
+main[data-phase="persona"] .ticket-field-copy {
+  min-width: 0;
+}
+
+main[data-phase="persona"] .ticket-field strong {
+  font-size: 1rem;
+  line-height: 1.15;
+}
+
+main[data-phase="persona"] .ticket-field-check {
+  display: grid;
+  width: 1.55rem;
+  height: 1.55rem;
+  margin-left: auto;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: #347bd6;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+main[data-phase="persona"] .bp-stub {
+  gap: 0.9rem;
+  padding: 1.35rem 1.35rem 1.1rem 2.25rem;
+  border-left: 1px dashed rgba(8, 43, 88, 0.22);
+  background: radial-gradient(circle at 85% 16%, rgba(214, 239, 251, 0.28), transparent 38%), rgba(255, 255, 255, 0.54);
+}
+
+main[data-phase="persona"] .bp-stub::before {
+  display: none;
+}
+
+main[data-phase="persona"] .bp-stub-route {
+  gap: 0.2rem;
+  margin-top: 0.2rem;
+}
+
+main[data-phase="persona"] .bp-stub-route strong {
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.92rem;
+  letter-spacing: 0.02em;
+}
+
+main[data-phase="persona"] .bp-seat-box {
+  min-width: 8rem;
+  margin-top: 0.35rem;
+  border-color: rgba(60, 131, 207, 0.34);
+  background: rgba(255, 255, 255, 0.78);
+}
+
+main[data-phase="persona"] .bp-seat-box span {
+  padding: 0.45rem 0.55rem 0.3rem;
+  color: #3576c4;
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+main[data-phase="persona"] .bp-seat-box strong {
+  padding: 0.25rem 0.55rem 0.35rem;
+  border-color: rgba(60, 131, 207, 0.34);
+  color: #071d38;
+  font-family: var(--font-body), sans-serif;
+  font-size: 2.7rem;
+  line-height: 1;
+}
+
+main[data-phase="persona"] .bp-seat-box em {
+  padding: 0.4rem 0.55rem;
+  background: #4a8fdd;
+  color: #fff;
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.7rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+main[data-phase="persona"] .bp-stub-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.55rem;
+  color: #7da4cf;
+}
+
+main[data-phase="persona"] .bp-stub-divider span {
+  height: 1px;
+  flex: 1;
+  background: repeating-linear-gradient(90deg, rgba(60, 131, 207, 0.4) 0 3px, transparent 3px 6px);
+}
+
+main[data-phase="persona"] .bp-stub-divider svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  stroke-width: 1.25;
+}
+
+main[data-phase="persona"] .bp-stub-code {
+  position: relative;
+  padding-bottom: 4.4rem;
+  color: #173966;
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.035em;
+}
+
+main[data-phase="persona"] .bp-stub-code::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3.25rem;
+  background: repeating-linear-gradient(90deg, #071d38 0 3px, transparent 3px 6px, #071d38 6px 10px, transparent 10px 13px);
+  opacity: 0.95;
+}
+
+@media (max-width: 767px) {
+  main[data-phase="persona"] .bp-route {
+    grid-template-columns: minmax(5rem, 1fr) 1.75rem minmax(5rem, 1fr);
+  }
+
+  main[data-phase="persona"] .bp-flight-info,
+  main[data-phase="persona"] .bp-route-map {
+    display: none;
+  }
+
+  main[data-phase="persona"] .bp-fields {
+    padding-inline: 0.45rem;
+  }
+
+  main[data-phase="persona"] .ticket-field {
+    border-right: 0;
+    border-bottom: 1px solid rgba(8, 43, 88, 0.1);
+  }
+}
+
 .horizon-kicker {
   margin: 0 0 1.5rem;
   font-family: var(--font-body), "Helvetica Neue", sans-serif;
@@ -1341,32 +2017,6 @@ textarea {
   flex-shrink: 0;
 }
 
-.checkin-stamp {
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  z-index: 45;
-  transform: translate(-50%, -50%);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 13rem;
-  border: 2px solid rgba(8, 43, 88, 0.86);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.94);
-  color: #082b58;
-  padding: 0.95rem 1.6rem;
-  font-size: clamp(1rem, 1.6vw, 1.35rem);
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  box-shadow:
-    0 28px 80px rgba(2, 15, 31, 0.38),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.86);
-  backdrop-filter: blur(16px) saturate(1.08);
-  -webkit-backdrop-filter: blur(16px) saturate(1.08);
-}
-
 .bp-flight-col {
   display: flex;
   flex-direction: column;
@@ -2107,6 +2757,7 @@ textarea {
 .sky-glow {
   background: radial-gradient(120% 120% at 50% 16%, rgba(255, 255, 255, 0.55), transparent 48%);
 }
+
 }
 
 @media (max-width: 767px) {
@@ -2416,20 +3067,6 @@ a,
   content: none !important;
 }
 
-.checkin-stamp {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 13rem;
-  border: 2px solid rgba(8, 43, 88, 0.86);
-  background: rgba(255, 255, 255, 0.94);
-  color: #082b58;
-  font-size: clamp(1rem, 1.6vw, 1.35rem);
-  box-shadow:
-    0 28px 80px rgba(2, 15, 31, 0.38),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.86);
-}
-
 @media (max-width: 767px) {
   .horizon-title {
     font-size: clamp(3.8rem, 19vw, 5.9rem);
@@ -2735,44 +3372,6 @@ main[data-phase="persona"] .ticket-field strong {
   white-space: normal;
 }
 
-main[data-phase="persona"] .bp-board-cta-wrap {
-  overflow: hidden;
-  padding: 1rem 1.35rem 1.25rem;
-  border-top: 1px dashed rgba(7, 29, 56, 0.18);
-}
-
-main[data-phase="persona"] .bp-board-cta {
-  display: grid;
-  width: 100%;
-  min-height: 4.25rem;
-  place-items: center;
-  border: 0;
-  border-radius: 999px;
-  background:
-    linear-gradient(90deg, rgba(143, 199, 232, 0.24), transparent),
-    #082b58;
-  color: #fffefa;
-  font-family: var(--font-body), sans-serif;
-  font-size: clamp(1rem, 2vw, 1.35rem);
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  box-shadow:
-    0 18px 46px rgba(8, 43, 88, 0.28),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.16);
-  transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
-}
-
-main[data-phase="persona"] .bp-board-cta:hover {
-  transform: translateY(-1px);
-  background:
-    linear-gradient(90deg, rgba(143, 199, 232, 0.28), transparent),
-    #0d3f77;
-  box-shadow:
-    0 24px 54px rgba(8, 43, 88, 0.32),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.2);
-}
-
 @media (max-width: 767px) {
   main[data-phase="persona"] .boarding-pass {
     grid-template-columns: 1fr;
@@ -2908,6 +3507,99 @@ main[data-phase="persona"] .time-flow-board-status {
   padding: 1rem;
 }
 
+/* Empty cinematic transition between the intro and boarding pass. */
+.intro-message-section {
+  min-height: 100vh;
+  padding: 0;
+  display: grid;
+  place-items: center;
+}
+
+.boarding-pass-arrival-slot {
+  width: min(64rem, calc(100vw - 2rem));
+  height: min(32rem, calc(100vh - 5rem));
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Paper ticket finish for the arrival animation. */
+main[data-phase="persona"] .boarding-pass {
+  border: 1px solid rgba(8, 43, 88, 0.2);
+  border-radius: 8px;
+  background-color: #ffffff;
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.9), transparent 34%),
+    repeating-linear-gradient(0deg, rgba(8, 43, 88, 0.018) 0 1px, transparent 1px 4px),
+    linear-gradient(104deg, #ffffff, #f8fbfd);
+  background-blend-mode: screen, multiply, normal;
+  box-shadow:
+    0 30px 70px rgba(2, 15, 31, 0.3),
+    0 2px 0 rgba(255, 255, 255, 0.78) inset,
+    0 -1px 0 rgba(8, 43, 88, 0.1) inset;
+}
+
+main[data-phase="persona"] .boarding-pass > * {
+  background-color: rgba(255, 255, 255, 0.42);
+}
+
+/* Arrival and overview polish */
+.arrival-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(242, 248, 251, 0.93)),
+    radial-gradient(circle at 12% 0%, rgba(143, 199, 232, 0.22), transparent 42%);
+  box-shadow: 0 30px 86px rgba(6, 27, 52, 0.24);
+  backdrop-filter: blur(24px) saturate(1.06);
+  -webkit-backdrop-filter: blur(24px) saturate(1.06);
+}
+
+.arrival-card-action {
+  display: flex;
+  justify-content: center;
+}
+
+.arrival-card-meta--top {
+  margin-top: 0;
+}
+
+.arrival-card-cta {
+  min-width: 13rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+  padding: 0.9rem 1.25rem;
+}
+
+.dilemma-meta {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-radius: 10px;
+  padding: 0.45rem 0.65rem;
+}
+
+.voice-input-control {
+  min-height: 2.65rem;
+  border-color: rgba(8, 43, 88, 0.16) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  color: #082b58 !important;
+  box-shadow: 0 6px 18px rgba(8, 43, 88, 0.08);
+}
+
+.voice-input-control:hover,
+.voice-input-control:focus-visible {
+  border-color: rgba(8, 43, 88, 0.34) !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  outline: none;
+}
+
+.voice-input-control[aria-pressed="true"] {
+  border-color: rgba(28, 93, 156, 0.55) !important;
+  background: rgba(143, 199, 232, 0.2) !important;
+  color: #0d3f77 !important;
+}
+
+.consequence-card .consequence-primary {
+  margin-left: auto;
+}
+
 @media (max-width: 767px) {
   main[data-phase="persona"] .time-flow-board-cols,
   main[data-phase="persona"] .time-flow-board-row {
@@ -2919,5 +3611,133 @@ main[data-phase="persona"] .time-flow-board-status {
   main[data-phase="persona"] .time-flow-board-row span:nth-child(4),
   main[data-phase="persona"] .time-flow-board-row em {
     display: none;
+  }
+}
+
+/* Last-pass ticket refinements: these sit after all component layers. */
+main[data-phase="persona"] .bp-brand-copy { display: flex; flex-direction: column; }
+main[data-phase="persona"] .bp-brand-lockup { gap: 0; }
+main[data-phase="persona"] .bp-brand { display: block; }
+main[data-phase="persona"] .bp-tagline { display: block; margin-top: 0.38rem; }
+main[data-phase="persona"] .bp-ticket-meta { opacity: 0.72; letter-spacing: 0.06em; }
+main[data-phase="persona"] .bp-route { display: grid; grid-template-columns: minmax(7rem, 1fr) 2.25rem minmax(7rem, 1fr) minmax(5rem, 0.72fr) minmax(10rem, 1.15fr); align-items: center; gap: 0.85rem; }
+main[data-phase="persona"] .bp-route::after { display: none; }
+main[data-phase="persona"] .bp-route-map { position: relative; display: block; height: 4.5rem; overflow: visible; opacity: 1; background: none; -webkit-mask-image: none; mask-image: none; }
+main[data-phase="persona"] .bp-route-map::before,
+main[data-phase="persona"] .bp-route-map::after { display: none; content: none; }
+main[data-phase="persona"] .bp-route-map-svg { display: block; width: 100%; height: 100%; overflow: visible; }
+main[data-phase="persona"] .bp-map-land { fill: url(#bp-map-dots); opacity: 0.62; }
+main[data-phase="persona"] .bp-route-line { fill: none; stroke: url(#bp-route-gradient); stroke-width: 1.7; stroke-linecap: round; stroke-dasharray: 2 1.5; }
+main[data-phase="persona"] .bp-route-start { fill: #fff; stroke: #4d91e5; stroke-width: 1.7; }
+main[data-phase="persona"] .bp-route-end { fill: #1c5d9c; stroke: #fff; stroke-width: 1.2; }
+main[data-phase="persona"] .bp-fields { gap: 0; padding: 0.35rem 0.85rem 1rem; }
+main[data-phase="persona"] .ticket-field { min-height: 6.5rem; padding: 1rem 0.85rem; }
+main[data-phase="persona"] .ticket-field-body { position: relative; display: flex; align-items: center; gap: 0.8rem; min-height: 100%; }
+main[data-phase="persona"] .ticket-field-icon { display: grid; width: 3rem; height: 3rem; flex: 0 0 auto; place-items: center; border-radius: 50%; background: #edf4fc; color: #367ad0; }
+main[data-phase="persona"] .ticket-field-icon svg { width: 1.5rem; height: 1.5rem; stroke-width: 1.7; }
+main[data-phase="persona"] .ticket-field-copy { min-width: 0; }
+main[data-phase="persona"] .ticket-field-check { display: grid; width: 1.55rem; height: 1.55rem; margin-left: auto; flex: 0 0 auto; place-items: center; border-radius: 50%; background: #347bd6; color: white; font-size: 0.9rem; font-weight: 800; }
+main[data-phase="persona"] .bp-stub::before { display: none; }
+main[data-phase="persona"] .bp-seat-box { min-width: 8rem; margin-top: 0.35rem; }
+main[data-phase="persona"] .bp-seat-box em { padding: 0.4rem 0.55rem; background: #4a8fdd; color: #fff; font-family: var(--font-body), sans-serif; font-style: normal; font-weight: 700; letter-spacing: 0.12em; }
+main[data-phase="persona"] .bp-stub-divider { display: flex; align-items: center; gap: 0.45rem; margin-top: 0.55rem; color: #7da4cf; }
+main[data-phase="persona"] .bp-stub-divider span { height: 1px; flex: 1; background: repeating-linear-gradient(90deg, rgba(60, 131, 207, 0.4) 0 3px, transparent 3px 6px); }
+main[data-phase="persona"] .bp-stub-divider svg { width: 1.2rem; height: 1.2rem; }
+main[data-phase="persona"] .bp-stub-code { position: relative; padding-bottom: 4.4rem; font-family: var(--font-body), sans-serif; }
+main[data-phase="persona"] .bp-stub-code::before { content: ""; position: absolute; right: 0.5rem; bottom: 0; left: 0.5rem; height: 3.55rem; background: repeating-linear-gradient(90deg, #071d38 0 3px, transparent 3px 6px, #071d38 6px 10px, transparent 10px 13px); }
+main[data-phase="persona"] .bp-stub-code::after { content: ""; position: absolute; bottom: 0.42rem; left: 50%; z-index: 1; width: 2.7rem; height: 2.7rem; transform: translateX(-50%); border: 0.28rem solid #fff; background-color: #fff; background-image: repeating-linear-gradient(0deg, #071d38 0 0.18rem, transparent 0.18rem 0.34rem), repeating-linear-gradient(90deg, #071d38 0 0.18rem, transparent 0.18rem 0.34rem); box-shadow: 0 0 0 1px rgba(7, 29, 56, 0.55), 0 0 0 3px rgba(255, 255, 255, 0.8); }
+
+@media (max-width: 767px) {
+  main[data-phase="persona"] .bp-route { grid-template-columns: minmax(5rem, 1fr) 1.75rem minmax(5rem, 1fr); }
+  main[data-phase="persona"] .bp-flight-info,
+  main[data-phase="persona"] .bp-route-map { display: none; }
+  main[data-phase="persona"] .ticket-field { border-right: 0; border-bottom: 1px solid rgba(8, 43, 88, 0.1); }
+}
+
+/* The launch control should read as the beginning of the journey, not a search utility. */
+main[data-phase="intro"] .hero-flight-fields {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(10.5rem, 1.2fr);
+}
+
+main[data-phase="intro"] .hero-flight-search {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-width: 10.5rem;
+  padding: 0 1.15rem;
+  background: linear-gradient(135deg, #1c5d9c, #0b3568);
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background 220ms ease, transform 220ms ease, box-shadow 220ms ease, gap 220ms ease;
+}
+
+main[data-phase="intro"] .hero-flight-search:hover {
+  gap: 0.7rem;
+  background: linear-gradient(135deg, #2777bd, #0b3568);
+}
+
+main[data-phase="intro"] .hero-flight-search:focus-visible {
+  outline: 3px solid rgba(143, 199, 232, 0.9);
+  outline-offset: 3px;
+}
+
+main[data-phase="intro"] .hero-flight-search-icon {
+  color: #dff1ff;
+  stroke-width: 1.8;
+}
+
+main[data-phase="intro"] .hero-flight-search-arrow {
+  color: rgba(255, 255, 255, 0.88);
+  transition: transform 220ms ease;
+}
+
+main[data-phase="intro"] .hero-flight-search:hover .hero-flight-search-arrow {
+  transform: translateX(0.18rem);
+}
+
+main[data-phase="intro"] .hero-flight-search--launching {
+  gap: 0.55rem;
+  background: linear-gradient(135deg, #2777bd, #0b3568);
+  transform: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 0 0 4px rgba(143, 199, 232, 0.16),
+    0 20px 48px rgba(28, 93, 156, 0.34);
+}
+
+main[data-phase="intro"] .hero-flight-search--launching .hero-flight-search-icon {
+  animation: launch-plane-glide 560ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+main[data-phase="intro"] .hero-flight-search--launching .hero-flight-search-arrow {
+  transform: translateX(0.14rem);
+}
+
+@keyframes launch-plane-glide {
+  0% { transform: translateX(0) rotate(0deg); }
+  45% { transform: translateX(0.16rem) rotate(-8deg); }
+  100% { transform: translateX(0.42rem) rotate(-4deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main[data-phase="intro"] .hero-flight-search--launching .hero-flight-search-icon {
+    animation: none;
+  }
+}
+
+@media (max-width: 767px) {
+  main[data-phase="intro"] .hero-flight-fields {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(8.75rem, 1.05fr);
+  }
+
+  main[data-phase="intro"] .hero-flight-search {
+    min-width: 0;
+    padding: 0 0.7rem;
+    font-size: 0.68rem;
   }
 }

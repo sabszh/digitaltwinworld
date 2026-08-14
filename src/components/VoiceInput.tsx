@@ -38,7 +38,7 @@ export function VoiceInput({
         onClick={toggle}
         disabled={disabled}
         aria-pressed={recognition.listening}
-        className={`relative inline-flex items-center gap-2 self-start rounded-full border px-3.5 py-2 text-xs font-medium transition ${
+        className={`voice-input-control relative inline-flex items-center gap-2 self-start rounded-full border px-3.5 py-2 text-xs font-medium transition ${
           recognition.listening
             ? "border-[var(--accent)]/60 bg-[rgba(143,199,232,0.14)] text-[var(--accent)]"
             : "border-white/12 bg-black/15 text-[var(--muted)] hover:border-[var(--accent)]/40 hover:text-[var(--text)]"

@@ -70,7 +70,7 @@ Krav til indhold:
 
 Krav til tekstlængder:
 - title må højst være 54 tegn og skal være en spændingsfuld overskrift.
-- scenePrompt skal være 2 korte, konkrete sætninger på højst 360 tegn samlet.
+- scenePrompt skal være 1-2 korte, konkrete sætninger på højst 360 tegn samlet.
 - question må højst være 130 tegn og SKAL starte med "Hvordan kan jeg" eller "Hvordan vil jeg".
 - landingScene må højst være 320 tegn: 2.-persons sanselig ankomst, én konkret situation i gang, ingen beslutning.
 - landingDetail må højst være 90 tegn: én ren vejr- eller lyddetalje.
@@ -80,7 +80,7 @@ Krav til tekstlængder:
 
 Krav til variation:
 - Undgå at title, scenePrompt og question siger det samme med andre ord.
-- scenePrompt skal beskrive situationen og friktionen, ikke gentage titlen.
+- scenePrompt skal neutralt beskrive sted, aktører, teknologi og den konkrete friktion; ingen vurdering, konsekvens eller skjult anbefaling.
 - question skal spørge til den konkrete beslutning, ikke gentage teknologiens navn hvis den allerede står i title.
 - choice.consequence skal nævne den lokale effekt af netop dét valg: hvem får mere/mindre ansvar, hvad ændres i hverdagen, og hvilken ny risiko opstår.
 - choice.consequence må ikke starte med "Du valgte", og må ikke være generisk værditekst.

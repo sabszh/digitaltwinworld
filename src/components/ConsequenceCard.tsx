@@ -48,7 +48,7 @@ export function ConsequenceCard({
         <h2 className="font-editorial mt-3 text-3xl font-semibold italic text-[var(--text)]">{customAnswer ? text.consequenceOwnPath : choice?.label}</h2>
         <p className="mt-5 text-lg font-normal leading-7 text-[var(--muted)]">{consequenceText}</p>
 
-        <div className="mt-7 flex flex-wrap gap-3">
+        <div className="mt-7 flex flex-wrap justify-end gap-3">
           <button
             onClick={() => {
               worldSound.playButtonTap();

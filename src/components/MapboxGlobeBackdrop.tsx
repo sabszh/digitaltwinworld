@@ -127,10 +127,12 @@ export function MapboxGlobeBackdrop({
   active,
   zoomed,
   introProgressRef,
+  slowAfterIntro = false,
 }: {
   active?: GeneratedDilemma;
   zoomed: boolean;
   introProgressRef?: React.MutableRefObject<number>;
+  slowAfterIntro?: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -139,6 +141,10 @@ export function MapboxGlobeBackdrop({
   const orbitingRef = useRef(false);
   const orbitTimeoutRef = useRef<number | undefined>(undefined);
   const orbitFrameRef = useRef<number | undefined>(undefined);
+  const slowAfterIntroRef = useRef(slowAfterIntro);
+  const slowOrbitBaseRef = useRef<{ center: [number, number]; zoom: number; pitch: number; bearing: number } | null>(null);
+  const slowOrbitStartedAtRef = useRef(0);
+  const introBaseViewRef = useRef<{ center: [number, number]; zoom: number; pitch: number; bearing: number } | null>(null);
   // Track previous center for flight path arc
   const prevCenterRef = useRef<[number, number]>([8, 38]);
   const pathFrameRef = useRef<number | undefined>(undefined);
@@ -147,6 +153,24 @@ export function MapboxGlobeBackdrop({
   useEffect(() => {
     activeRef.current = active;
   }, [active]);
+
+  useEffect(() => {
+    slowAfterIntroRef.current = slowAfterIntro;
+    if (!slowAfterIntro) {
+      slowOrbitBaseRef.current = null;
+    }
+    if (slowAfterIntro && mapRef.current && (!introProgressRef || introProgressRef.current >= 0.999)) {
+      const map = mapRef.current;
+      const center = map.getCenter();
+      slowOrbitBaseRef.current = {
+        center: [center.lng, center.lat],
+        zoom: map.getZoom(),
+        pitch: map.getPitch(),
+        bearing: map.getBearing(),
+      };
+      slowOrbitStartedAtRef.current = performance.now();
+    }
+  }, [slowAfterIntro, introProgressRef]);
 
   useEffect(() => {
     const token = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
@@ -236,23 +260,56 @@ export function MapboxGlobeBackdrop({
     spinningRef.current = false;
     map.stop();
 
-    const startZoom = 2.08;
     const endZoom = 3.82;
-    const startPitch = 0;
     const endPitch = 34;
-    const startBearing = 0;
     const endBearing = 58;
     const startedAt = performance.now();
 
     let frameId: number;
     const tick = () => {
       const p = Math.min(Math.max(introProgressRef.current, 0), 1);
-      const rotationDrift = ((performance.now() - startedAt) / 1000) * 0.9;
+      const motionP = p * p * (3 - 2 * p);
+      const transitionInProgress = p < 0.999;
+      if (!transitionInProgress && slowAfterIntroRef.current && !slowOrbitBaseRef.current) {
+        const center = map.getCenter();
+        slowOrbitBaseRef.current = {
+          center: [center.lng, center.lat],
+          zoom: map.getZoom(),
+          pitch: map.getPitch(),
+          bearing: map.getBearing(),
+        };
+        slowOrbitStartedAtRef.current = performance.now();
+      }
+      if (!transitionInProgress && slowAfterIntroRef.current && slowOrbitBaseRef.current) {
+        const base = slowOrbitBaseRef.current;
+        const slowDrift = ((performance.now() - slowOrbitStartedAtRef.current) / 1000) * 0.9;
+        map.jumpTo({
+          center: [base.center[0] - slowDrift, base.center[1]],
+          zoom: base.zoom,
+          pitch: base.pitch,
+          bearing: base.bearing + slowDrift,
+        });
+        frameId = requestAnimationFrame(tick);
+        return;
+      }
+      if (!introBaseViewRef.current) {
+        const center = map.getCenter();
+        introBaseViewRef.current = {
+          center: [center.lng, center.lat],
+          zoom: map.getZoom(),
+          pitch: map.getPitch(),
+          bearing: map.getBearing(),
+        };
+      }
+      const base = introBaseViewRef.current;
+      // Keep a gentle orbit running underneath the transition and add the
+      // faster travel movement as a smooth, eased offset.
+      const rotationDrift = ((performance.now() - startedAt) / 1000) * 0.9 + motionP * 18;
       map.jumpTo({
-        center: [8 - rotationDrift, 34],
-        zoom: startZoom + (endZoom - startZoom) * p,
-        pitch: startPitch + (endPitch - startPitch) * p,
-        bearing: startBearing + (endBearing - startBearing) * p,
+        center: [base.center[0] - rotationDrift, base.center[1]],
+        zoom: base.zoom + (endZoom - base.zoom) * motionP,
+        pitch: base.pitch + (endPitch - base.pitch) * motionP,
+        bearing: base.bearing + (endBearing - base.bearing) * motionP,
       });
       frameId = requestAnimationFrame(tick);
     };
@@ -261,6 +318,7 @@ export function MapboxGlobeBackdrop({
     return () => {
       window.cancelAnimationFrame(frameId);
       spinningRef.current = true;
+      introBaseViewRef.current = null;
     };
   }, [introProgressRef]);
 

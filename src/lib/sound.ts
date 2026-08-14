@@ -102,6 +102,24 @@ class WorldSoundEngine {
     rampGain(this.master.gain, muted ? 0 : 0.72, this.context.currentTime + 0.18);
   }
 
+  private playSoftTone(frequency: number, gainValue: number, duration = 0.28, type: OscillatorType = "sine") {
+    const context = this.context;
+    if (!context || !this.sfx) return;
+
+    const now = context.currentTime;
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    oscillator.type = type;
+    oscillator.frequency.setValueAtTime(frequency, now);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(gainValue, now + 0.025);
+    gain.gain.setTargetAtTime(0.0001, now + duration * 0.42, duration * 0.24);
+    oscillator.connect(gain);
+    gain.connect(this.sfx);
+    oscillator.start(now);
+    oscillator.stop(now + duration);
+  }
+
   playButtonTap() {
     const context = this.context;
     if (!context || !this.sfx) return;
@@ -120,6 +138,72 @@ class WorldSoundEngine {
     gain.connect(sfx);
     oscillator.start(now);
     oscillator.stop(now + 0.28);
+  }
+
+  playChoiceSelect(index = 0) {
+    const frequencies = [294, 330, 370, 440];
+    this.playSoftTone(frequencies[index % frequencies.length], 0.075, 0.34);
+  }
+
+  playTextFocus() {
+    this.playSoftTone(196, 0.028, 0.22, "triangle");
+  }
+
+  playPersonaCheckIn() {
+    const context = this.context;
+    if (!context || !this.sfx) return;
+
+    const now = context.currentTime;
+    [262, 330, 392].forEach((frequency, index) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(frequency, now + index * 0.07);
+      gain.gain.setValueAtTime(0.0001, now + index * 0.07);
+      gain.gain.exponentialRampToValueAtTime(0.05, now + 0.08 + index * 0.07);
+      gain.gain.setTargetAtTime(0.0001, now + 0.42 + index * 0.07, 0.22);
+      oscillator.connect(gain);
+      gain.connect(this.sfx!);
+      oscillator.start(now + index * 0.07);
+      oscillator.stop(now + 1.1);
+    });
+  }
+
+  playConsequenceReveal() {
+    const context = this.context;
+    if (!context || !this.sfx) return;
+
+    const now = context.currentTime;
+    const swell = context.createOscillator();
+    const swellGain = context.createGain();
+    swell.type = "sine";
+    swell.frequency.setValueAtTime(82, now);
+    swell.frequency.exponentialRampToValueAtTime(123, now + 1.1);
+    swellGain.gain.setValueAtTime(0.0001, now);
+    swellGain.gain.exponentialRampToValueAtTime(0.055, now + 0.45);
+    swellGain.gain.setTargetAtTime(0.0001, now + 1.15, 0.45);
+    swell.connect(swellGain);
+    swellGain.connect(this.sfx);
+    swell.start(now);
+    swell.stop(now + 2.8);
+
+    [330, 494].forEach((frequency, index) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = "triangle";
+      oscillator.frequency.value = frequency;
+      gain.gain.setValueAtTime(0.0001, now + 0.5 + index * 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.045, now + 0.64 + index * 0.12);
+      gain.gain.setTargetAtTime(0.0001, now + 1.05 + index * 0.12, 0.3);
+      oscillator.connect(gain);
+      gain.connect(this.sfx!);
+      oscillator.start(now + 0.5 + index * 0.12);
+      oscillator.stop(now + 2.2);
+    });
+  }
+
+  playRadioTune() {
+    this.playSoftTone(176, 0.018, 0.7, "triangle");
   }
 
   playStartJourney() {

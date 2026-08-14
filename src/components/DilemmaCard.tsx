@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { MapPin } from "lucide-react";
 import { VoiceInput } from "@/components/VoiceInput";
-import { getAudienceProblemLabel } from "@/lib/audience";
 import type { Language } from "@/lib/i18n";
 import { uiText } from "@/lib/i18n";
 import { frameQuestion } from "@/lib/questionFraming";
@@ -15,11 +14,16 @@ function formatPlace(dilemma: GeneratedDilemma) {
   return dilemma.exactPlace?.name ?? dilemma.city;
 }
 
+function neutralScenePrompt(scenePrompt: string) {
+  const firstSentence = scenePrompt.match(/^.*?[.!?](?:\s|$)/)?.[0];
+  return (firstSentence ?? scenePrompt).trim();
+}
+
 export function ChoiceButton({ choice, index, onChoose }: { choice: Choice; index: number; onChoose: (choice: Choice) => void }) {
   return (
     <button
       onClick={() => {
-        worldSound.playButtonTap();
+        worldSound.playChoiceSelect(index);
         onChoose(choice);
       }}
       className="decision-choice group grid grid-cols-[2.25rem_1fr] items-start gap-x-3.5 px-3.5 py-3 text-left hover:-translate-y-0.5"
@@ -48,6 +52,7 @@ export function CustomAnswerInput({ language, onSubmit }: { language: Language; 
         value={value}
         onChange={(event) => setValue(event.target.value)}
         rows={1}
+        onFocus={() => worldSound.playTextFocus()}
         placeholder={text.dilemmaCustomPlaceholder}
         className="w-full resize-none bg-transparent text-[15px] text-[var(--text)] outline-none placeholder:text-[var(--faint)]"
       />
@@ -62,7 +67,7 @@ export function CustomAnswerInput({ language, onSubmit }: { language: Language; 
         {value.trim() && (
           <button
             onClick={() => {
-              worldSound.playButtonTap();
+              worldSound.playChoiceSelect(3);
               onSubmit(value.trim(), usedVoice);
             }}
             className="inline-flex rounded-full bg-[var(--night)] px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-sky-950/20"
@@ -89,7 +94,6 @@ export function DilemmaCard({
   const customChoice: Choice = { id: "custom", label: "Egen løsning", valueImpacts: { trust: 1, localControl: 1, transparency: 1 } };
   const place = formatPlace(dilemma);
   const framed = frameQuestion(dilemma, persona);
-  const problemLabel = getAudienceProblemLabel(dilemma.role, dilemma.problemArea);
 
   return (
     <section className="relative z-20 flex h-dvh items-end justify-center px-4 py-4 pt-20 md:items-center md:justify-end md:px-8 md:py-5">
@@ -98,7 +102,8 @@ export function DilemmaCard({
           <div className="dilemma-meta">
             <MapPin className="h-3.5 w-3.5 shrink-0 text-[var(--accent)]" aria-hidden="true" />
             <span className="truncate font-semibold text-[var(--text)]">{place}</span>
-            <span className="truncate text-[var(--muted)]">{problemLabel}</span>
+            <span className="truncate text-[var(--muted)]">{dilemma.problemArea}</span>
+            <span className="truncate text-[var(--muted)]">{uiText[language].landingYear}</span>
           </div>
 
           <h2 className="font-editorial mt-4 text-[26px] font-semibold italic leading-tight text-[var(--text)] md:text-[32px]">
@@ -106,7 +111,7 @@ export function DilemmaCard({
           </h2>
 
           <p className="dilemma-scene mt-3 text-[15px] leading-6 text-[var(--muted)]">
-            {dilemma.scenePrompt}
+            {neutralScenePrompt(dilemma.scenePrompt)}
           </p>
 
           <motion.div

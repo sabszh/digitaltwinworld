@@ -7,16 +7,6 @@ import type { CompletedDilemma, GeneratedDilemma, LocationType, ProblemArea, Use
 
 const pick = <T>(items: readonly T[]) => items[Math.floor(Math.random() * items.length)];
 
-const atmosphereByArea: Partial<Record<ProblemArea, string>> = {
-  "Uddannelse og læring": "Der er lav summen i rummet, og skærme justerer sig efter menneskene omkring dem.",
-  "Arbejde og arbejdsliv": "Bygningen arbejder næsten med; systemer planlægger, måler og foreslår næste skridt.",
-  "Sundhed og omsorg": "Luften er rolig, men hvert valg føles tæt på kroppen og menneskene omkring dig.",
-  "Mobilitet, byliv og bolig": "Byen bevæger sig under dig, styret af data, vaner og små menneskelige afbrydelser.",
-  "Klima, energi og resiliens": "Vejret ligger tungt over stedet, mens infrastrukturen forsøger at forudsige det næste pres.",
-  "Mad, vand og forsyning": "Forsyningskæderne summer i baggrunden, usynlige indtil noget mangler.",
-  "Digital tillid, rettigheder og styring": "Tillid er blevet noget, der designes, forhandles og testes i realtid.",
-};
-
 const weatherSnippets = [
   "Regnen hænger i luften.",
   "Solen står lavt og varmer stille.",
@@ -137,7 +127,6 @@ export function generateDilemma(input: {
     technology,
   };
   const place = exactPlace?.name ?? location.city;
-  const atmosphere = atmosphereByArea[area] ?? "Stedet føles både genkendeligt og fremmed, som om nutiden er blevet skruet en anelse frem.";
   const weather = pick(weatherSnippets);
   const storyDetail = pick(storyDetailsByAudience[audience.id]);
 
@@ -154,7 +143,7 @@ export function generateDilemma(input: {
     role: input.role,
     marker: { lat: exactPlace?.lat ?? location.lat, lng: exactPlace?.lng ?? location.lng },
     exactPlace,
-    landingScene: `Du lander i ${place}, 2046. ${weather} ${atmosphere} ${storyDetail}`,
+    landingScene: `I ${place} indgår ${technology} i hverdagen i 2046. ${weather}`,
     landingDetail: weather,
   });
 }

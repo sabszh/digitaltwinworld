@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { Globe2, ShieldCheck, Star, UserRound, type LucideIcon } from "lucide-react";
 import { AiLoader } from "@/components/ui/ai-loader";
 import { VoiceInput } from "@/components/VoiceInput";
 import type { Language } from "@/lib/i18n";
@@ -84,20 +85,28 @@ function TicketField({
   value,
   placeholder,
   active,
+  icon: Icon,
   onClick,
 }: {
   label: string;
   value?: string;
   placeholder: string;
   active: boolean;
+  icon: LucideIcon;
   onClick: () => void;
 }) {
   return (
     <button type="button" onClick={onClick} className={`ticket-field text-left transition ${active ? "ticket-field--active" : ""}`}>
-      <span className="ticket-label">{label}</span>
-      <strong className={`block truncate text-[13px] font-semibold ${value ? "text-[var(--text)]" : "text-[var(--faint)]"}`}>
-        {value || placeholder}
-      </strong>
+      <span className="ticket-field-body">
+        <span className="ticket-field-icon" aria-hidden="true"><Icon /></span>
+        <span className="ticket-field-copy">
+          <span className="ticket-label">{label}</span>
+          <strong className={`block truncate text-[13px] font-semibold ${value ? "text-[var(--text)]" : "text-[var(--faint)]"}`}>
+            {value || placeholder}
+          </strong>
+        </span>
+        {value ? <span className="ticket-field-check" aria-hidden="true">✓</span> : null}
+      </span>
     </button>
   );
 }
@@ -121,7 +130,7 @@ function TextFieldExpansion({
   autoAdvanceOnChip?: boolean;
   onChange: (text: string) => void;
   onVoiceUsed: () => void;
-  onDone: () => void;
+  onDone: (nextValue?: string) => void;
 }) {
   const text = uiText[language];
   return (
@@ -133,10 +142,11 @@ function TextFieldExpansion({
               key={chip}
               type="button"
               onClick={() => {
-                worldSound.playButtonTap();
-                onChange(value ? `${value} ${chip}` : chip);
+                worldSound.playChoiceSelect(0);
+                const nextValue = value ? `${value} ${chip}` : chip;
+                onChange(nextValue);
                 if (autoAdvanceOnChip) {
-                  window.setTimeout(onDone, 160);
+                  window.setTimeout(() => onDone(nextValue), 160);
                 }
               }}
               className="surface-control rounded-full px-3.5 py-1.5 text-xs font-medium text-[var(--muted)] hover:text-[var(--text)]"
@@ -164,7 +174,7 @@ function TextFieldExpansion({
             <button
               type="button"
               onClick={() => {
-                worldSound.playButtonTap();
+                worldSound.playChoiceSelect(1);
                 onDone();
               }}
               className="ticket-launch rounded-full px-4 py-2 text-xs font-semibold"
@@ -201,14 +211,13 @@ export function PersonaBuilder({
 
   const mattersChips = text.personaMattersChips.split(",");
   const hopeFearChips = text.personaHopeFearChips.split(",");
-  const canCheckIn = Boolean(role) && matters.trim().length > 0 && hopeFear.trim().length > 0;
-
   const toggleField = (field: FieldKey) => setExpandedField((current) => (current === field ? null : field));
-  const handleCheckIn = () => {
-    if (!role || !canCheckIn) return;
-    worldSound.playButtonTap();
+  const handleCheckIn = (nextHopeFear?: string) => {
+    const resolvedHopeFear = nextHopeFear ?? hopeFear;
+    if (!role || !matters.trim() || !resolvedHopeFear.trim()) return;
+    worldSound.playPersonaCheckIn();
     setExpandedField(null);
-    onBuildPersona({ role, matters, hopeFear, mattersViaVoice, hopeFearViaVoice });
+    onBuildPersona({ role, matters, hopeFear: resolvedHopeFear, mattersViaVoice, hopeFearViaVoice });
     setIsCheckingIn(true);
     setLoadingBoardReleased(false);
     setTimeout(() => setCheckedIn(true), UX_TIMING.boardingPassSlideMs);
@@ -239,16 +248,22 @@ export function PersonaBuilder({
         {/* Boarding pass with paper check-in animation */}
         <motion.div
           className="surface-panel boarding-pass overflow-y-auto"
+          initial={{ x: "130vw", rotate: 4, scale: 0.97, opacity: 0 }}
           animate={
             isCheckingIn
               ? { x: "115vw", rotate: 3.5, scale: 0.96, opacity: 0.96 }
               : { x: 0, rotate: 0, scale: 1, opacity: 1 }
           }
-          transition={{ duration: 0.9, ease: [0.86, 0, 0.07, 1] }}
+          transition={{ type: "spring", stiffness: 170, damping: 26, mass: 0.9 }}
         >
           {/* ── Boarding pass header ── */}
           <div className="bp-head">
-            <span className="bp-brand">World 2046</span>
+            <div className="bp-brand-lockup">
+              <span className="bp-brand-copy">
+                <span className="bp-brand">World 2046</span>
+                <span className="bp-tagline">{language === "da" ? "Din rejse. Vores fremtid." : "Your journey. Our future."}</span>
+              </span>
+            </div>
             <span className="bp-ticket-meta">
               <span className="bp-pass-label">Boarding Pass</span>
               <span>Electronic ticket · WLD2046</span>
@@ -272,6 +287,7 @@ export function PersonaBuilder({
               <strong>46</strong>
               <em>Zone 3</em>
             </div>
+            <div className="bp-stub-divider" aria-hidden="true"><span /><Globe2 /><span /></div>
             <div className="bp-stub-code">WLD-01-2026-AAR-2046</div>
           </aside>
 
@@ -294,6 +310,29 @@ export function PersonaBuilder({
                 <span className="bp-flight-val">WLD-01</span>
               </div>
             </div>
+            <div className="bp-route-map" aria-hidden="true">
+              <svg className="bp-route-map-svg" viewBox="0 0 240 88" focusable="false">
+                <defs>
+                  <pattern id="bp-map-dots" width="6" height="6" patternUnits="userSpaceOnUse">
+                    <circle cx="1.5" cy="1.5" r="1.15" />
+                  </pattern>
+                  <linearGradient id="bp-route-gradient" x1="0" y1="1" x2="1" y2="0">
+                    <stop offset="0" stopColor="#4d91e5" />
+                    <stop offset="1" stopColor="#1c5d9c" />
+                  </linearGradient>
+                </defs>
+                <g className="bp-map-land" fill="url(#bp-map-dots)">
+                  <path d="M16 25c12-12 30-15 47-7l12 11-13 10-14-4-10 10-15-7z" />
+                  <path d="M58 45c11 4 19 15 16 27l-9 13-8-16-8-13z" />
+                  <path d="M99 21c22-10 61-10 102 2l23 12-20 8-25-5-14 8-22-8-17 5-13-10z" />
+                  <path d="M111 43l25-3 13 16-10 20-16-3-11-15z" />
+                  <path d="M193 57l25-2 12 12-15 10-20-7z" />
+                </g>
+                <path className="bp-route-line" d="M47 62c34-38 86-46 151-36" />
+                <circle className="bp-route-start" cx="47" cy="62" r="5.5" />
+                <circle className="bp-route-end" cx="198" cy="26" r="5.2" />
+              </svg>
+            </div>
           </div>
 
           {/* ── Perforated tear line ── */}
@@ -305,8 +344,9 @@ export function PersonaBuilder({
               value={role ? roleLabels[language][role] : undefined}
               placeholder={text.personaFieldRolePrompt}
               active={expandedField === "role"}
+              icon={UserRound}
               onClick={() => {
-                worldSound.playButtonTap();
+                worldSound.playTextFocus();
                 toggleField("role");
               }}
             />
@@ -315,8 +355,9 @@ export function PersonaBuilder({
               value={matters || undefined}
               placeholder={text.personaFieldMattersPrompt}
               active={expandedField === "matters"}
+              icon={Star}
               onClick={() => {
-                worldSound.playButtonTap();
+                worldSound.playTextFocus();
                 toggleField("matters");
               }}
             />
@@ -325,8 +366,9 @@ export function PersonaBuilder({
               value={hopeFear || undefined}
               placeholder={text.personaFieldHopeFearPrompt}
               active={expandedField === "hopeFear"}
+              icon={ShieldCheck}
               onClick={() => {
-                worldSound.playButtonTap();
+                worldSound.playTextFocus();
                 toggleField("hopeFear");
               }}
             />
@@ -347,7 +389,7 @@ export function PersonaBuilder({
                         key={option}
                         type="button"
                         onClick={() => {
-                          worldSound.playButtonTap();
+                          worldSound.playChoiceSelect(index);
                           setRole(option);
                           setExpandedField("matters");
                         }}
@@ -389,42 +431,13 @@ export function PersonaBuilder({
                     autoAdvanceOnChip
                     onChange={setHopeFear}
                     onVoiceUsed={() => setHopeFearViaVoice(true)}
-                    onDone={() => setExpandedField(null)}
+                    onDone={(nextValue) => handleCheckIn(nextValue)}
                   />
                 </div>
               )}
             </AnimatePresence>
-            <AnimatePresence>
-              {canCheckIn && !expandedField && (
-                <motion.div
-                  key="board-cta"
-                  className="bp-board-cta-wrap md:col-span-3"
-                  initial={{ opacity: 0, y: 14, height: 0 }}
-                  animate={{ opacity: 1, y: 0, height: "auto" }}
-                  exit={{ opacity: 0, y: 8, height: 0 }}
-                  transition={{ duration: 0.32, ease: "easeOut" }}
-                >
-                  <button type="button" className="bp-board-cta" onClick={handleCheckIn}>
-                    {language === "da" ? "Gå ombord" : "Board now"}
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
         </motion.div>
-        <AnimatePresence>
-          {isCheckingIn && (
-            <motion.div
-              className="checkin-stamp"
-              initial={{ opacity: 0, x: "-50%", y: "-42%", scale: 0.92, rotate: -4 }}
-              animate={{ opacity: 1, x: "-50%", y: "-50%", scale: 1, rotate: -4 }}
-              exit={{ opacity: 0, x: "-50%", y: "-58%", scale: 0.98, rotate: -4 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-            >
-              {language === "da" ? "Går ombord" : "Boarding"}
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </section>
   );

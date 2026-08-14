@@ -47,7 +47,7 @@ function CameraRig({
   return null;
 }
 
-function GlobeMesh({ active }: { active?: GeneratedDilemma }) {
+function GlobeMesh({ active, introProgressRef }: { active?: GeneratedDilemma; introProgressRef?: React.MutableRefObject<number> }) {
   const group = useRef<THREE.Group>(null);
   const clouds = useRef<THREE.Mesh>(null);
   const activeVector = active ? latLngToVector3(active.marker.lat, active.marker.lng, 2.18) : undefined;
@@ -68,8 +68,12 @@ function GlobeMesh({ active }: { active?: GeneratedDilemma }) {
     if (targetQuaternion) {
       group.current.quaternion.slerp(targetQuaternion, 0.055);
     } else {
-      group.current.rotation.y += 0.0012;
-      group.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.2) * 0.04;
+      const progress = introProgressRef ? Math.min(Math.max(introProgressRef.current, 0), 1) : 1;
+      const transitionInProgress = Boolean(introProgressRef && progress < 0.999);
+      group.current.rotation.y += transitionInProgress ? 0.0012 + progress * 0.012 : 0.0012;
+      const naturalTilt = Math.sin(state.clock.elapsedTime * 0.2) * 0.04;
+      const targetTilt = transitionInProgress ? naturalTilt - progress * 0.42 : naturalTilt;
+      group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, targetTilt, 0.08);
     }
     if (clouds.current) clouds.current.rotation.y += 0.0007;
   });
@@ -147,7 +151,7 @@ export function WorldGlobe({
         <directionalLight position={[4.5, 2.2, 5]} intensity={4.2} color="#ffffff" />
         <pointLight position={[-3, -2, 2]} intensity={1.2} color="#ffd166" />
         <Stars radius={70} depth={35} count={1100} factor={3} saturation={0} fade speed={0.35} />
-        <GlobeMesh active={active} />
+        <GlobeMesh active={active} introProgressRef={introProgressRef} />
         <CameraRig active={active} zoomed={zoomed} introProgressRef={introProgressRef} />
         <OrbitControls enablePan={false} enableZoom={false} autoRotate={false} />
       </Canvas>

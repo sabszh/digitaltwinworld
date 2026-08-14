@@ -43,6 +43,7 @@ export default function Home() {
   const isIntro = store.phase === "intro";
   const showingDestination = Boolean(store.activeDilemma) && zoomed;
   const introProgressRef = useRef(0);
+  const introAnimationFrameRef = useRef<number | null>(null);
   const shouldHoldIntroGlobe =
     store.phase === "intro" ||
     store.phase === "persona" ||
@@ -88,8 +89,32 @@ export default function Home() {
     return () => window.removeEventListener("mousemove", onMove);
   }, [isParallaxPhase]);
 
+  useEffect(() => {
+    return () => {
+      if (introAnimationFrameRef.current !== null) {
+        window.cancelAnimationFrame(introAnimationFrameRef.current);
+      }
+    };
+  }, []);
+
   const handleStartJourney = () => {
-    introProgressRef.current = 1;
+    if (introAnimationFrameRef.current !== null) {
+      window.cancelAnimationFrame(introAnimationFrameRef.current);
+    }
+    introProgressRef.current = 0;
+    const startedAt = performance.now();
+    const transitionDuration = 900;
+    const animateGlobeTransition = (now: number) => {
+      const rawProgress = Math.min((now - startedAt) / transitionDuration, 1);
+      // Ease the downward globe movement without making the pass arrival feel delayed.
+      introProgressRef.current = 1 - Math.pow(1 - rawProgress, 3);
+      if (rawProgress < 1) {
+        introAnimationFrameRef.current = window.requestAnimationFrame(animateGlobeTransition);
+      } else {
+        introAnimationFrameRef.current = null;
+      }
+    };
+    introAnimationFrameRef.current = window.requestAnimationFrame(animateGlobeTransition);
     void worldSound.unlock().then(() => {
       worldSound.playStartJourney();
     });
@@ -119,7 +144,12 @@ export default function Home() {
       </AnimatePresence>
 
       {hasMapbox ? (
-        <MapboxGlobeBackdrop active={store.activeDilemma} zoomed={zoomed} introProgressRef={shouldHoldIntroGlobe ? introProgressRef : undefined} />
+        <MapboxGlobeBackdrop
+          active={store.activeDilemma}
+          zoomed={zoomed}
+          introProgressRef={shouldHoldIntroGlobe ? introProgressRef : undefined}
+          slowAfterIntro={isPersona}
+        />
       ) : (
         <WorldGlobe
           active={store.activeDilemma}
@@ -153,11 +183,8 @@ export default function Home() {
             : "sky-edge-vignette"
         }`}
       />
-      {isDarkBackdrop ? (
-        <div className="bg-vignette pointer-events-none absolute inset-0 z-[2]" />
-      ) : (
-        <div className={`sky-glow pointer-events-none absolute inset-0 z-[2] transition-opacity duration-700 ${(showingDestination || isIntro || isPersona) ? "opacity-0" : "opacity-100"}`} />
-      )}
+      {isDarkBackdrop ? <div className="bg-vignette pointer-events-none absolute inset-0 z-[2]" /> : null}
+      <div className="sky-glow pointer-events-none absolute inset-0 z-[2]" />
       {store.phase === "intro" && <LanguageToggle language={language} onChange={setLanguage} />}
       <div
         className={store.phase === "intro" ? "" : "sky-scope"}
@@ -166,7 +193,7 @@ export default function Home() {
         {store.phase !== "intro" && store.phase !== "persona" && store.phase !== "report" && (
           <ItineraryStrip completed={store.completedDilemmas.length} cities={cities} language={language} />
         )}
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="sync">
           <motion.div
             key={store.phase + (store.activeDilemma?.id ?? "")}
             initial={{ opacity: 0, y: store.phase === "traveling" ? 0 : 18 }}
@@ -175,7 +202,12 @@ export default function Home() {
             transition={{ duration: 0.45 }}
             className="relative z-10"
           >
-            {store.phase === "intro" && <IntroScreen onStart={handleStartJourney} language={language} introProgressRef={introProgressRef} />}
+            {store.phase === "intro" && (
+              <IntroScreen
+                onStart={handleStartJourney}
+                language={language}
+              />
+            )}
             {store.phase === "persona" && (
               <PersonaBuilder
                 language={language}
@@ -193,7 +225,7 @@ export default function Home() {
               />
             )}
             {store.phase === "landing" && store.activeDilemma && (
-              <LandingScene dilemma={store.activeDilemma} persona={store.persona} language={language} onEnter={store.enterDilemma} />
+              <LandingScene dilemma={store.activeDilemma} language={language} onEnter={store.enterDilemma} />
             )}
             {store.phase === "dilemma" && store.activeDilemma && (
               <DilemmaCard dilemma={store.activeDilemma} persona={store.persona} language={language} onAnswer={handleAnswer} />
