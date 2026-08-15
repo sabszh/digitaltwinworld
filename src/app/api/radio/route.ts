@@ -7,64 +7,68 @@ type RadioStation = {
   name?: string;
   url_resolved?: string;
   url?: string;
-  homepage?: string;
-  country?: string;
   countrycode?: string;
-  tags?: string;
+  codec?: string;
+  bitrate?: number;
+  lastcheckok?: number | boolean;
   geo_lat?: number;
   geo_long?: number;
 };
 
-const RADIO_API = "https://radios.axiomaudio.com/json/stations/search";
+const MIRRORS = [
+  "https://de1.api.radio-browser.info",
+  "https://nl1.api.radio-browser.info",
+  "https://at1.api.radio-browser.info",
+];
 const SEARCH_RADIUS_METERS = 1_500_000;
+const SUPPORTED_CODECS = new Set(["MP3", "AAC", "AAC+"]);
 
-function isValidCoordinate(value: number, min: number, max: number) {
+function validCoordinate(value: number, min: number, max: number) {
   return Number.isFinite(value) && value >= min && value <= max;
 }
 
-function playableUrl(station: RadioStation) {
-  const candidate = station.url_resolved ?? station.url;
-  if (!candidate) return undefined;
+function distanceKm(latA: number, lngA: number, latB?: number, lngB?: number) {
+  if (!Number.isFinite(latB) || !Number.isFinite(lngB)) return undefined;
+  const radians = (degrees: number) => degrees * Math.PI / 180;
+  const dLat = radians((latB as number) - latA);
+  const dLng = radians((lngB as number) - lngA);
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(radians(latA)) * Math.cos(radians(latB as number)) * Math.sin(dLng / 2) ** 2;
+  return Math.round(6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+}
 
+function sanitize(station: RadioStation, lat: number, lng: number) {
+  const candidate = station.url_resolved ?? station.url;
+  if (!candidate || !station.stationuuid) return undefined;
   try {
     const url = new URL(candidate);
-    return url.protocol === "http:" || url.protocol === "https:" ? url.toString() : undefined;
+    const codec = station.codec?.toUpperCase() ?? "";
+    if (url.protocol !== "https:" || !SUPPORTED_CODECS.has(codec) || station.lastcheckok === 0 || station.lastcheckok === false) return undefined;
+    return {
+      id: station.stationuuid,
+      name: station.name?.trim() || "World radio",
+      streamUrl: url.toString(),
+      countryCode: station.countrycode,
+      codec,
+      bitrate: Number(station.bitrate) || 0,
+      distanceKm: distanceKm(lat, lng, station.geo_lat, station.geo_long),
+    };
   } catch {
     return undefined;
   }
 }
 
-function sanitizeStation(station: RadioStation) {
-  const streamUrl = playableUrl(station);
-  if (!streamUrl) return undefined;
-
-  return {
-    id: station.stationuuid ?? streamUrl,
-    name: station.name?.trim() || "World radio",
-    streamUrl,
-    homepage: station.homepage,
-    country: station.country,
-    countrycode: station.countrycode,
-    tags: station.tags,
-  };
-}
-
-async function fetchStations(params: URLSearchParams) {
+async function requestMirror(mirror: string, params: URLSearchParams) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 5500);
-
+  const timeout = setTimeout(() => controller.abort(), 3500);
   try {
-    const response = await fetch(`${RADIO_API}?${params.toString()}`, {
-      headers: {
-        Accept: "application/json",
-        "User-Agent": "World2046/1.0 (ambient journey audio)",
-      },
+    const response = await fetch(`${mirror}/json/stations/search?${params.toString()}`, {
+      headers: { Accept: "application/json", "User-Agent": "World2046/1.0 (exhibition ambience)" },
       signal: controller.signal,
       cache: "no-store",
     });
     if (!response.ok) return [];
-    const data = (await response.json()) as unknown;
-    return Array.isArray(data) ? (data as RadioStation[]) : [];
+    const value = await response.json() as unknown;
+    return Array.isArray(value) ? value as RadioStation[] : [];
   } catch {
     return [];
   } finally {
@@ -72,45 +76,27 @@ async function fetchStations(params: URLSearchParams) {
   }
 }
 
+async function fetchWithFailover(params: URLSearchParams) {
+  const start = Math.floor(Math.random() * MIRRORS.length);
+  for (let offset = 0; offset < MIRRORS.length; offset += 1) {
+    const stations = await requestMirror(MIRRORS[(start + offset) % MIRRORS.length], params);
+    if (stations.length > 0) return stations;
+  }
+  return [];
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const lat = Number(searchParams.get("lat"));
   const lng = Number(searchParams.get("lng"));
-
-  if (!isValidCoordinate(lat, -90, 90) || !isValidCoordinate(lng, -180, 180)) {
+  if (!validCoordinate(lat, -90, 90) || !validCoordinate(lng, -180, 180)) {
     return NextResponse.json({ error: "Invalid landing coordinates" }, { status: 400 });
   }
 
-  const localParams = new URLSearchParams({
-    geo_lat: String(lat),
-    geo_long: String(lng),
-    geo_distance: String(SEARCH_RADIUS_METERS),
-    has_geo_info: "true",
-    hidebroken: "true",
-    order: "random",
-    limit: "24",
-  });
+  const nearby = new URLSearchParams({ geo_lat: String(lat), geo_long: String(lng), geo_distance: String(SEARCH_RADIUS_METERS), has_geo_info: "true", hidebroken: "true", order: "clickcount", reverse: "true", limit: "40" });
+  let raw = await fetchWithFailover(nearby);
+  if (raw.length === 0) raw = await fetchWithFailover(new URLSearchParams({ hidebroken: "true", order: "clickcount", reverse: "true", limit: "60" }));
 
-  let stations = await fetchStations(localParams);
-
-  // Remote station coverage is uneven, so keep the experience working when
-  // the landing area has no nearby geo-tagged stations.
-  if (stations.length === 0) {
-    stations = await fetchStations(new URLSearchParams({
-      hidebroken: "true",
-      order: "random",
-      limit: "40",
-    }));
-  }
-
-  const playableStations = stations.map(sanitizeStation).filter(Boolean);
-  if (playableStations.length === 0) {
-    return NextResponse.json({ station: null }, { headers: { "Cache-Control": "no-store" } });
-  }
-
-  const station = playableStations[Math.floor(Math.random() * playableStations.length)];
-  return NextResponse.json(
-    { station },
-    { headers: { "Cache-Control": "no-store" } },
-  );
+  const stations = raw.map((station) => sanitize(station, lat, lng)).filter((station): station is NonNullable<typeof station> => Boolean(station)).sort((a, b) => (a.distanceKm ?? 99999) - (b.distanceKm ?? 99999) || b.bitrate - a.bitrate).slice(0, 8);
+  return NextResponse.json({ stations }, { headers: { "Cache-Control": "no-store" } });
 }

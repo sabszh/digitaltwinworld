@@ -2,24 +2,25 @@
 
 import { motion, useMotionValue, useMotionValueEvent, animate } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { MapPin, PlaneLanding } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { AiLoader } from "@/components/ui/ai-loader";
 import { WarpCanvas } from "@/components/WarpCanvas";
 import type { Language } from "@/lib/i18n";
 import { uiText } from "@/lib/i18n";
 import { UX_TIMING } from "@/lib/uxTiming";
 import type { GeneratedDilemma, Persona } from "@/types/world2046";
+import { problemAreaLabelsByLanguage } from "@/data/taxonomies";
 
 function FlipDigit({ digit }: { digit: string }) {
   return (
     <span className="flip-digit">
-      <span aria-hidden className="absolute inset-x-0 top-1/2 h-px bg-black/40" />
+      <span aria-hidden className="flip-digit-seam" />
       <motion.span
         key={digit}
-        initial={{ opacity: 0.42, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.18, ease: "easeOut" }}
-        className="absolute inset-0 flex items-center justify-center font-mono text-xl tabular-nums text-[var(--cloud)]"
+        initial={{ opacity: 0, y: "-42%", rotateX: -62 }}
+        animate={{ opacity: 1, y: "0%", rotateX: 0 }}
+        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+        className="flip-digit-face"
       >
         {digit}
       </motion.span>
@@ -94,8 +95,12 @@ export function TravelTransition({
             animate={{ opacity: [0.38, 0.86, 0.38] }}
             transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
           />
-          <div className="relative mb-4">
+          <div className="time-transit">
+            <span className="time-transit-label">
+              {language === "da" ? "Tidsrejse i gang" : "Time transit in progress"}
+            </span>
             <YearCounter />
+            <span className="time-transit-route">2026 → 2046</span>
           </div>
           <AiLoader texts={steps} className="loader-wrapper--globe-scan" />
         </motion.div>
@@ -104,17 +109,13 @@ export function TravelTransition({
   }
 
   const destination = dilemma.exactPlace?.name ?? `${dilemma.city}, ${dilemma.country}`;
-  const context = `${dilemma.problemArea} · ${dilemma.technology}`;
+  const context = language === "da" ? `${dilemma.problemArea} · ${dilemma.technology}` : problemAreaLabelsByLanguage.en[dilemma.problemArea];
 
   return (
     <div className="pointer-events-none relative z-20 flex min-h-screen items-center justify-center px-6">
       <motion.div initial={{ opacity: 0, y: 10, scale: 0.99 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="approach-card">
-        <div className="approach-card-head">
-          <span><PlaneLanding className="h-4 w-4" aria-hidden="true" /> {text.travelArrivingKicker}</span>
-          <span>2046</span>
-        </div>
         <h2><MapPin className="h-5 w-5" aria-hidden="true" /> {destination}</h2>
-        <p>{context}</p>
+        <p>{context} · 2046</p>
       </motion.div>
     </div>
   );

@@ -1,4 +1,5 @@
 import type { Persona, PersonaAnswers, UserRole } from "@/types/world2046";
+import type { Language } from "@/lib/i18n";
 
 export const rolePersonaText: Record<UserRole, string> = {
   Ung: "Du er ung i 2046 og prøver at finde ud af, hvor meget af din hverdag du vil lade intelligente systemer forme.",
@@ -22,6 +23,17 @@ const roleTitleWord: Record<UserRole, string> = {
   "For alle": "rejsende",
 };
 
+const roleLabelsEnglish: Record<UserRole, string> = {
+  Ung: "young traveller",
+  Forælder: "parent",
+  "Lærer / pædagog": "educator",
+  Arbejdsgiver: "employer",
+  Medarbejder: "employee",
+  Borger: "citizen",
+  Beslutningstager: "decision-maker",
+  "For alle": "traveller",
+};
+
 const traitKeywords: { pattern: RegExp; trait: string }[] = [
   { pattern: /menneske|kontakt|nærvær|fællesskab/i, trait: "Menneskelig" },
   { pattern: /frihed|vælge|selv|uafhængig/i, trait: "Frihedssøgende" },
@@ -40,22 +52,36 @@ function pickTraits(text: string, fallback: string[]): string[] {
   return combined.slice(0, 3);
 }
 
-export function buildLocalPersona(answers: PersonaAnswers): Persona {
+export function buildLocalPersona(answers: PersonaAnswers, language: Language = "da"): Persona {
   const base = rolePersonaText[answers.role];
   const roleWord = roleTitleWord[answers.role];
   const matters = answers.matters.trim();
   const hopeFear = answers.hopeFear.trim();
 
   const mattersSentence = matters
-    ? ` For dig betyder det mest, at "${matters}".`
+    ? language === "da" ? ` Det, du vil beskytte, er konkret: ${matters}.` : ` What you want to protect is concrete: ${matters}.`
     : "";
   const hopeFearSentence = hopeFear
-    ? ` Du bærer på tanken om, at "${hopeFear}".`
+    ? language === "da" ? ` På rejsen holder du samtidig øje med ${hopeFear}.` : ` Along the way, you are also watching for ${hopeFear}.`
     : "";
 
-  const text = `${base}${mattersSentence}${hopeFearSentence}`.trim();
-  const traits = pickTraits(`${matters} ${hopeFear}`, ["Nysgerrig", "Eftertænksom"]);
-  const title = `Den ${traits[0]?.toLowerCase() ?? "nysgerrige"} ${roleWord}`;
+  const englishBase: Record<UserRole, string> = {
+    Ung: "You arrive in 2046 as a young person living with decisions adults made before you had a say.",
+    Forælder: "You arrive as a parent weighing convenience against the moments your family cannot get back.",
+    "Lærer / pædagog": "You arrive as an educator who notices both what tools reveal and what they miss in a room full of young people.",
+    Arbejdsgiver: "You arrive as an employer responsible for the people behind every efficiency gain.",
+    Medarbejder: "You arrive as an employee who feels where automation removes strain—and where it moves power.",
+    Borger: "You arrive as a citizen meeting public decisions in streets, clinics and screens.",
+    Beslutningstager: "You arrive as a decision-maker whose rules will become somebody else's ordinary Tuesday.",
+    "For alle": "You arrive as yourself, close enough to the future to notice which parts you could live with.",
+  };
+  const text = `${language === "da" ? base : englishBase[answers.role]}${mattersSentence}${hopeFearSentence}`.trim();
+  const traits = language === "da"
+    ? pickTraits(`${matters} ${hopeFear}`, ["Nysgerrig", "Eftertænksom"])
+    : ["Attentive", "Reflective", "Curious"];
+  const title = language === "da"
+    ? `Den ${traits[0]?.toLowerCase() ?? "nysgerrige"} ${roleWord}`
+    : `The attentive ${roleLabelsEnglish[answers.role]}`;
 
   return {
     role: answers.role,

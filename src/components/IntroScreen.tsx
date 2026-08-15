@@ -22,17 +22,15 @@ export function IntroScreen({
     window.setTimeout(onStart, UX_TIMING.searchToBoardingMs);
   };
 
+  // .intro-scope keeps the intro-only styling applied while this screen plays its
+  // exit animation, after main[data-phase] has already advanced to the next phase.
   return (
-    <div className="relative z-20 h-screen overflow-hidden">
+    <div className="intro-scope relative z-20 h-screen overflow-hidden">
       <section className="intro-hero relative flex h-screen flex-col items-center justify-center px-6">
         <h1 className="horizon-title">
           <span>World</span>
           <em>2046</em>
         </h1>
-        <p className="intro-hero-promise">
-          <strong>{text.introHeroPromise}</strong>
-          <span>{text.introHeroPromiseSub}</span>
-        </p>
         <div className="hero-flight-panel" aria-label={language === "da" ? "Rejseoversigt" : "Journey overview"}>
           <div className="hero-flight-fields">
             <div className="hero-flight-field">

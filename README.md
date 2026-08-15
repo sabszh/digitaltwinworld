@@ -9,7 +9,11 @@ npm install
 npm run dev
 ```
 
-Åbn `http://localhost:3000`.
+Åbn `http://localhost:3001`.
+
+## Samtykke og lokale sessionsdata
+
+Når en besøgende aktivt giver samtykke efter rapporten, gemmes rejsen som standard i `.data/consented-sessions.jsonl`. Sæt `SESSION_DATA_PATH` i `.env.local`, hvis udstillingscomputeren skal bruge en anden permanent placering. Afviste sessions skrives ikke til disk.
 
 ## Satellitkort
 

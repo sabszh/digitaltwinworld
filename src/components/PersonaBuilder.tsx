@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Globe2, ShieldCheck, Star, UserRound, type LucideIcon } from "lucide-react";
 import { AiLoader } from "@/components/ui/ai-loader";
 import { VoiceInput } from "@/components/VoiceInput";
 import type { Language } from "@/lib/i18n";
@@ -80,25 +79,54 @@ function TimeFlowDepartureBoard({ language, loadingText }: { language: Language;
   );
 }
 
+// Bars are derived from the serial, so the code belongs to this ticket instead of
+// being a fixed texture. Real barcodes have irregular bar and gap widths — the old
+// evenly repeating gradient (with a fake QR block stamped over it) read as an artifact.
+function TicketBarcode({ seed }: { seed: string }) {
+  const bars = useMemo(() => {
+    let hash = 2166136261;
+    for (let index = 0; index < seed.length; index += 1) {
+      hash ^= seed.charCodeAt(index);
+      hash = Math.imul(hash, 16777619) >>> 0;
+    }
+    const result: { x: number; w: number }[] = [];
+    let x = 0;
+    let dark = true;
+    while (x < 208) {
+      hash = (Math.imul(hash, 1664525) + 1013904223) >>> 0;
+      const width = 1 + ((hash >>> 8) % 4);
+      if (dark) result.push({ x, w: width });
+      x += width;
+      dark = !dark;
+    }
+    return result;
+  }, [seed]);
+
+  return (
+    <svg className="bp-barcode" viewBox="0 0 208 44" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      {bars.map((bar) => (
+        <rect key={bar.x} x={bar.x} y="0" width={bar.w} height="44" />
+      ))}
+    </svg>
+  );
+}
+
 function TicketField({
   label,
   value,
   placeholder,
   active,
-  icon: Icon,
   onClick,
 }: {
   label: string;
   value?: string;
   placeholder: string;
   active: boolean;
-  icon: LucideIcon;
   onClick: () => void;
 }) {
   return (
     <button type="button" onClick={onClick} className={`ticket-field text-left transition ${active ? "ticket-field--active" : ""}`}>
       <span className="ticket-field-body">
-        <span className="ticket-field-icon" aria-hidden="true"><Icon /></span>
         <span className="ticket-field-copy">
           <span className="ticket-label">{label}</span>
           <strong className={`block truncate text-[13px] font-semibold ${value ? "text-[var(--text)]" : "text-[var(--faint)]"}`}>
@@ -191,18 +219,15 @@ function TextFieldExpansion({
 export function PersonaBuilder({
   language,
   onBuildPersona,
-  onActivate,
 }: {
   language: Language;
   persona?: Persona;
-  onBuildPersona: (answers: PersonaAnswers) => void;
-  onActivate: () => void;
+  onBuildPersona: (answers: PersonaAnswers) => Promise<void>;
 }) {
   const text = uiText[language];
   const [expandedField, setExpandedField] = useState<FieldKey | null>("role");
   const [checkedIn, setCheckedIn] = useState(false);
   const [isCheckingIn, setIsCheckingIn] = useState(false);
-  const [loadingBoardReleased, setLoadingBoardReleased] = useState(false);
   const [role, setRole] = useState<UserRole | undefined>(undefined);
   const [matters, setMatters] = useState("");
   const [hopeFear, setHopeFear] = useState("");
@@ -211,28 +236,45 @@ export function PersonaBuilder({
 
   const mattersChips = text.personaMattersChips.split(",");
   const hopeFearChips = text.personaHopeFearChips.split(",");
+
+  // The stub is issued as you answer: every field you fill stamps another part of
+  // the ticket, so the pass becomes yours rather than staying printed decoration.
+  const ticket = useMemo(() => {
+    const roleIndex = role ? visibleRoles.indexOf(role) : -1;
+    const filled = [Boolean(role), Boolean(matters.trim()), Boolean(hopeFear.trim())];
+    const hash = [role ?? "", matters, hopeFear]
+      .join("|")
+      .split("")
+      .reduce((acc, char) => (acc * 31 + char.charCodeAt(0)) % 100000, 7);
+    return {
+      passenger: role ? roleLabels[language][role].toUpperCase() : null,
+      seat: roleIndex >= 0 ? `${12 + roleIndex * 4}${"ABCDEF"[roleIndex]}` : null,
+      zone: roleIndex >= 0 ? roleIndex + 1 : null,
+      serial: filled.every(Boolean)
+        ? `WLD-01-2026-AAR-${String(hash).padStart(5, "0")}`
+        : "WLD-01-2026-AAR-•••••",
+      stamped: filled.filter(Boolean).length,
+    };
+  }, [role, matters, hopeFear, language]);
   const toggleField = (field: FieldKey) => setExpandedField((current) => (current === field ? null : field));
-  const handleCheckIn = (nextHopeFear?: string) => {
+  const handleCheckIn = async (nextHopeFear?: string) => {
     const resolvedHopeFear = nextHopeFear ?? hopeFear;
     if (!role || !matters.trim() || !resolvedHopeFear.trim()) return;
     worldSound.playPersonaCheckIn();
     setExpandedField(null);
-    onBuildPersona({ role, matters, hopeFear: resolvedHopeFear, mattersViaVoice, hopeFearViaVoice });
     setIsCheckingIn(true);
-    setLoadingBoardReleased(false);
+    // Let the pass slide off-screen before the departure board takes over —
+    // the persona builds in parallel so the animation costs no extra wait.
+    const building = onBuildPersona({ role, matters, hopeFear: resolvedHopeFear, mattersViaVoice, hopeFearViaVoice });
     setTimeout(() => setCheckedIn(true), UX_TIMING.boardingPassSlideMs);
-    setTimeout(() => {
-      setLoadingBoardReleased(true);
-      worldSound.playTimeMachineCharge();
-      onActivate();
-    }, UX_TIMING.boardingBoardMs);
+    await building;
   };
 
   if (checkedIn) {
     return (
       <motion.section
         className="relative z-20 grid min-h-screen place-items-center px-6 py-10"
-        animate={{ opacity: loadingBoardReleased ? 0 : 1 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.65, ease: [0.86, 0, 0.07, 1] }}
       >
         <div className="persona-loading-stage">
@@ -244,7 +286,9 @@ export function PersonaBuilder({
 
   return (
     <section className="relative z-20 grid min-h-screen place-items-center px-4 py-10">
-      <div className="w-full max-w-5xl">
+      {/* The shadow lives on the wrapper as a drop-shadow so it follows the pass's
+          masked silhouette — the notches are real cut-outs, not painted circles. */}
+      <div className="bp-shell w-full max-w-5xl">
         {/* Boarding pass with paper check-in animation */}
         <motion.div
           className="surface-panel boarding-pass overflow-y-auto"
@@ -264,10 +308,6 @@ export function PersonaBuilder({
                 <span className="bp-tagline">{language === "da" ? "Din rejse. Vores fremtid." : "Your journey. Our future."}</span>
               </span>
             </div>
-            <span className="bp-ticket-meta">
-              <span className="bp-pass-label">Boarding Pass</span>
-              <span>Electronic ticket · WLD2046</span>
-            </span>
           </div>
 
           <aside className="bp-stub" aria-hidden="true">
@@ -277,18 +317,20 @@ export function PersonaBuilder({
               <strong>WLD-01 / 2046</strong>
             </div>
             <div className="bp-stub-route">
-              <span>From</span>
-              <strong>DOKK1</strong>
-              <span>To</span>
-              <strong>WORLD 2046</strong>
+              <span>Passenger</span>
+              <strong className={ticket.passenger ? "bp-stub-filled" : "bp-stub-pending"}>
+                {ticket.passenger ?? "— — — — —"}
+              </strong>
             </div>
             <div className="bp-seat-box">
-              <span>Gate</span>
-              <strong>46</strong>
-              <em>Zone 3</em>
+              <span>Seat</span>
+              <strong className={ticket.seat ? "bp-stub-filled" : "bp-stub-pending"}>{ticket.seat ?? "––"}</strong>
+              <em>{ticket.zone ? `Zone ${ticket.zone}` : "Zone –"}</em>
             </div>
-            <div className="bp-stub-divider" aria-hidden="true"><span /><Globe2 /><span /></div>
-            <div className="bp-stub-code">WLD-01-2026-AAR-2046</div>
+            <div className="bp-stub-code">
+              <span className={ticket.stamped === 3 ? "bp-stub-filled" : "bp-stub-pending"}>{ticket.serial}</span>
+              <TicketBarcode seed={ticket.serial} />
+            </div>
           </aside>
 
           {/* ── Route ── */}
@@ -344,7 +386,6 @@ export function PersonaBuilder({
               value={role ? roleLabels[language][role] : undefined}
               placeholder={text.personaFieldRolePrompt}
               active={expandedField === "role"}
-              icon={UserRound}
               onClick={() => {
                 worldSound.playTextFocus();
                 toggleField("role");
@@ -355,7 +396,6 @@ export function PersonaBuilder({
               value={matters || undefined}
               placeholder={text.personaFieldMattersPrompt}
               active={expandedField === "matters"}
-              icon={Star}
               onClick={() => {
                 worldSound.playTextFocus();
                 toggleField("matters");
@@ -366,7 +406,6 @@ export function PersonaBuilder({
               value={hopeFear || undefined}
               placeholder={text.personaFieldHopeFearPrompt}
               active={expandedField === "hopeFear"}
-              icon={ShieldCheck}
               onClick={() => {
                 worldSound.playTextFocus();
                 toggleField("hopeFear");
@@ -393,12 +432,16 @@ export function PersonaBuilder({
                           setRole(option);
                           setExpandedField("matters");
                         }}
-                        className="surface-control group grid grid-cols-[2.25rem_1fr] items-center gap-x-3.5 px-4 py-2.5 text-left"
+                        className="bp-role-option"
+                        aria-pressed={role === option}
                       >
-                        <span className="tech-index grid h-9 w-9 place-items-center rounded-full border border-[var(--line)] bg-[var(--control)] text-[var(--muted)] transition group-hover:border-[var(--accent)] group-hover:text-[var(--accent)]">
-                          {String(index + 1).padStart(2, "0")}
+                        <span className="bp-role-seat" aria-hidden="true">
+                          {`${12 + index * 4}${"ABCDEF"[index]}`}
                         </span>
-                        <span className="text-[15px] font-medium text-[var(--text)]">{roleLabels[language][option]}</span>
+                        <span className="bp-role-name">{roleLabels[language][option]}</span>
+                        <span className="bp-role-class" aria-hidden="true">
+                          {language === "da" ? "Vælg" : "Select"}
+                        </span>
                       </button>
                     ))}
                   </div>
@@ -431,7 +474,7 @@ export function PersonaBuilder({
                     autoAdvanceOnChip
                     onChange={setHopeFear}
                     onVoiceUsed={() => setHopeFearViaVoice(true)}
-                    onDone={(nextValue) => handleCheckIn(nextValue)}
+                    onDone={(nextValue) => void handleCheckIn(nextValue)}
                   />
                 </div>
               )}

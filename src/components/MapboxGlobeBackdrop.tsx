@@ -178,11 +178,15 @@ export function MapboxGlobeBackdrop({
 
     mapboxgl.accessToken = token;
 
+    // Wide screens can carry a much larger globe; on phones the same zoom
+    // fills the viewport edge to edge and the sphere stops reading as a planet.
+    const introZoom = window.innerWidth < 768 ? 1.95 : 2.35;
+
     const map = new mapboxgl.Map({
       container: containerRef.current,
       style: labelFreeSatelliteStyle,
       center: [8, 38],
-      zoom: 1.95,
+      zoom: introZoom,
       bearing: 0,
       pitch: 0,
       interactive: false,

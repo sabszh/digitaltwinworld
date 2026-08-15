@@ -33,12 +33,17 @@ export function VoiceInput({
 
   return (
     <div className="flex flex-col gap-1.5">
+      {/* Icon-only: the label repeated the placeholder next to it and made the
+          control compete with the primary action. The accessible name carries
+          the meaning instead, and a tooltip covers discoverability. */}
       <button
         type="button"
         onClick={toggle}
         disabled={disabled}
         aria-pressed={recognition.listening}
-        className={`voice-input-control relative inline-flex items-center gap-2 self-start rounded-full border px-3.5 py-2 text-xs font-medium transition ${
+        aria-label={recognition.listening ? text.voiceStop : text.voiceStart}
+        title={recognition.listening ? text.voiceStop : text.voiceStart}
+        className={`voice-input-control relative grid h-11 w-11 shrink-0 place-items-center self-start rounded-full border transition ${
           recognition.listening
             ? "border-[var(--accent)]/60 bg-[rgba(143,199,232,0.14)] text-[var(--accent)]"
             : "border-white/12 bg-black/15 text-[var(--muted)] hover:border-[var(--accent)]/40 hover:text-[var(--text)]"
@@ -52,8 +57,7 @@ export function VoiceInput({
             transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
           />
         )}
-        {recognition.listening ? <Square className="h-3.5 w-3.5" aria-hidden="true" /> : <Mic className="h-3.5 w-3.5" aria-hidden="true" />}
-        <span>{recognition.listening ? text.voiceStop : text.voiceStart}</span>
+        {recognition.listening ? <Square className="h-4 w-4" aria-hidden="true" /> : <Mic className="h-4 w-4" aria-hidden="true" />}
       </button>
       {recognition.listening && recognition.interim && (
         <p className="text-xs italic text-[var(--faint)]">{recognition.interim}</p>

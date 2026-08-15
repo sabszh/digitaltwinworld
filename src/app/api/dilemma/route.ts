@@ -25,6 +25,7 @@ export async function POST(request: Request) {
     persona: body.persona,
     previousDilemmas: body.previousDilemmas,
     preferredSeverity: body.preferredSeverity === "medium" ? "medium" : "low",
+    language: body.language === "en" ? "en" : "da",
   };
 
   const apiKey = process.env.OPENAI_API_KEY;
@@ -41,7 +42,7 @@ export async function POST(request: Request) {
         model: process.env.OPENAI_MODEL ?? "gpt-4.1-mini",
         temperature: 0.95,
         messages: [
-          { role: "system", content: "Du returnerer kun valid JSON, der matcher schemaet. Ingen markdown." },
+          { role: "system", content: `Return only valid JSON matching the schema. Write all audience-facing text in ${input.language === "da" ? "Danish" : "English"}. No markdown.` },
           { role: "user", content: buildDilemmaPrompt(input, { technologies, locationTypes }) },
         ],
         response_format: {

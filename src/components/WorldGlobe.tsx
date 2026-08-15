@@ -158,8 +158,7 @@ export function WorldGlobe({
       <div className="pointer-events-none absolute inset-0 scanline bg-[radial-gradient(circle_at_50%_42%,rgba(255,255,255,0.08),transparent_34%)]" />
       {active && (
         <div className="surface-panel pointer-events-none absolute right-5 top-5 z-10 hidden rounded-xl px-3 py-2 text-right md:block">
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--faint)]">Lokation</p>
-          <p className="mt-1 text-sm font-medium text-[var(--text)]">{active.exactPlace?.name ?? `${active.city}, ${active.country}`}</p>
+          <p className="text-sm font-medium text-[var(--text)]">{active.exactPlace?.name ?? `${active.city}, ${active.country}`}</p>
           <p className="text-sm text-[var(--muted)]">{active.marker.lat.toFixed(3)}, {active.marker.lng.toFixed(3)}</p>
         </div>
       )}

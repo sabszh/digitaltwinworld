@@ -1,7 +1,8 @@
 import { buildFallbackReport } from "@/lib/profileScoring";
-import { emptyValueProfile, valueLabels } from "@/data/taxonomies";
+import { emptyValueProfile, valueLabelsByLanguage } from "@/data/taxonomies";
 import type { CompletedDilemma, FutureProfileReport, Persona, ValueProfile } from "@/types/world2046";
 import { NextResponse } from "next/server";
+import type { Language } from "@/lib/i18n";
 
 export const runtime = "nodejs";
 
@@ -9,13 +10,14 @@ type ReportRequest = {
   persona?: Persona;
   completedDilemmas: CompletedDilemma[];
   valueProfile: ValueProfile;
+  language: Language;
 };
 
 const isRecord = (value: unknown): value is Record<string, unknown> => Boolean(value && typeof value === "object" && !Array.isArray(value));
 const isString = (value: unknown): value is string => typeof value === "string";
 
 const fallback = (input: ReportRequest, reason: string) =>
-  NextResponse.json({ source: "fallback", reason, report: buildFallbackReport(input.completedDilemmas, input.valueProfile) });
+  NextResponse.json({ source: "fallback", reason, report: buildFallbackReport(input.completedDilemmas, input.valueProfile, input.language) });
 
 function collectUserTexts(completed: CompletedDilemma[]) {
   return completed.flatMap((item) => [item.customAnswer, item.reflection].filter(isString).map((value) => value.trim()));
@@ -50,10 +52,11 @@ function validateReport(value: unknown, userTexts: string[]): FutureProfileRepor
 }
 
 function buildPrompt(input: ReportRequest, userTexts: string[]) {
+  const languageName = input.language === "da" ? "dansk" : "English";
   const dominant = (Object.entries(input.valueProfile) as [keyof ValueProfile, number][])
     .sort((a, b) => b[1] - a[1])
     .slice(0, 4)
-    .map(([key]) => valueLabels[key]);
+    .map(([key]) => valueLabelsByLanguage[input.language][key]);
   const areas = [...new Set(input.completedDilemmas.map((item) => item.problemArea))];
   const choiceSummary = input.completedDilemmas
     .map((item) => `${item.city}, ${item.country}: ${item.problemArea} → ${item.selectedChoiceLabel}`)
@@ -80,8 +83,9 @@ Opgave:
 3. Citér op til 3 af brugerens egne ord ORDRET (kun hvis der findes egne ord ovenfor) — hver quote skal være et eksakt uddrag, og context skal sige hvor/hvornår.
 4. List 2-4 mønstre på tværs af valgene, hver maks 60 tegn.
 5. Skriv en kort reflectionNote, maks 220 tegn, der stiller ét åbent spørgsmål tilbage til brugeren.
-6. Skriv på dansk.
-7. Returnér kun JSON, intet andet.`;
+6. Skriv på ${languageName}.
+7. Beskriv spændinger i valgene som observationer, ikke som en personlighedstest eller diagnose. Brug konkrete situationer og undgå ros-floskler.
+8. Returnér kun JSON, intet andet.`;
 }
 
 const responseSchema = {
@@ -123,6 +127,7 @@ export async function POST(request: Request) {
       reflection: item.reflection?.slice(0, 400),
     })),
     valueProfile: body.valueProfile ?? emptyValueProfile,
+    language: body.language === "en" ? "en" : "da",
   };
 
   const apiKey = process.env.OPENAI_API_KEY;
@@ -141,7 +146,7 @@ export async function POST(request: Request) {
         model: process.env.OPENAI_MODEL ?? "gpt-4.1-mini",
         temperature: 0.85,
         messages: [
-          { role: "system", content: "Du returnerer kun valid JSON, der matcher schemaet. Ingen markdown." },
+          { role: "system", content: `Return only valid JSON matching the schema. Write in ${input.language === "da" ? "Danish" : "English"}. No markdown.` },
           { role: "user", content: buildPrompt(input, userTexts) },
         ],
         response_format: {

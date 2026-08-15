@@ -1,0 +1,177 @@
+/* Final component layer. Keep this import after globals.css. */
+.journey-card {
+  --text: var(--ds-ink);
+  --muted: var(--ds-muted);
+  --faint: var(--ds-faint);
+  --accent: var(--ds-accent);
+  --line: var(--ds-border);
+  --control: #ffffff;
+}
+
+.sky-scope .journey-card,
+.sky-scope .surface-panel {
+  color: var(--ds-ink);
+}
+
+:is(main[data-phase="intro"], .intro-scope) .hero-flight-search {
+  background: var(--ds-accent);
+  box-shadow: 0 10px 24px rgba(29, 78, 216, 0.22);
+}
+
+:is(main[data-phase="intro"], .intro-scope) .hero-flight-search:hover,
+:is(main[data-phase="intro"], .intro-scope) .hero-flight-search--launching {
+  background: var(--ds-accent-hover);
+}
+
+.surface-control {
+  border-color: var(--ds-border);
+  background: #ffffff;
+  color: var(--ds-ink);
+  box-shadow: none;
+}
+
+.surface-control::before {
+  display: none;
+}
+
+.surface-control:hover {
+  border-color: #b8c4d1;
+  background: var(--ds-surface-soft);
+  box-shadow: none;
+}
+
+.sky-scope .journey-card p,
+.sky-scope .surface-panel p {
+  color: var(--ds-muted);
+}
+
+.arrival-card.journey-card {
+  width: 100%;
+  padding: clamp(1.6rem, 4vw, 2.5rem);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius);
+  background: var(--ds-surface);
+}
+
+.arrival-card.journey-card h2 {
+  margin-top: 1.4rem;
+  color: var(--ds-ink);
+  font-family: var(--font-serif), serif;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.arrival-card .arrival-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  padding: 0;
+  border: 0;
+}
+
+.arrival-card .arrival-card-category {
+  margin-top: 0.75rem;
+  color: #2ca66d;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.arrival-card .arrival-card-scene {
+  margin-top: 1.5rem;
+  color: var(--ds-muted);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.arrival-card .arrival-card-action {
+  margin-top: 1.75rem;
+  border: 0;
+}
+
+.arrival-card .arrival-card-cta {
+  width: 100%;
+}
+
+.dilemma-briefing.journey-card {
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius);
+  background: var(--ds-surface);
+  color: var(--ds-ink);
+  box-shadow: var(--ds-shadow);
+}
+
+.dilemma-briefing.journey-card h2 {
+  color: var(--ds-ink);
+  font-family: var(--font-serif), serif;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+}
+
+.dilemma-briefing .dilemma-scene {
+  color: var(--ds-muted);
+}
+
+.dilemma-briefing .decision-choice {
+  min-height: 72px;
+  border: 1px solid var(--ds-border);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--ds-ink);
+  box-shadow: none;
+}
+
+.dilemma-briefing .decision-choice:hover {
+  border-color: rgba(29, 78, 216, 0.52);
+  background: #fbfdff;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.07);
+  transform: none;
+}
+
+.dilemma-briefing .decision-choice .tech-index {
+  border-color: var(--ds-border);
+  background: var(--ds-surface-soft);
+  color: var(--ds-muted);
+}
+
+.dilemma-briefing .decision-choice span {
+  color: inherit;
+}
+
+.dilemma-briefing .custom-answer-card {
+  border: 1px solid var(--ds-border);
+  border-radius: 10px;
+  background: var(--ds-surface-soft);
+}
+
+.consequence-card.journey-card h2 {
+  color: var(--ds-ink);
+  font-family: var(--font-body), sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+main[data-phase="report"] .journey-card,
+main[data-phase="consent"] .journey-card,
+main[data-phase="goodbye"] .journey-card {
+  border: 1px solid var(--ds-border);
+  background: #ffffff;
+  color: var(--ds-ink);
+}
+
+main[data-phase="report"] {
+  background: #f6f7f9;
+}
+
+main[data-phase="report"] .surface-card,
+main[data-phase="consent"] .surface-card {
+  border: 1px solid var(--ds-border);
+  border-radius: 10px;
+  background: var(--ds-surface-soft);
+  color: var(--ds-ink);
+}
+

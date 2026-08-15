@@ -1,4 +1,6 @@
-export type AppPhase = "intro" | "persona" | "traveling" | "landing" | "dilemma" | "consequence" | "report";
+import type { Language } from "@/lib/i18n";
+
+export type AppPhase = "intro" | "persona" | "traveling" | "landing" | "dilemma" | "consequence" | "report" | "consent" | "goodbye";
 
 export type UserRole =
   | "Ung"
@@ -167,4 +169,12 @@ export type SessionResult = {
   valueProfile: ValueProfile;
   generatedSummary: string;
   futureReport?: FutureProfileReport;
+  language: Language;
+};
+
+export type ConsentedSessionRecord = {
+  schemaVersion: 1;
+  consentPolicyVersion: "2026-08-14";
+  acceptedAt: string;
+  session: SessionResult;
 };

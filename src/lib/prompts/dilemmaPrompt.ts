@@ -22,6 +22,8 @@ type BuildDilemmaPromptOptions = {
 };
 
 export function buildDilemmaPrompt(input: DilemmaGenerationRequest, options: BuildDilemmaPromptOptions) {
+  const languageName = input.language === "da" ? "dansk" : "English";
+  const questionOpening = input.language === "da" ? '"Hvordan kan jeg" eller "Hvordan vil jeg"' : '"How might I" or "How should I"';
   const previousSummary =
     input.previousDilemmas.map((item) => `${item.city}, ${item.country}: ${item.problemArea} / ${item.technology}`).join("\n") ||
     "Ingen endnu.";
@@ -42,10 +44,10 @@ Opgave:
 3. Generér et dilemma, der specifikt udspringer af stedet, byen og lokationstypen, og som taler direkte til personaen nedenfor.
 4. Generér også en konkret konsekvens for hver svarmulighed.
 5. Generér en kort sanselig landingsscene: vejr/lyd/lugt og én konkret situation i gang, ingen beslutning endnu.
-6. Skriv på dansk, kort og præcist.
+6. Skriv på ${languageName}, kort, konkret og præcist.
 
 ${personaContext}
-${buildAudiencePromptSection(input.role)}
+${buildAudiencePromptSection(input.role, input.language)}
 
 Foretrukken severity: ${input.preferredSeverity}
 Geografiregel: ${geographyRule}
@@ -71,7 +73,7 @@ Krav til indhold:
 Krav til tekstlængder:
 - title må højst være 54 tegn og skal være en spændingsfuld overskrift.
 - scenePrompt skal være 1-2 korte, konkrete sætninger på højst 360 tegn samlet.
-- question må højst være 130 tegn og SKAL starte med "Hvordan kan jeg" eller "Hvordan vil jeg".
+- question må højst være 130 tegn og SKAL starte med ${questionOpening}.
 - landingScene må højst være 320 tegn: 2.-persons sanselig ankomst, én konkret situation i gang, ingen beslutning.
 - landingDetail må højst være 90 tegn: én ren vejr- eller lyddetalje.
 - Hver choice.label må højst være 46 tegn.
@@ -84,6 +86,7 @@ Krav til variation:
 - question skal spørge til den konkrete beslutning, ikke gentage teknologiens navn hvis den allerede står i title.
 - choice.consequence skal nævne den lokale effekt af netop dét valg: hvem får mere/mindre ansvar, hvad ændres i hverdagen, og hvilken ny risiko opstår.
 - choice.consequence må ikke starte med "Du valgte", og må ikke være generisk værditekst.
+- Skriv som en dokumentarist tæt på hverdagen: navngiv mennesker, genstande og handlinger. Undgå abstrakt tech-sprog, reklameord og generiske formuleringer om "systemet".
 
 Returnér kun JSON, intet andet.`;
 }

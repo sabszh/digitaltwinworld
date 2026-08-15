@@ -1,5 +1,6 @@
 import { emptyValueProfile, valueLabels } from "@/data/taxonomies";
 import type { CompletedDilemma, FutureProfileReport, ValueProfile } from "@/types/world2046";
+import type { Language } from "@/lib/i18n";
 
 export function normalizeImpacts(impacts: Partial<ValueProfile>): ValueProfile {
   return { ...emptyValueProfile, ...impacts };
@@ -19,25 +20,29 @@ export function getDominantValues(profile: ValueProfile, count = 3) {
     .slice(0, count);
 }
 
-export function inferAiAttitude(profile: ValueProfile) {
-  if (profile.innovation + profile.efficiency > profile.safety + profile.localControl + 2) return "progressiv";
-  if (profile.transparency + profile.trust + profile.localControl > profile.innovation + 1) return "pragmatisk";
-  return "restriktiv";
+export function inferAiAttitude(profile: ValueProfile, language: Language = "da") {
+  if (profile.innovation + profile.efficiency > profile.safety + profile.localControl + 2) return language === "da" ? "åben for afprøvning" : "open to experimentation";
+  if (profile.transparency + profile.trust + profile.localControl > profile.innovation + 1) return language === "da" ? "pragmatisk og undersøgende" : "pragmatic and questioning";
+  return language === "da" ? "forsigtig og beskyttende" : "cautious and protective";
 }
 
-export function generateSummary(completed: CompletedDilemma[], profile: ValueProfile) {
-  const attitude = inferAiAttitude(profile);
+export function generateSummary(completed: CompletedDilemma[], profile: ValueProfile, language: Language = "da") {
+  const attitude = inferAiAttitude(profile, language);
   const values = getDominantValues(profile, 3).map(([key]) => key);
   const areas = [...new Set(completed.map((item) => item.problemArea))].slice(0, 3).join(", ").toLowerCase();
   const human = values.includes("humanContact") || values.includes("equality") ? "menneskecentreret" : "systemisk";
   const governance = profile.localControl + profile.transparency >= profile.efficiency ? "klare rammer og åbenhed" : "hurtig koordinering og effektiv drift";
 
-  return `Din 2046-verden er ${human} og teknologisk ${attitude}. Du afviser ikke fremtidens AI-lag, men du ønsker ${governance}. Særligt i ${areas} prioriterer du løsninger, hvor teknologi skal kunne forklares, deles og justeres af mennesker tæt på hverdagen.`;
+  if (language === "en") {
+    return `Across five places, you kept returning to ${values.join(", ")}. Your choices were ${attitude}: willing to use new tools when the people living with the consequences can question and adjust them. In ${areas || "everyday life"}, you placed responsibility close to the people affected.`;
+  }
+  return `På fem forskellige steder vendte du tilbage til ${human} ansvar og ${governance}. Din tilgang til teknologi var ${attitude}: ikke et ja eller nej, men et krav om, at mennesker tæt på hverdagen kan forstå og ændre det, der påvirker dem.`;
 }
 
-export function buildFallbackReport(completed: CompletedDilemma[], profile: ValueProfile): FutureProfileReport {
-  const narrative = generateSummary(completed, profile);
-  const dominant = getDominantValues(profile, 3).map(([key]) => valueLabels[key]);
+export function buildFallbackReport(completed: CompletedDilemma[], profile: ValueProfile, language: Language = "da"): FutureProfileReport {
+  const narrative = generateSummary(completed, profile, language);
+  const englishLabels: Record<keyof ValueProfile, string> = { trust: "Trust", freedom: "Freedom", equality: "Equality", efficiency: "Efficiency", humanContact: "Human contact", safety: "Safety", innovation: "Innovation", sustainability: "Sustainability", localControl: "Local control", transparency: "Transparency" };
+  const dominant = getDominantValues(profile, 3).map(([key]) => language === "da" ? valueLabels[key] : englishLabels[key]);
   const quotes = completed
     .flatMap((item) => {
       const entries: { quote: string; context: string }[] = [];
@@ -48,7 +53,7 @@ export function buildFallbackReport(completed: CompletedDilemma[], profile: Valu
     .slice(0, 3);
 
   return {
-    headline: "Din verden i 2046",
+    headline: language === "da" ? "Det, du holdt fast i" : "What you held on to",
     narrative,
     quotes,
     patterns: dominant,

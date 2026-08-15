@@ -23,6 +23,19 @@ export const problemAreas: ProblemArea[] = [
   "Digital tillid, rettigheder og styring",
 ];
 
+export const problemAreaLabelsByLanguage = {
+  da: Object.fromEntries(problemAreas.map((area) => [area, area])) as Record<ProblemArea, string>,
+  en: {
+    "Uddannelse og læring": "Education and learning",
+    "Arbejde og arbejdsliv": "Work and working life",
+    "Sundhed og omsorg": "Health and care",
+    "Mobilitet, byliv og bolig": "Mobility, city life and housing",
+    "Klima, energi og resiliens": "Climate, energy and resilience",
+    "Mad, vand og forsyning": "Food, water and supply",
+    "Digital tillid, rettigheder og styring": "Digital trust, rights and governance",
+  },
+} satisfies Record<"da" | "en", Record<ProblemArea, string>>;
+
 export const locationTypesByProblemArea: Record<ProblemArea, LocationType[]> = {
   "Uddannelse og læring": ["folkeskole", "gymnasium", "universitet", "bibliotek", "fritidsklub", "online læringsplatform"],
   "Arbejde og arbejdsliv": ["kontor", "fabrik", "lager", "platformarbejdsplads", "kommune", "hjemmearbejdsplads"],
@@ -58,3 +71,19 @@ export const valueLabels: Record<keyof ValueProfile, string> = {
   localControl: "Lokal kontrol",
   transparency: "Gennemsigtighed",
 };
+
+export const valueLabelsByLanguage = {
+  da: valueLabels,
+  en: {
+    trust: "Trust",
+    freedom: "Freedom",
+    equality: "Equality",
+    efficiency: "Efficiency",
+    humanContact: "Human contact",
+    safety: "Safety",
+    innovation: "Innovation",
+    sustainability: "Sustainability",
+    localControl: "Local control",
+    transparency: "Transparency",
+  },
+} satisfies Record<"da" | "en", Record<keyof ValueProfile, string>>;

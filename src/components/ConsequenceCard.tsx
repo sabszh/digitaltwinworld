@@ -1,12 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { VoiceInput } from "@/components/VoiceInput";
 import { simplifyTextForAudience } from "@/lib/audience";
 import type { Language } from "@/lib/i18n";
 import { uiText } from "@/lib/i18n";
 import { worldSound } from "@/lib/sound";
 import type { Choice, GeneratedDilemma } from "@/types/world2046";
+import { JourneyButton, JourneyCard } from "@/components/ui/journey";
 
 export function ConsequenceCard({
   choice,
@@ -24,16 +26,18 @@ export function ConsequenceCard({
   onContinue: (reflection: string, viaVoice: boolean) => void;
 }) {
   const text = uiText[language];
+  const [reflection, setReflection] = useState("");
+  const [reflectionViaVoice, setReflectionViaVoice] = useState(false);
   const place = dilemma?.exactPlace?.name ?? dilemma?.locationType ?? "stedet";
   const technology = dilemma ? simplifyTextForAudience(dilemma.role, dilemma.technology) : "teknologien";
 
   const consequenceText = customAnswer
-    ? simplifyTextForAudience(dilemma?.role ?? "For alle", `Din løsning giver ${technology} tydeligere rammer på ${place}.`)
+    ? simplifyTextForAudience(dilemma?.role ?? "For alle", language === "da" ? `Din løsning flytter ansvaret på ${place}. Nogen får mere indflydelse; andre skal nu leve med en ny usikkerhed.` : `Your solution shifts responsibility at ${place}. Someone gains more influence; someone else now lives with a new uncertainty.`)
     : choice?.consequence
       ? simplifyTextForAudience(dilemma?.role ?? "For alle", choice.consequence.split(".")[0] + ".")
     : choice
       ? simplifyTextForAudience(dilemma?.role ?? "For alle", `${choice.label} ændrer balancen mellem mennesker og ${technology}.`)
-      : "Dit valg ændrer retningen.";
+      : language === "da" ? "Dit valg ændrer, hvem der bærer ansvaret." : "Your choice changes who carries the responsibility.";
 
   return (
     // Desaturation reveal: enters desaturated, floods back to full colour
@@ -43,32 +47,42 @@ export function ConsequenceCard({
       animate={{ filter: "saturate(1)" }}
       transition={{ duration: 1.0, ease: "easeOut" }}
     >
-      <div className="surface-panel consequence-card max-w-xl p-7 md:p-8">
-        <p className="consequence-eyebrow">{dilemma?.exactPlace?.name ?? dilemma?.city ?? text.consequenceKicker}</p>
-        <h2 className="font-editorial mt-3 text-3xl font-semibold italic text-[var(--text)]">{customAnswer ? text.consequenceOwnPath : choice?.label}</h2>
+      <JourneyCard className="consequence-card max-w-xl p-7 md:p-8">
+        <h2 className="text-3xl font-semibold tracking-[-0.025em] text-[var(--text)]">{customAnswer ? text.consequenceOwnPath : choice?.label}</h2>
         <p className="mt-5 text-lg font-normal leading-7 text-[var(--muted)]">{consequenceText}</p>
 
+        <div className="mt-7 border-t border-[var(--line)] pt-6">
+          <label htmlFor="reflection" className="block font-semibold text-[var(--text)]">{text.reflectionPrompt}</label>
+          <p className="mt-1 text-sm text-[var(--faint)]">{language === "da" ? "Valgfrit — dine egne ord kan indgå i rapporten." : "Optional — your own words may appear in the report."}</p>
+          <div className="mt-3 flex gap-2">
+            <textarea id="reflection" value={reflection} onChange={(event) => setReflection(event.target.value)} maxLength={400} rows={2} placeholder={text.reflectionPlaceholder} className="surface-control min-w-0 flex-1 resize-none rounded-2xl px-4 py-3 text-[var(--text)] outline-none focus:ring-2 focus:ring-[var(--accent)]" />
+            <VoiceInput language={language} onTranscript={(transcript) => { setReflectionViaVoice(true); setReflection((current) => current ? `${current} ${transcript}` : transcript); }} />
+          </div>
+        </div>
+
         <div className="mt-7 flex flex-wrap justify-end gap-3">
-          <button
+          <JourneyButton
             onClick={() => {
               worldSound.playButtonTap();
               onBack();
             }}
-            className="surface-control inline-flex items-center gap-3 rounded-full px-5 py-3 font-semibold text-[var(--text)]"
+            variant="secondary"
+            direction="back"
           >
-            <ArrowLeft size={18} /> {text.back}
-          </button>
-          <button
+            {text.back}
+          </JourneyButton>
+          <JourneyButton
             onClick={() => {
               worldSound.playButtonTap();
-              onContinue("", false);
+              onContinue(reflection.trim(), reflectionViaVoice);
             }}
-            className="consequence-primary inline-flex items-center gap-3 rounded-full px-5 py-3 font-semibold"
+            variant="primary"
+            direction="forward"
           >
-            {text.continueJourney} <ArrowRight size={18} />
-          </button>
+            {text.continueJourney}
+          </JourneyButton>
         </div>
-      </div>
+      </JourneyCard>
     </motion.section>
   );
 }

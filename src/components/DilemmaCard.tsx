@@ -9,6 +9,7 @@ import { uiText } from "@/lib/i18n";
 import { frameQuestion } from "@/lib/questionFraming";
 import { worldSound } from "@/lib/sound";
 import type { Choice, GeneratedDilemma, Persona } from "@/types/world2046";
+import { JourneyBadge, JourneyCard } from "@/components/ui/journey";
 
 function formatPlace(dilemma: GeneratedDilemma) {
   return dilemma.exactPlace?.name ?? dilemma.city;
@@ -91,19 +92,17 @@ export function DilemmaCard({
   language: Language;
   onAnswer: (choice: Choice, customAnswer?: string, viaVoice?: boolean) => void;
 }) {
-  const customChoice: Choice = { id: "custom", label: "Egen løsning", valueImpacts: { trust: 1, localControl: 1, transparency: 1 } };
+  const customChoice: Choice = { id: "custom", label: language === "da" ? "Egen løsning" : "Own response", valueImpacts: { trust: 1, localControl: 1, transparency: 1 } };
   const place = formatPlace(dilemma);
   const framed = frameQuestion(dilemma, persona);
 
   return (
     <section className="relative z-20 flex h-dvh items-end justify-center px-4 py-4 pt-20 md:items-center md:justify-end md:px-8 md:py-5">
-      <div className="dilemma-briefing flex max-h-full w-full max-w-[min(560px,calc(100vw-2rem))] flex-col overflow-hidden border border-white/60 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(235,247,253,0.78))] p-5 text-[#082b58] shadow-[0_28px_80px_rgba(6,27,52,0.18)] backdrop-blur-xl md:p-5">
+      <JourneyCard className="dilemma-briefing flex max-h-full w-full max-w-[min(620px,calc(100vw-2rem))] flex-col overflow-hidden p-5 md:p-7">
         <div className="min-h-0 overflow-y-auto overscroll-contain pr-2 [scrollbar-gutter:stable]">
-          <div className="dilemma-meta">
-            <MapPin className="h-3.5 w-3.5 shrink-0 text-[var(--accent)]" aria-hidden="true" />
-            <span className="truncate font-semibold text-[var(--text)]">{place}</span>
-            <span className="truncate text-[var(--muted)]">{dilemma.problemArea}</span>
-            <span className="truncate text-[var(--muted)]">{uiText[language].landingYear}</span>
+          <div className="dilemma-meta flex flex-wrap gap-2">
+            <JourneyBadge icon={<MapPin className="h-3.5 w-3.5" aria-hidden="true" />}>{place}</JourneyBadge>
+            <JourneyBadge>{uiText[language].landingYear}</JourneyBadge>
           </div>
 
           <h2 className="font-editorial mt-4 text-[26px] font-semibold italic leading-tight text-[var(--text)] md:text-[32px]">
@@ -120,10 +119,7 @@ export function DilemmaCard({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
           >
-            <p className="decision-label">
-              {language === "da" ? "Beslutning" : "Decision"}
-            </p>
-            <p className="mt-1 text-[17px] font-semibold leading-6 text-[var(--text)]">{framed.question}</p>
+            <p className="text-[17px] font-semibold leading-6 text-[var(--text)]">{framed.question}</p>
             <div className="mt-4 grid gap-2.5">
               {dilemma.choices.map((choice, index) => (
                 <ChoiceButton key={choice.id} choice={choice} index={index} onChoose={onAnswer} />
@@ -132,7 +128,7 @@ export function DilemmaCard({
             </div>
           </motion.div>
         </div>
-      </div>
+      </JourneyCard>
     </section>
   );
 }

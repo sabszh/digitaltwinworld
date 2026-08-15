@@ -10,11 +10,12 @@ import { LandingScene } from "@/components/LandingScene";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { MapboxGlobeBackdrop } from "@/components/MapboxGlobeBackdrop";
 import { PersonaBuilder } from "@/components/PersonaBuilder";
+import { ConsentScreen } from "@/components/ConsentScreen";
+import { GoodbyeScreen } from "@/components/GoodbyeScreen";
 import { SoundEffects } from "@/components/SoundEffects";
 import { TravelTransition } from "@/components/TravelTransition";
 import { WorldGlobe } from "@/components/WorldGlobe";
 import { SESSION_DILEMMA_COUNT } from "@/data/taxonomies";
-import type { Language } from "@/lib/i18n";
 import { useSessionStore } from "@/lib/session";
 import { worldSound } from "@/lib/sound";
 import { useEffect, useRef, useState } from "react";
@@ -32,8 +33,8 @@ function getDilemmaColorTone(dilemma?: GeneratedDilemma): string {
 }
 
 export default function Home() {
-  const [language, setLanguage] = useState<Language>("da");
   const store = useSessionStore();
+  const language = store.language;
   const result = store.getResult();
   const hasMapbox = Boolean(process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN);
   const zoomed = store.phase === "persona" || store.phase === "traveling" || store.phase === "landing" || store.phase === "dilemma" || store.phase === "consequence";
@@ -72,6 +73,10 @@ export default function Home() {
   const starfieldRef = useRef<HTMLDivElement>(null);
   const auroraRef = useRef<HTMLDivElement>(null);
   const isParallaxPhase = store.phase === "intro" || store.phase === "persona";
+
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
 
   useEffect(() => {
     if (!isParallaxPhase) return;
@@ -185,12 +190,12 @@ export default function Home() {
       />
       {isDarkBackdrop ? <div className="bg-vignette pointer-events-none absolute inset-0 z-[2]" /> : null}
       <div className="sky-glow pointer-events-none absolute inset-0 z-[2]" />
-      {store.phase === "intro" && <LanguageToggle language={language} onChange={setLanguage} />}
+      {store.phase === "intro" && <LanguageToggle language={language} onChange={store.setLanguage} />}
       <div
         className={store.phase === "intro" ? "" : "sky-scope"}
         data-tone={dilemmaColorTone || undefined}
       >
-        {store.phase !== "intro" && store.phase !== "persona" && store.phase !== "report" && (
+        {store.phase !== "intro" && store.phase !== "persona" && store.phase !== "report" && store.phase !== "consent" && store.phase !== "goodbye" && (
           <ItineraryStrip completed={store.completedDilemmas.length} cities={cities} language={language} />
         )}
         <AnimatePresence mode="sync">
@@ -212,8 +217,7 @@ export default function Home() {
               <PersonaBuilder
                 language={language}
                 persona={store.persona}
-                onBuildPersona={(answers) => void store.buildPersona(answers)}
-                onActivate={() => void store.generateNext()}
+                onBuildPersona={store.buildPersona}
               />
             )}
             {store.phase === "traveling" && (
@@ -243,7 +247,9 @@ export default function Home() {
                 }}
               />
             )}
-            {store.phase === "report" && <FinalReport result={result} loading={store.reportLoading} language={language} onRestart={store.restart} />}
+            {store.phase === "report" && <FinalReport result={result} loading={store.reportLoading} language={language} onRestart={store.restart} onContinue={store.reviewConsent} />}
+            {store.phase === "consent" && <ConsentScreen language={language} status={store.consentStatus} onAccept={() => void store.saveConsentedSession()} onDecline={store.declineConsent} onBack={() => useSessionStore.setState({ phase: "report" })} />}
+            {store.phase === "goodbye" && <GoodbyeScreen language={language} saved={store.consentStatus === "saved"} onFinish={store.restart} />}
           </motion.div>
         </AnimatePresence>
       </div>

@@ -179,8 +179,8 @@ export function validateAiDilemma(value: unknown, input: DilemmaGenerationReques
   if (!Array.isArray(value.choices) || value.choices.length !== 4 || !value.choices.every(isChoice)) return undefined;
 
   const structured = toGeneratedDilemma(value as AiDilemma, input);
-  const tailored = tailorDilemmaCopyForAudience(structured);
-  if (hasAudienceLanguageIssues(tailored)) return undefined;
+  const tailored = input.language === "da" ? tailorDilemmaCopyForAudience(structured) : structured;
+  if (input.language === "da" && hasAudienceLanguageIssues(tailored)) return undefined;
 
   return tailored;
 }
