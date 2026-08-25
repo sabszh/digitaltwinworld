@@ -7,7 +7,8 @@
     "dev": "next dev -p 3001",
     "build": "next build",
     "lint": "eslint .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "eval:dilemmas": "vitest run -c vitest.eval.config.ts"
   },
   "keywords": [],
   "author": "",

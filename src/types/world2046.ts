@@ -6,9 +6,12 @@ export type UserRole =
   | "Ung"
   | "Forælder"
   | "Lærer / pædagog"
+  | "Fagperson"
+  | "For alle"
+  // Retired from the picker but kept valid: stored sessions and older links
+  // still carry them, and they all resolve to the professional audience.
   | "Arbejdsgiver"
   | "Medarbejder"
-  | "For alle"
   | "Borger"
   | "Beslutningstager";
 
@@ -59,7 +62,33 @@ export type Choice = {
   label: string;
   description?: string;
   consequence?: string;
+  /** Where this option sits on the dilemma's single decision axis, 1–4.
+   *  Internal: it forces the four options onto one axis at generation time and
+   *  is never shown to the player. Optional so the hand-written templates,
+   *  which predate it, still type-check. */
+  axisPosition?: number;
   valueImpacts: Partial<ValueProfile>;
+};
+
+/** The two legitimate values a dilemma is pulled between. Internal metadata:
+ *  it exists to make the generator commit to a real trade-off before it writes
+ *  the options, and to let validation check the options actually differ. */
+export type CoreTension = {
+  valueA: keyof ValueProfile;
+  valueB: keyof ValueProfile;
+  summary: string;
+};
+
+/** Internal coherence worksheet produced before the audience-facing copy. */
+export type DilemmaLogic = {
+  /** The concrete practice that has become normal by 2046. */
+  rule: string;
+  /** Why people accepted the practice; it must solve something real. */
+  benefit: string;
+  /** The one event today that makes the otherwise useful rule insufficient. */
+  trigger: string;
+  /** The exact decision the traveller can make now. */
+  decision: string;
 };
 
 export type LocationNode = {
@@ -112,6 +141,23 @@ export type GeneratedDilemma = DilemmaTemplate & {
   exactPlace?: ExactPlace;
   landingScene?: string;
   landingDetail?: string;
+  /** One sentence naming who is affected and what they stand to lose. Shown to
+   *  the player: without it a dilemma reads as an administrative setting rather
+   *  than something worth stopping for. */
+  stake?: string;
+  /** Internal generation metadata — not rendered anywhere in the UI. */
+  coreTension?: CoreTension;
+  decisionAxis?: string;
+  logic?: DilemmaLogic;
+  /** Which documented future pressure this stop was built from, so the journey
+   *  can send the next round somewhere else in the future space. */
+  futurePressureId?: string;
+  /** The one thing that is ordinary in 2046 and not in 2026. Internal: it is
+   *  what the scene has to make felt without explaining it. */
+  normalized2046?: string;
+  /** Where the player stands in the situation — passenger, neighbour, patient.
+   *  Kept so a journey can avoid making them the administrator five times. */
+  userRelation?: string;
 };
 
 export type CompletedDilemma = {
@@ -124,6 +170,11 @@ export type CompletedDilemma = {
   locationType: LocationType;
   technology: FutureTechnology;
   question: string;
+  /** Carried so the next round can pick a different corner of the future space. */
+  futurePressureId?: string;
+  /** Carried so the next round knows which values this journey has already
+   *  argued about, and can be sent somewhere new. Internal, never displayed. */
+  coreTension?: CoreTension;
   selectedChoiceId: string;
   selectedChoiceLabel: string;
   customAnswer?: string;
@@ -135,19 +186,10 @@ export type CompletedDilemma = {
 
 export type PersonaAnswers = {
   role: UserRole;
-  matters: string;
-  hopeFear: string;
-  mattersViaVoice?: boolean;
-  hopeFearViaVoice?: boolean;
-};
-
-export type Persona = {
-  role: UserRole;
-  title: string;
-  text: string;
-  traits: string[];
-  answers: PersonaAnswers;
-  source: "openai" | "fallback";
+  hope: string;
+  fear: string;
+  hopeViaVoice?: boolean;
+  fearViaVoice?: boolean;
 };
 
 export type FutureProfileReport = {
@@ -164,7 +206,9 @@ export type SessionResult = {
   createdAt: string;
   year: 2046;
   role: UserRole;
-  persona?: Persona;
+  /** What the traveller entered at check-in. The consent screen promises these
+   *  written answers are kept, so they are stored as given, not summarised. */
+  personaAnswers?: PersonaAnswers;
   completedDilemmas: CompletedDilemma[];
   valueProfile: ValueProfile;
   generatedSummary: string;

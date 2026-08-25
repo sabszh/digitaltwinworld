@@ -1,13 +1,16 @@
-import { buildFallbackReport } from "@/lib/profileScoring";
+import { addProfiles, buildFallbackReport, impactsForPlacement } from "@/lib/profileScoring";
+import type { AxisPlacement } from "@/lib/profileScoring";
+import { requestJson } from "@/lib/openaiJson";
+import { buildValuePrompt, valueResponseSchema, writtenAnswers } from "@/lib/prompts/valuePrompt";
 import { emptyValueProfile, valueLabelsByLanguage } from "@/data/taxonomies";
-import type { CompletedDilemma, FutureProfileReport, Persona, ValueProfile } from "@/types/world2046";
+import type { CompletedDilemma, FutureProfileReport, PersonaAnswers, ValueProfile } from "@/types/world2046";
 import { NextResponse } from "next/server";
 import type { Language } from "@/lib/i18n";
 
 export const runtime = "nodejs";
 
 type ReportRequest = {
-  persona?: Persona;
+  answers?: PersonaAnswers;
   completedDilemmas: CompletedDilemma[];
   valueProfile: ValueProfile;
   language: Language;
@@ -17,7 +20,14 @@ const isRecord = (value: unknown): value is Record<string, unknown> => Boolean(v
 const isString = (value: unknown): value is string => typeof value === "string";
 
 const fallback = (input: ReportRequest, reason: string) =>
-  NextResponse.json({ source: "fallback", reason, report: buildFallbackReport(input.completedDilemmas, input.valueProfile, input.language) });
+  NextResponse.json({
+    source: "fallback",
+    reason,
+    report: buildFallbackReport(input.completedDilemmas, input.valueProfile, input.language),
+    // Always echoed, so the client has one rule: trust the profile the report
+    // came back with. On this path it is whatever scoring managed to produce.
+    valueProfile: input.valueProfile,
+  });
 
 function collectUserTexts(completed: CompletedDilemma[]) {
   return completed.flatMap((item) => [item.customAnswer, item.reflection].filter(isString).map((value) => value.trim()));
@@ -51,6 +61,51 @@ function validateReport(value: unknown, userTexts: string[]): FutureProfileRepor
   };
 }
 
+/**
+ * Score the answers the traveller wrote themselves.
+ *
+ * Picked options already carry impacts authored at generation time, so only the
+ * written ones are sent. Any failure returns the profile untouched, which now
+ * means written answers contribute nothing rather than a fabricated stamp.
+ */
+async function scoreWrittenAnswers(input: ReportRequest, apiKey: string): Promise<ValueProfile> {
+  const items = writtenAnswers(input.completedDilemmas);
+  if (items.length === 0) return input.valueProfile;
+
+  const outcome = await requestJson<{ placements?: unknown }>({
+    apiKey,
+    schemaName: "world2046_value_placement",
+    schema: valueResponseSchema,
+    prompt: buildValuePrompt(items, input.language),
+    language: input.language,
+    systemNote: "Place answers on the given axis only. Do not describe the person.",
+    temperature: 0.2,
+  });
+  if ("error" in outcome) {
+    console.warn(`[report] value scoring failed: ${outcome.error}`);
+    return input.valueProfile;
+  }
+
+  const raw = outcome.data?.placements;
+  if (!Array.isArray(raw)) return input.valueProfile;
+
+  const byId = new Map(items.map((item) => [item.dilemmaId, item]));
+  let profile = input.valueProfile;
+  const seen = new Set<string>();
+  for (const entry of raw) {
+    if (!isRecord(entry) || !isString(entry.dilemmaId) || !isString(entry.position)) continue;
+    // One placement per dilemma: a model that repeats an id would otherwise
+    // score the same answer twice and double its weight in the profile.
+    if (seen.has(entry.dilemmaId)) continue;
+    const item = byId.get(entry.dilemmaId);
+    if (!item) continue;
+    seen.add(entry.dilemmaId);
+    const position = (entry.position === "off-axis" ? "off-axis" : Number(entry.position)) as AxisPlacement["position"];
+    profile = addProfiles(profile, impactsForPlacement(position, item.coreTension));
+  }
+  return profile;
+}
+
 function buildPrompt(input: ReportRequest, userTexts: string[]) {
   const languageName = input.language === "da" ? "dansk" : "English";
   const dominant = (Object.entries(input.valueProfile) as [keyof ValueProfile, number][])
@@ -64,7 +119,13 @@ function buildPrompt(input: ReportRequest, userTexts: string[]) {
   const quotedTexts = userTexts.length
     ? userTexts.map((entry) => `"${entry}"`).join("\n")
     : "Ingen egne ord — brugeren har kun valgt blandt mulighederne.";
-  const personaLine = input.persona ? `Rejsende: "${input.persona.title}" — ${input.persona.text}` : "";
+  // The traveller's own words, not a character sketch of them.
+  const personaLine = [
+    input.answers?.hope.trim() ? `Det den rejsende håbede på: "${input.answers.hope.trim()}"` : "",
+    input.answers?.fear.trim() ? `Det den rejsende frygtede: "${input.answers.fear.trim()}"` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
 
   return `Du skriver en personlig fremtidsprofil til afslutningen af World 2046, en dansk interaktiv fremtidssimulation.
 
@@ -120,7 +181,7 @@ export async function POST(request: Request) {
   }
 
   const input: ReportRequest = {
-    persona: body.persona,
+    answers: body.answers,
     completedDilemmas: body.completedDilemmas.map((item) => ({
       ...item,
       customAnswer: item.customAnswer?.slice(0, 400),
@@ -136,41 +197,26 @@ export async function POST(request: Request) {
   const userTexts = collectUserTexts(input.completedDilemmas);
 
   try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: process.env.OPENAI_MODEL ?? "gpt-4.1-mini",
-        temperature: 0.85,
-        messages: [
-          { role: "system", content: `Return only valid JSON matching the schema. Write in ${input.language === "da" ? "Danish" : "English"}. No markdown.` },
-          { role: "user", content: buildPrompt(input, userTexts) },
-        ],
-        response_format: {
-          type: "json_schema",
-          json_schema: {
-            name: "world2046_report",
-            strict: true,
-            schema: responseSchema,
-          },
-        },
-      }),
+    // Scoring first, and as its own call: the report writer receives the profile
+    // as a given, exactly as it did before. If it produced the numbers it then
+    // narrates, it would be marking its own homework.
+    const valueProfile = await scoreWrittenAnswers(input, apiKey);
+    const scored: ReportRequest = { ...input, valueProfile };
+
+    const outcome = await requestJson<unknown>({
+      apiKey,
+      schemaName: "world2046_report",
+      schema: responseSchema,
+      prompt: buildPrompt(scored, userTexts),
+      language: scored.language,
+      temperature: 0.85,
     });
+    if ("error" in outcome) return fallback(scored, outcome.error);
 
-    if (!response.ok) return fallback(input, `openai_${response.status}`);
+    const report = validateReport(outcome.data, userTexts);
+    if (!report) return fallback(scored, "invalid_ai_report");
 
-    const data = await response.json();
-    const content = data?.choices?.[0]?.message?.content;
-    if (!isString(content)) return fallback(input, "empty_openai_response");
-
-    const parsed = JSON.parse(content);
-    const report = validateReport(parsed, userTexts);
-    if (!report) return fallback(input, "invalid_ai_report");
-
-    return NextResponse.json({ source: "openai", report });
+    return NextResponse.json({ source: "openai", report, valueProfile });
   } catch {
     return fallback(input, "openai_exception");
   }

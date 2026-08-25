@@ -448,8 +448,8 @@ textarea {
   --ds-ink: #0b1f3a;
   --ds-muted: #64748b;
   --ds-faint: #94a3b8;
-  --ds-accent: #1d4ed8;
-  --ds-accent-hover: #1742b8;
+  --ds-accent: #1c5d9c;
+  --ds-accent-hover: #0b3568;
   --ds-success: #55c98d;
   --ds-surface: rgba(255, 255, 255, 0.96);
   --ds-surface-soft: rgba(246, 247, 249, 0.96);
@@ -520,12 +520,12 @@ body {
 .journey-button--primary {
   background: var(--ds-accent);
   color: #ffffff;
-  box-shadow: 0 10px 24px rgba(29, 78, 216, 0.2);
+  box-shadow: 0 10px 24px rgba(11, 53, 104, 0.22);
 }
 
 .journey-button--primary:hover {
   background: var(--ds-accent-hover);
-  box-shadow: 0 12px 28px rgba(29, 78, 216, 0.26);
+  box-shadow: 0 12px 28px rgba(11, 53, 104, 0.28);
 }
 
 .journey-button--secondary {
@@ -553,7 +553,7 @@ body {
 .decision-choice:focus-visible,
 textarea:focus-visible,
 input:focus-visible {
-  outline: 3px solid rgba(29, 78, 216, 0.24);
+  outline: 3px solid rgba(28, 93, 156, 0.28);
   outline-offset: 2px;
 }
 
@@ -567,10 +567,9 @@ input:focus-visible {
   min-height: 34px;
   align-items: center;
   gap: 0.48rem;
-  padding: 0.45rem 0.78rem;
-  border: 1px solid var(--ds-border);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.84);
+  padding: 0.45rem 0;
+  border: 0;
+  background: none;
   color: #40516a;
   font-size: 0.72rem;
   font-weight: 600;
@@ -578,7 +577,6 @@ input:focus-visible {
 }
 
 .journey-badge--success {
-  border-color: rgba(85, 201, 141, 0.5);
   color: #259461;
 }
 
@@ -606,10 +604,6 @@ input:focus-visible {
   background: #ffffff;
   color: var(--ds-ink);
   box-shadow: none;
-}
-
-.surface-control::before {
-  display: none;
 }
 
 .surface-control:hover {
@@ -700,11 +694,19 @@ input:focus-visible {
   margin-top: 1.4rem;
   color: var(--ds-ink);
   font-family: var(--font-serif), serif;
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  /* Place names run long ("Katrinebjergskolen") and the card clips overflow, so
+     the title needs break opportunities: hyphens:auto gives language-aware breaks
+     (the root lang is set per language), overflow-wrap catches whatever is left. */
+  font-size: clamp(2.2rem, 5.2vw, 3.9rem);
   font-style: normal;
   font-weight: 400;
-  line-height: 1;
+  line-height: 1.02;
   letter-spacing: -0.04em;
+  /* No hyphens: the browser's Danish dictionary breaks compounds in nonsense
+     places ("Katrineb-jergskolen"). Long names are handled by scaling the type
+     down to fit instead, so breaks only ever happen at real word boundaries. */
+  hyphens: none;
+  overflow-wrap: break-word;
 }
 
 .arrival-card-category {
@@ -741,6 +743,11 @@ input:focus-visible {
   font-style: normal !important;
   font-weight: 400 !important;
   letter-spacing: -0.025em;
+  /* No hyphens: the browser's Danish dictionary breaks compounds in nonsense
+     places ("Katrineb-jergskolen"). Long names are handled by scaling the type
+     down to fit instead, so breaks only ever happen at real word boundaries. */
+  hyphens: none;
+  overflow-wrap: break-word;
 }
 
 .dilemma-scene {
@@ -764,9 +771,9 @@ input:focus-visible {
 }
 
 .decision-choice:hover {
-  border-color: rgba(29, 78, 216, 0.52);
+  border-color: rgba(28, 93, 156, 0.52);
   background: #fbfdff;
-  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.07);
+  box-shadow: 0 0 0 3px rgba(28, 93, 156, 0.08);
   transform: none !important;
 }
 
@@ -778,12 +785,6 @@ input:focus-visible {
 
 .decision-choice span {
   color: inherit;
-}
-
-.custom-answer-card {
-  border: 1px solid var(--ds-border);
-  border-radius: 10px;
-  background: var(--ds-surface-soft);
 }
 
 .custom-answer-card textarea,
@@ -856,7 +857,7 @@ main[data-phase="consent"] .surface-card {
   background: var(--ds-accent);
   color: #ffffff;
   font-weight: 600;
-  box-shadow: 0 10px 24px rgba(29, 78, 216, 0.2);
+  box-shadow: 0 10px 24px rgba(11, 53, 104, 0.22);
 }
 
 .hero-flight-search:hover,
@@ -915,305 +916,7 @@ button:not(:disabled):active {
 
 /* Final boarding-pass reference overrides (kept last so they win over the
    broader ticket and responsive component rules above). */
-main[data-phase="persona"] .bp-head {
-  min-height: 5.4rem;
-  padding: 1.05rem 1.5rem 1rem;
-  border-bottom: 1px solid rgba(8, 43, 88, 0.1);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(242, 248, 253, 0.74));
-}
-
-main[data-phase="persona"] .bp-brand-lockup {
-  display: flex;
-  align-items: center;
-  gap: 0.95rem;
-}
-
-main[data-phase="persona"] .bp-brand-copy {
-  display: flex;
-  flex-direction: column;
-}
-
-main[data-phase="persona"] .bp-brand-mark {
-  display: grid;
-  width: 3.5rem;
-  height: 3.5rem;
-  place-items: center;
-  border: 1px solid rgba(60, 131, 207, 0.4);
-  border-radius: 50%;
-  color: #2d70bf;
-  background: radial-gradient(circle, rgba(214, 239, 251, 0.42), rgba(255, 255, 255, 0.7));
-}
-
-main[data-phase="persona"] .bp-brand-mark svg {
-  width: 2.25rem;
-  height: 2.25rem;
-  stroke-width: 1.35;
-}
-
-main[data-phase="persona"] .bp-brand {
-  display: block;
-  font-size: clamp(1.55rem, 2.7vw, 2.3rem);
-  line-height: 0.92;
-  letter-spacing: -0.035em;
-}
-
-main[data-phase="persona"] .bp-tagline {
-  display: block;
-  margin-top: 0.38rem;
-  color: #2c5f99;
-  font-family: var(--font-body), sans-serif;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-}
-
-main[data-phase="persona"] .bp-pass-label,
-main[data-phase="persona"] .ticket-label {
-  color: #3576c4;
-  font-weight: 700;
-}
-
-main[data-phase="persona"] .bp-route {
-  display: grid;
-  grid-template-columns: minmax(7rem, 1fr) 2.25rem minmax(7rem, 1fr) minmax(5rem, 0.72fr) minmax(10rem, 1.15fr);
-  align-items: center;
-  gap: 0.85rem;
-  min-height: 8.6rem;
-  padding: 1.15rem 1.5rem;
-  border-bottom: 1px solid rgba(8, 43, 88, 0.1);
-}
-
-main[data-phase="persona"] .bp-route::after {
-  display: none;
-}
-
-main[data-phase="persona"] .bp-code {
-  font-size: clamp(2.25rem, 4.5vw, 3.35rem);
-  line-height: 0.95;
-  color: #071d38;
-}
-
-main[data-phase="persona"] .bp-arrow {
-  color: #4d91e5;
-  font-size: 2rem;
-  opacity: 1;
-  text-align: center;
-}
-
-main[data-phase="persona"] .bp-flight-info {
-  margin-left: 0;
-}
-
-main[data-phase="persona"] .bp-flight-col {
-  text-align: left;
-}
-
-main[data-phase="persona"] .bp-flight-val {
-  color: #071d38;
-  font-size: 1.1rem;
-  font-weight: 800;
-}
-
-main[data-phase="persona"] .bp-route-map {
-  position: relative;
-  height: 4.5rem;
-  overflow: hidden;
-  opacity: 0.85;
-  background: radial-gradient(circle at 18% 52%, rgba(90, 150, 220, 0.3) 0 1.5px, transparent 2px) 0 0 / 0.48rem 0.48rem;
-  -webkit-mask-image: radial-gradient(ellipse at center, #000 34%, transparent 75%);
-  mask-image: radial-gradient(ellipse at center, #000 34%, transparent 75%);
-}
-
-main[data-phase="persona"] .bp-route-map::before {
-  content: "";
-  position: absolute;
-  left: 14%;
-  top: 55%;
-  width: 70%;
-  height: 1px;
-  background: #4d91e5;
-  transform: rotate(-25deg);
-  transform-origin: left center;
-}
-
-main[data-phase="persona"] .bp-route-map::after {
-  content: "";
-  position: absolute;
-  left: 13%;
-  top: 52%;
-  width: 0.6rem;
-  height: 0.6rem;
-  border: 2px solid #4d91e5;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 9.2rem -4.1rem 0 -1px #4d91e5;
-}
-
-main[data-phase="persona"] .bp-fields {
-  gap: 0;
-  padding: 0.35rem 0.85rem 1rem;
-}
-
-main[data-phase="persona"] .ticket-field {
-  min-height: 6.5rem;
-  padding: 1rem 0.85rem;
-  border-right: 1px solid rgba(8, 43, 88, 0.1);
-  border-bottom: 0;
-}
-
-main[data-phase="persona"] .ticket-field-body {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  min-height: 100%;
-}
-
-main[data-phase="persona"] .ticket-field-icon {
-  display: grid;
-  width: 3rem;
-  height: 3rem;
-  flex: 0 0 auto;
-  place-items: center;
-  border-radius: 50%;
-  background: #edf4fc;
-  color: #367ad0;
-}
-
-main[data-phase="persona"] .ticket-field-icon svg {
-  width: 1.5rem;
-  height: 1.5rem;
-  stroke-width: 1.7;
-}
-
-main[data-phase="persona"] .ticket-field-copy {
-  min-width: 0;
-}
-
-main[data-phase="persona"] .ticket-field strong {
-  font-size: 1rem;
-  line-height: 1.15;
-}
-
-main[data-phase="persona"] .ticket-field-check {
-  display: grid;
-  width: 1.55rem;
-  height: 1.55rem;
-  margin-left: auto;
-  flex: 0 0 auto;
-  place-items: center;
-  border-radius: 50%;
-  background: #347bd6;
-  color: white;
-  font-size: 0.9rem;
-  font-weight: 800;
-}
-
-main[data-phase="persona"] .bp-stub {
-  gap: 0.9rem;
-  padding: 1.35rem 1.35rem 1.1rem 2.25rem;
-  border-left: 1px dashed rgba(8, 43, 88, 0.22);
-  background: radial-gradient(circle at 85% 16%, rgba(214, 239, 251, 0.28), transparent 38%), rgba(255, 255, 255, 0.54);
-}
-
-main[data-phase="persona"] .bp-stub::before {
-  display: none;
-}
-
-main[data-phase="persona"] .bp-stub-route {
-  gap: 0.2rem;
-  margin-top: 0.2rem;
-}
-
-main[data-phase="persona"] .bp-stub-route strong {
-  font-family: var(--font-body), sans-serif;
-  font-size: 0.92rem;
-  letter-spacing: 0.02em;
-}
-
-main[data-phase="persona"] .bp-seat-box {
-  min-width: 8rem;
-  margin-top: 0.35rem;
-  border-color: rgba(60, 131, 207, 0.34);
-  background: rgba(255, 255, 255, 0.78);
-}
-
-main[data-phase="persona"] .bp-seat-box span {
-  padding: 0.45rem 0.55rem 0.3rem;
-  color: #3576c4;
-  font-family: var(--font-body), sans-serif;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-}
-
-main[data-phase="persona"] .bp-seat-box strong {
-  padding: 0.25rem 0.55rem 0.35rem;
-  border-color: rgba(60, 131, 207, 0.34);
-  color: #071d38;
-  font-family: var(--font-body), sans-serif;
-  font-size: 2.7rem;
-  line-height: 1;
-}
-
-main[data-phase="persona"] .bp-seat-box em {
-  padding: 0.4rem 0.55rem;
-  background: #4a8fdd;
-  color: #fff;
-  font-family: var(--font-body), sans-serif;
-  font-size: 0.7rem;
-  font-style: normal;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-}
-
-main[data-phase="persona"] .bp-stub-divider {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  margin-top: 0.55rem;
-  color: #7da4cf;
-}
-
-main[data-phase="persona"] .bp-stub-divider span {
-  height: 1px;
-  flex: 1;
-  background: repeating-linear-gradient(90deg, rgba(60, 131, 207, 0.4) 0 3px, transparent 3px 6px);
-}
-
-main[data-phase="persona"] .bp-stub-divider svg {
-  width: 1.2rem;
-  height: 1.2rem;
-  stroke-width: 1.25;
-}
-
-main[data-phase="persona"] .bp-stub-code {
-  position: relative;
-  color: #173966;
-  font-family: var(--font-body), sans-serif;
-  font-size: 0.78rem;
-  letter-spacing: 0.035em;
-}
-
 @media (max-width: 767px) {
-  main[data-phase="persona"] .bp-route {
-    grid-template-columns: minmax(5rem, 1fr) 1.75rem minmax(5rem, 1fr);
-  }
-
-  main[data-phase="persona"] .bp-flight-info,
-  main[data-phase="persona"] .bp-route-map {
-    display: none;
-  }
-
-  main[data-phase="persona"] .bp-fields {
-    padding-inline: 0.45rem;
-  }
-
-  main[data-phase="persona"] .ticket-field {
-    border-right: 0;
-    border-bottom: 1px solid rgba(8, 43, 88, 0.1);
-  }
 }
 
 /* Boarding pass reference treatment: a crisp airline document with blue
@@ -1266,10 +969,6 @@ main[data-phase="persona"] .bp-tagline {
   text-transform: uppercase;
 }
 
-main[data-phase="persona"] .bp-ticket-meta {
-  color: rgba(7, 29, 56, 0.72);
-}
-
 main[data-phase="persona"] .bp-pass-label,
 main[data-phase="persona"] .ticket-label {
   color: #3576c4;
@@ -1286,10 +985,6 @@ main[data-phase="persona"] .bp-route {
   border-bottom: 1px solid rgba(8, 43, 88, 0.1);
 }
 
-main[data-phase="persona"] .bp-route::after {
-  display: none;
-}
-
 main[data-phase="persona"] .bp-code {
   font-size: clamp(2.25rem, 4.5vw, 3.35rem);
   line-height: 0.95;
@@ -1297,7 +992,7 @@ main[data-phase="persona"] .bp-code {
 }
 
 main[data-phase="persona"] .bp-arrow {
-  color: #4d91e5;
+  color: var(--world-blue);
   font-size: 2rem;
   opacity: 1;
   text-align: center;
@@ -1317,16 +1012,6 @@ main[data-phase="persona"] .bp-flight-val {
   font-weight: 800;
 }
 
-main[data-phase="persona"] .bp-route-map {
-  position: relative;
-  height: 4.5rem;
-  overflow: hidden;
-  opacity: 0.85;
-  background: radial-gradient(circle at 18% 52%, rgba(90, 150, 220, 0.3) 0 1.5px, transparent 2px) 0 0 / 0.48rem 0.48rem;
-  -webkit-mask-image: radial-gradient(ellipse at center, #000 34%, transparent 75%);
-  mask-image: radial-gradient(ellipse at center, #000 34%, transparent 75%);
-}
-
 main[data-phase="persona"] .bp-route-map::before {
   content: "";
   position: absolute;
@@ -1334,8 +1019,8 @@ main[data-phase="persona"] .bp-route-map::before {
   top: 55%;
   width: 70%;
   height: 1px;
-  background: #4d91e5;
-  box-shadow: 0 0 0 1px rgba(77, 145, 229, 0.08);
+  background: var(--world-blue);
+  box-shadow: 0 0 0 1px rgba(28, 93, 156, 0.08);
   transform: rotate(-25deg);
   transform-origin: left center;
 }
@@ -1347,81 +1032,15 @@ main[data-phase="persona"] .bp-route-map::after {
   top: 52%;
   width: 0.6rem;
   height: 0.6rem;
-  border: 2px solid #4d91e5;
+  border: 2px solid var(--world-blue);
   border-radius: 50%;
   background: #fff;
-  box-shadow: 9.2rem -4.1rem 0 -1px #4d91e5;
-}
-
-main[data-phase="persona"] .bp-fields {
-  gap: 0;
-  padding: 0.35rem 0.85rem 1rem;
-}
-
-main[data-phase="persona"] .ticket-field {
-  min-height: 6.5rem;
-  padding: 1rem 0.85rem;
-  border-right: 1px solid rgba(8, 43, 88, 0.1);
-  border-bottom: 0;
-}
-
-main[data-phase="persona"] .ticket-field-body {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  min-height: 100%;
-  position: relative;
-}
-
-main[data-phase="persona"] .ticket-field-icon {
-  display: grid;
-  width: 3rem;
-  height: 3rem;
-  flex: 0 0 auto;
-  place-items: center;
-  border-radius: 50%;
-  background: #edf4fc;
-  color: #367ad0;
-}
-
-main[data-phase="persona"] .ticket-field-icon svg {
-  width: 1.5rem;
-  height: 1.5rem;
-  stroke-width: 1.7;
-}
-
-main[data-phase="persona"] .ticket-field-copy {
-  min-width: 0;
+  box-shadow: 9.2rem -4.1rem 0 -1px var(--world-blue);
 }
 
 main[data-phase="persona"] .ticket-field strong {
   font-size: 1rem;
   line-height: 1.15;
-}
-
-main[data-phase="persona"] .ticket-field-check {
-  display: grid;
-  width: 1.55rem;
-  height: 1.55rem;
-  margin-left: auto;
-  flex: 0 0 auto;
-  place-items: center;
-  border-radius: 50%;
-  background: #347bd6;
-  color: white;
-  font-size: 0.9rem;
-  font-weight: 800;
-}
-
-main[data-phase="persona"] .bp-stub {
-  gap: 0.9rem;
-  padding: 1.35rem 1.35rem 1.1rem 2.25rem;
-  border-left: 1px dashed rgba(8, 43, 88, 0.22);
-  background: radial-gradient(circle at 85% 16%, rgba(214, 239, 251, 0.28), transparent 38%), rgba(255, 255, 255, 0.54);
-}
-
-main[data-phase="persona"] .bp-stub::before {
-  display: none;
 }
 
 main[data-phase="persona"] .bp-stub-route {
@@ -1462,27 +1081,13 @@ main[data-phase="persona"] .bp-seat-box strong {
 
 main[data-phase="persona"] .bp-seat-box em {
   padding: 0.4rem 0.55rem;
-  background: #4a8fdd;
+  background: var(--world-blue);
   color: #fff;
   font-family: var(--font-body), sans-serif;
   font-size: 0.7rem;
   font-style: normal;
   font-weight: 700;
   letter-spacing: 0.12em;
-}
-
-main[data-phase="persona"] .bp-stub-divider {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  margin-top: 0.55rem;
-  color: #7da4cf;
-}
-
-main[data-phase="persona"] .bp-stub-divider span {
-  height: 1px;
-  flex: 1;
-  background: repeating-linear-gradient(90deg, rgba(60, 131, 207, 0.4) 0 3px, transparent 3px 6px);
 }
 
 main[data-phase="persona"] .bp-stub-divider svg {
@@ -1500,23 +1105,10 @@ main[data-phase="persona"] .bp-stub-code {
 }
 
 @media (max-width: 767px) {
-  main[data-phase="persona"] .bp-route {
-    grid-template-columns: minmax(5rem, 1fr) 1.75rem minmax(5rem, 1fr);
-  }
-
-  main[data-phase="persona"] .bp-flight-info,
-  main[data-phase="persona"] .bp-route-map {
-    display: none;
-  }
-
   main[data-phase="persona"] .bp-fields {
     padding-inline: 0.45rem;
   }
 
-  main[data-phase="persona"] .ticket-field {
-    border-right: 0;
-    border-bottom: 1px solid rgba(8, 43, 88, 0.1);
-  }
 }
 
 .horizon-kicker {
@@ -1567,39 +1159,11 @@ main[data-phase="persona"] .bp-stub-code {
   text-shadow: 0 2px 18px rgba(0, 0, 0, 0.75);
 }
 
-.horizon-subtitle-meta {
-  margin-top: 0.6rem;
-  font-family: var(--font-body), sans-serif;
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.96);
-  opacity: 1;
-}
-
-.intro-message-section {
-  min-height: 140vh;
-  padding-top: 7rem;
-  padding-bottom: 45vh;
-}
-
 .intro-message-section > .intro-message-copy {
   position: sticky;
   top: 7rem;
   z-index: 4;
   text-align: center;
-}
-
-.intro-message-copy .horizon-lead,
-.intro-message-copy .horizon-subtitle-line {
-  text-shadow:
-    0 2px 18px rgba(0, 0, 0, 0.78),
-    0 18px 54px rgba(0, 0, 0, 0.42);
-}
-
-.intro-message-copy .horizon-subtitle-line {
-  margin-top: 0.85rem;
 }
 
 .hero-flight-panel {
@@ -2095,24 +1659,52 @@ main[data-phase="persona"] .bp-stub-code {
 .time-transit-label { color: rgba(143, 199, 232, 0.78); }
 .time-transit-route { color: rgba(255, 255, 255, 0.42); letter-spacing: 0.3em; }
 
+/* --year-progress runs 0 → 1 as the counter crosses the twenty years. Every
+   intensity below is driven off it, so the board visibly heats up on the way to
+   2046 instead of looking identical at 2027 and 2045. Defaulted here because the
+   variable is only set once the first animation frame lands. */
 .year-counter {
+  --year-progress: 0;
+  position: relative;
   display: inline-flex;
   gap: 0.4rem;
-  padding: 0.7rem 0.75rem;
-  border: 1px solid rgba(143, 199, 232, 0.22);
+  padding: 0.85rem 0.9rem;
+  border: 1px solid rgba(143, 199, 232, calc(0.22 + var(--year-progress) * 0.4));
   border-radius: 10px;
   background:
     linear-gradient(180deg, rgba(9, 20, 34, 0.96), rgba(2, 8, 17, 0.98)),
     repeating-linear-gradient(0deg, transparent 0 34px, rgba(255, 255, 255, 0.05) 34px 35px);
-  box-shadow: 0 30px 80px rgba(2, 8, 17, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  box-shadow:
+    0 30px 80px rgba(2, 8, 17, 0.6),
+    0 0 calc(2rem + var(--year-progress) * 6rem) rgba(60, 131, 207, calc(var(--year-progress) * 0.5)),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
   perspective: 420px;
+  animation: year-breathe calc(2.6s - var(--year-progress) * 1.4s) ease-in-out infinite;
+}
+
+/* The pulse the score beats against. It tightens as the years run out — same
+   trick as the heartbeat in the audio, so picture and sound accelerate together. */
+@keyframes year-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(calc(1 + var(--year-progress) * 0.022)); }
+}
+
+/* A rim of light that only shows up in the last stretch. */
+.year-counter::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(143, 199, 232, 0.5), transparent 40%);
+  opacity: calc(var(--year-progress) * var(--year-progress) * 0.7);
+  pointer-events: none;
 }
 
 .flip-digit {
   position: relative;
   display: inline-flex;
-  width: clamp(2.6rem, 6.4vw, 4.2rem);
-  height: clamp(3.6rem, 8.8vw, 5.8rem);
+  width: clamp(3.1rem, 7.6vw, 5rem);
+  height: clamp(4.3rem, 10.4vw, 6.9rem);
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
@@ -2142,15 +1734,16 @@ main[data-phase="persona"] .bp-stub-code {
   justify-content: center;
   color: #f2f7fb;
   font-family: var(--font-mono-scifi), monospace;
-  font-size: clamp(2rem, 5vw, 3.3rem);
+  font-size: clamp(2.4rem, 6vw, 4rem);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  text-shadow: 0 0 18px rgba(143, 199, 232, 0.34);
+  text-shadow: 0 0 calc(18px + var(--year-progress) * 26px) rgba(143, 199, 232, calc(0.34 + var(--year-progress) * 0.5));
   transform-origin: center top;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .flip-digit-face { transform: none !important; }
+  .year-counter { animation: none; }
 }
 
 .loader-wrapper--persona {
@@ -2570,10 +2163,6 @@ main[data-phase="persona"] .bp-stub-code {
   min-height: 64px;
 }
 
-.ticket-launch:not(:disabled):hover {
-  background: var(--midnight);
-}
-
 .ticket-launch:disabled {
   opacity: 0.35;
   cursor: not-allowed;
@@ -2720,13 +2309,6 @@ main[data-phase="persona"] .bp-stub-code {
   border-right: 0;
 }
 
-.itinerary-stop--current {
-  color: var(--accent);
-  background:
-    linear-gradient(180deg, rgba(143, 199, 232, 0.18), rgba(143, 199, 232, 0.05)),
-    repeating-linear-gradient(0deg, transparent 0 23px, rgba(255, 255, 255, 0.05) 23px 24px);
-}
-
 .itinerary-stop--upcoming {
   opacity: 0.72;
 }
@@ -2799,6 +2381,9 @@ main[data-phase="persona"] .bp-stub-code {
   font-size: clamp(1.8rem, 4vw, 2.8rem);
   font-style: italic;
   font-weight: 600;
+  min-width: 0;
+  hyphens: none;
+  overflow-wrap: break-word;
   line-height: 1.02;
 }
 
@@ -2897,10 +2482,9 @@ main[data-phase="persona"] .bp-stub-code {
   max-width: 100%;
   align-items: center;
   gap: 0.45rem;
-  border: 1px solid rgba(6, 27, 52, 0.08);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.34);
-  padding: 0.35rem 0.65rem;
+  border: 0;
+  background: none;
+  padding: 0;
   font-size: 0.78rem;
 }
 
@@ -3127,10 +2711,6 @@ main[data-phase="persona"] .bp-stub-code {
   letter-spacing: 0.06em;
 }
 
-.dilemma-meta {
-  border-color: rgba(8, 43, 88, 0.08);
-  background: rgba(255, 255, 255, 0.46);
-}
 
 .decision-choice {
   position: relative;
@@ -3228,25 +2808,8 @@ main[data-phase="persona"] .bp-stub-code {
 }
 
 @media (max-width: 767px) {
-  .hero-flight-panel {
-    bottom: 5.5rem;
-    width: min(24rem, calc(100vw - 1.5rem));
-  }
-
-  .hero-flight-fields {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 4.15rem;
-  }
-
   .hero-flight-field {
     padding: 0.9rem 0.8rem;
-  }
-
-  .hero-flight-field span {
-    display: none;
-  }
-
-  .hero-flight-field strong {
-    font-size: 0.9rem;
   }
 
   .hero-flight-field:nth-child(3),
@@ -3581,15 +3144,6 @@ a,
   line-height: 1.04;
 }
 
-:is(main[data-phase="intro"], .intro-scope) .hero-flight-fields {
-  border: 0;
-  border-radius: 8px;
-  background: linear-gradient(180deg, rgba(247, 252, 255, 0.92), rgba(229, 241, 249, 0.88));
-  box-shadow:
-    0 24px 70px rgba(6, 27, 52, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
 :is(main[data-phase="intro"], .intro-scope) .hero-flight-panel {
   border: 0;
   outline: 0;
@@ -3629,11 +3183,6 @@ a,
     0 20px 46px rgba(8, 43, 88, 0.3);
 }
 
-:is(main[data-phase="intro"], .intro-scope) .hero-flight-search--launching {
-  background: #0b3568;
-  box-shadow: 0 0 38px rgba(8, 43, 88, 0.34);
-}
-
 .intro-message-section {
   min-height: 140vh;
   padding-top: 7rem;
@@ -3671,6 +3220,13 @@ main[data-phase="persona"] .boarding-pass {
     radial-gradient(circle at 100% 50%, transparent 0 12px, rgba(255, 255, 255, 0.96) 12.5px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.98), rgba(236, 247, 253, 0.94));
   box-shadow: 0 34px 90px rgba(2, 15, 31, 0.24);
+}
+
+/* The ticket keeps its full paper silhouette while it leaves the check-in
+   screen. The loading board appears only after this motion has completed. */
+main[data-phase="persona"] .boarding-pass--departing {
+  transform-origin: center center;
+  will-change: transform, opacity;
 }
 
 main[data-phase="persona"] .bp-head,
@@ -3719,10 +3275,12 @@ main[data-phase="persona"] .bp-stub {
   grid-column: 2;
   grid-row: 1 / span 4;
   display: grid;
-  align-content: start;
-  gap: 1rem;
+  /* Everything used to bunch at the top, leaving ~40% of the stub empty. Real
+     stubs run the full height with the barcode anchored at the foot. */
+  align-content: space-between;
+  gap: 1.2rem;
   min-height: 100%;
-  padding: 1.18rem 1.35rem 1.18rem 3rem;
+  padding: 1.5rem 1.6rem 1.5rem 2.6rem;
   border-left: 1px dashed rgba(7, 29, 56, 0.32);
   background: rgba(255, 255, 255, 0.46);
   font-family: var(--font-mono), ui-monospace, monospace;
@@ -3874,10 +3432,6 @@ main[data-phase="persona"] .ticket-field strong {
     grid-template-columns: 1fr;
   }
 
-  main[data-phase="persona"] .ticket-field {
-    border-right: 0;
-    border-bottom: 1px dashed rgba(7, 29, 56, 0.14);
-  }
 }
 
 main[data-phase="persona"] .persona-loading-stage {
@@ -4042,6 +3596,38 @@ main[data-phase="persona"] .boarding-pass > * {
   justify-content: center;
 }
 
+/* Credit for the field recording playing at this destination. Deliberately the
+   quietest thing on the card, but present: CC-BY and CC-BY-SA recordings
+   require attribution when played in public. */
+.arrival-card-credit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin-top: 1.15rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(6, 27, 52, 0.1);
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--ds-faint);
+}
+
+.arrival-card-credit-label {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.62rem;
+  color: rgba(6, 27, 52, 0.36);
+}
+
+.arrival-card-credit-title {
+  color: rgba(6, 27, 52, 0.66);
+  font-style: italic;
+}
+
+.arrival-card-credit-meta::before {
+  content: "— ";
+}
+
 .arrival-card-meta--top {
   margin-top: 0;
 }
@@ -4056,8 +3642,6 @@ main[data-phase="persona"] .boarding-pass > * {
 .dilemma-meta {
   flex-wrap: wrap;
   gap: 0.5rem;
-  border-radius: 10px;
-  padding: 0.45rem 0.65rem;
 }
 
 .voice-input-control {
@@ -4113,18 +3697,35 @@ main[data-phase="persona"] .bp-route-map::after { display: none; content: none; 
 main[data-phase="persona"] .bp-route-map-svg { display: block; width: 100%; height: 100%; overflow: visible; }
 main[data-phase="persona"] .bp-map-land { fill: url(#bp-map-dots); opacity: 0.62; }
 main[data-phase="persona"] .bp-route-line { fill: none; stroke: url(#bp-route-gradient); stroke-width: 1.7; stroke-linecap: round; stroke-dasharray: 2 1.5; }
-main[data-phase="persona"] .bp-route-start { fill: #fff; stroke: #4d91e5; stroke-width: 1.7; }
+main[data-phase="persona"] .bp-route-start { fill: #fff; stroke: var(--world-blue); stroke-width: 1.7; }
 main[data-phase="persona"] .bp-route-end { fill: #1c5d9c; stroke: #fff; stroke-width: 1.2; }
 main[data-phase="persona"] .bp-fields { gap: 0; padding: 0.35rem 0.85rem 1rem; }
 main[data-phase="persona"] .ticket-field { min-height: 6.5rem; padding: 1rem 0.85rem; }
 main[data-phase="persona"] .ticket-field-body { position: relative; display: flex; align-items: center; gap: 0.8rem; min-height: 100%; }
-main[data-phase="persona"] .ticket-field-icon { display: grid; width: 3rem; height: 3rem; flex: 0 0 auto; place-items: center; border-radius: 50%; background: #edf4fc; color: #367ad0; }
+main[data-phase="persona"] .ticket-field-icon { display: grid; width: 3rem; height: 3rem; flex: 0 0 auto; place-items: center; border-radius: 50%; background: rgba(28, 93, 156, 0.1); color: var(--world-blue); }
 main[data-phase="persona"] .ticket-field-icon svg { width: 1.5rem; height: 1.5rem; stroke-width: 1.7; }
 main[data-phase="persona"] .ticket-field-copy { min-width: 0; }
-main[data-phase="persona"] .ticket-field-check { display: grid; width: 1.55rem; height: 1.55rem; margin-left: auto; flex: 0 0 auto; place-items: center; border-radius: 50%; background: #347bd6; color: white; font-size: 0.9rem; font-weight: 800; }
+main[data-phase="persona"] .ticket-field-check {
+  display: grid;
+  place-items: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-left: auto;
+  flex: 0 0 auto;
+  /* Just the mark, no container: a bare tick reads as ink on the form rather
+     than as a control sitting on top of it. */
+  border: 0;
+  background: none;
+  color: #1c5d9c;
+  font-family: var(--font-mono-scifi), monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+  animation: bp-stamp 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
 main[data-phase="persona"] .bp-stub::before { display: none; }
 main[data-phase="persona"] .bp-seat-box { min-width: 8rem; margin-top: 0.35rem; }
-main[data-phase="persona"] .bp-seat-box em { padding: 0.4rem 0.55rem; background: #4a8fdd; color: #fff; font-family: var(--font-body), sans-serif; font-style: normal; font-weight: 700; letter-spacing: 0.12em; }
+main[data-phase="persona"] .bp-seat-box em { padding: 0.4rem 0.55rem; background: var(--world-blue); color: #fff; font-family: var(--font-body), sans-serif; font-style: normal; font-weight: 700; letter-spacing: 0.12em; }
 main[data-phase="persona"] .bp-stub-divider { display: flex; align-items: center; gap: 0.45rem; margin-top: 0.55rem; color: #7da4cf; }
 main[data-phase="persona"] .bp-stub-divider span { height: 1px; flex: 1; background: repeating-linear-gradient(90deg, rgba(60, 131, 207, 0.4) 0 3px, transparent 3px 6px); }
 main[data-phase="persona"] .bp-stub-divider svg { width: 1.2rem; height: 1.2rem; }
@@ -4237,10 +3838,6 @@ main[data-phase="persona"] .bp-stub-filled {
 }
 
 /* The launch control should read as the beginning of the journey, not a search utility. */
-:is(main[data-phase="intro"], .intro-scope) .hero-flight-fields {
-  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(10.5rem, 1.2fr);
-}
-
 :is(main[data-phase="intro"], .intro-scope) .hero-flight-search {
   display: inline-flex;
   align-items: center;
@@ -4256,11 +3853,6 @@ main[data-phase="persona"] .bp-stub-filled {
   text-transform: uppercase;
   white-space: nowrap;
   transition: background 220ms ease, transform 220ms ease, box-shadow 220ms ease, gap 220ms ease;
-}
-
-:is(main[data-phase="intro"], .intro-scope) .hero-flight-search:hover {
-  gap: 0.7rem;
-  background: linear-gradient(135deg, #2777bd, #0b3568);
 }
 
 :is(main[data-phase="intro"], .intro-scope) .hero-flight-search:focus-visible {
@@ -4313,10 +3905,6 @@ main[data-phase="persona"] .bp-stub-filled {
 }
 
 @media (max-width: 767px) {
-  :is(main[data-phase="intro"], .intro-scope) .hero-flight-fields {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(8.75rem, 1.05fr);
-  }
-
   :is(main[data-phase="intro"], .intro-scope) .hero-flight-search {
     min-width: 0;
     padding: 0 0.7rem;
@@ -4556,4 +4144,271 @@ main[data-phase="persona"] .boarding-pass {
 .departure-strip .itinerary-stop-blank {
   letter-spacing: 0.22em;
   opacity: 0.55;
+}
+
+/* ── Ticket button ───────────────────────────────────────────────────────────
+   One primary action for the whole journey. The app had three separate ones
+   (journey-button--primary, ticket-launch, hero-flight-search) that had drifted
+   apart; this is the single shape they now share. The dashed rule inside the
+   left edge reads as a tear-off talon, tying the action to the boarding pass.
+   Selectors are doubled up only to outrank the older definitions above. */
+.journey-button.journey-button--primary,
+.ticket-launch.ticket-launch,
+:is(main[data-phase="intro"], .intro-scope) .hero-flight-search.hero-flight-search {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  min-height: 2.9rem;
+  padding: 0.9rem 1.5rem;
+  border: 0;
+  border-radius: 0.3rem;
+  background-color: #1c5d9c;
+  color: #ffffff;
+  font-family: var(--font-mono-scifi), monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  box-shadow: 0 14px 30px rgba(11, 53, 104, 0.28);
+  transition: background-color 160ms ease, box-shadow 160ms ease, transform 120ms ease;
+}
+
+.journey-button.journey-button--primary:not(:disabled):hover,
+.ticket-launch.ticket-launch:not(:disabled):hover,
+:is(main[data-phase="intro"], .intro-scope) .hero-flight-search.hero-flight-search:not(:disabled):hover {
+  background-color: #0b3568;
+  box-shadow: 0 18px 38px rgba(8, 43, 88, 0.34);
+}
+
+.journey-button.journey-button--primary:not(:disabled):active,
+.ticket-launch.ticket-launch:not(:disabled):active,
+:is(main[data-phase="intro"], .intro-scope) .hero-flight-search.hero-flight-search:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.journey-button.journey-button--primary svg,
+.ticket-launch.ticket-launch svg,
+:is(main[data-phase="intro"], .intro-scope) .hero-flight-search.hero-flight-search svg {
+  transition: transform 160ms ease;
+}
+
+.journey-button.journey-button--primary:not(:disabled):hover svg,
+:is(main[data-phase="intro"], .intro-scope) .hero-flight-search.hero-flight-search:not(:disabled):hover svg {
+  transform: translateX(0.18rem);
+}
+
+.journey-button.journey-button--primary:disabled,
+.ticket-launch.ticket-launch:disabled {
+  opacity: 0.38;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Secondary keeps the same shape and voice so the pair reads as one system. */
+.journey-button.journey-button--secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  min-height: 2.9rem;
+  padding: 0.9rem 1.5rem;
+  border: 1px solid rgba(28, 93, 156, 0.42);
+  border-radius: 0.3rem;
+  background: transparent;
+  color: #1c5d9c;
+  font-family: var(--font-mono-scifi), monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  box-shadow: none;
+}
+
+.journey-button.journey-button--secondary:not(:disabled):hover {
+  border-color: #1c5d9c;
+  background: rgba(28, 93, 156, 0.08);
+}
+
+/* ── Transit orb ─────────────────────────────────────────────────────────────
+   Sized in vmin so it hugs the globe at any aspect ratio instead of squaring
+   off at the viewport edges. The halo supplies the atmosphere; the two sheen
+   layers are conic gradients turning at different speeds and directions, which
+   keeps the light drifting without ever showing a seam. */
+.transit-orb {
+  position: absolute;
+  left: var(--globe-x, 50%);
+  top: var(--globe-y, 50%);
+  z-index: 0;
+  /* Driven by the globe's real screen geometry, published by the backdrop. The
+     box is wider than the planet so the glow has room to fall away on both sides
+     of the limb; the ring itself is placed at LIMB_FRACTION below. */
+  width: calc(var(--globe-r, 40vmin) * 2.4);
+  height: calc(var(--globe-r, 40vmin) * 2.4);
+  /* Nudged up off the geometric limb. Perspective means the planet's visible
+     edge sits slightly inside the 90° great-circle limb we measure, so a ring
+     placed exactly on the maths reads as hanging a touch low. */
+  transform: translate(-50%, calc(-50% - var(--globe-r, 40vmin) * 0.045));
+  pointer-events: none;
+}
+
+.transit-orb-halo,
+.transit-orb-sheen {
+  position: absolute;
+  inset: 0;
+}
+
+/* `closest-side` matters: without it a radial-gradient measures its percentages
+   from the farthest CORNER, so a band written at 50% actually lands at 0.707 of
+   the box's half-width — well inside the planet. With closest-side, 100% is the
+   box edge, and the limb sits at 1/1.2 = 83.3% of it. */
+.transit-orb-halo {
+  background: radial-gradient(
+    circle closest-side,
+    transparent 0 74%,
+    rgba(90, 165, 226, 0.14) 79%,
+    rgba(173, 216, 245, 0.42) 83.3%,
+    rgba(60, 131, 207, 0.16) 88%,
+    transparent 96%
+  );
+  filter: blur(8px);
+}
+
+.transit-orb-sheen {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(173, 216, 245, 0.45) 40deg,
+    transparent 110deg,
+    transparent 250deg,
+    rgba(120, 180, 230, 0.32) 300deg,
+    transparent 360deg
+  );
+  filter: blur(12px);
+  mask-image: radial-gradient(circle closest-side, transparent 0 78%, #000 82%, #000 85.5%, transparent 92%);
+  -webkit-mask-image: radial-gradient(circle closest-side, transparent 0 78%, #000 82%, #000 85.5%, transparent 92%);
+  opacity: 0.9;
+}
+
+.transit-orb-sheen--reverse {
+  opacity: 0.55;
+  filter: blur(34px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .transit-orb-sheen { display: none; }
+}
+
+/* The stake line. Sits between the scene and the question, and is the one place
+   on the card allowed to address the player directly — quiet in weight but not
+   in contrast, because it is the reason to care. */
+.dilemma-stake {
+  margin-top: 0.3rem;
+  padding-left: 0.8rem;
+  border-left: 2px solid var(--accent);
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.dilemma-stake-wrap {
+  margin-top: 0.85rem;
+}
+
+.dilemma-context-label {
+  margin: 0;
+  color: var(--faint);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+
+/* ── Report orb loader ───────────────────────────────────────────────────────
+   Same family as .transit-orb, but self-contained: no globe behind it and a
+   light card under it, so the planet is drawn rather than outlined. */
+.orb-loader {
+  display: grid;
+  justify-items: center;
+  gap: 1.35rem;
+  padding: 1.5rem 0;
+}
+
+.orb-loader-globe {
+  position: relative;
+  width: clamp(7rem, 16vw, 9.5rem);
+  aspect-ratio: 1;
+  isolation: isolate;
+}
+
+.orb-loader-halo,
+.orb-loader-body,
+.orb-loader-sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.orb-loader-halo {
+  inset: -22%;
+  background: radial-gradient(
+    circle closest-side,
+    rgba(28, 93, 156, 0.22) 0 52%,
+    rgba(28, 93, 156, 0.1) 72%,
+    transparent 88%
+  );
+  filter: blur(10px);
+}
+
+.orb-loader-body {
+  background:
+    radial-gradient(circle at 32% 28%, rgba(143, 199, 232, 0.55), transparent 46%),
+    linear-gradient(155deg, #14456f 0%, #0b3568 52%, #061f3c 100%);
+  box-shadow: inset -10px -12px 26px rgba(2, 10, 22, 0.6), 0 16px 34px rgba(8, 43, 88, 0.26);
+}
+
+/* The terminator: a soft band crossing the sphere, masked to the disc so it
+   never bleeds past the edge. */
+.orb-loader-sweep {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(173, 216, 245, 0.42) 34deg,
+    transparent 96deg,
+    transparent 250deg,
+    rgba(143, 199, 232, 0.24) 300deg,
+    transparent 360deg
+  );
+  filter: blur(6px);
+  mask-image: radial-gradient(circle closest-side, #000 0 78%, transparent 99%);
+  -webkit-mask-image: radial-gradient(circle closest-side, #000 0 78%, transparent 99%);
+  mix-blend-mode: screen;
+}
+
+.orb-loader-sweep--slow {
+  opacity: 0.5;
+  filter: blur(16px);
+}
+
+.orb-loader-text {
+  color: var(--ds-muted, var(--muted));
+  font-family: var(--font-mono-scifi), monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-align: center;
+  text-transform: uppercase;
+  animation: orb-loader-text-in 480ms ease-out both;
+}
+
+@keyframes orb-loader-text-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb-loader-sweep { display: none; }
+  .orb-loader-text { animation: none; }
 }

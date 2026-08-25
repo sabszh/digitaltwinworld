@@ -8,16 +8,11 @@ import type { Language } from "@/lib/i18n";
 import { uiText } from "@/lib/i18n";
 import { frameQuestion } from "@/lib/questionFraming";
 import { worldSound } from "@/lib/sound";
-import type { Choice, GeneratedDilemma, Persona } from "@/types/world2046";
+import type { Choice, GeneratedDilemma } from "@/types/world2046";
 import { JourneyBadge, JourneyCard } from "@/components/ui/journey";
 
 function formatPlace(dilemma: GeneratedDilemma) {
   return dilemma.exactPlace?.name ?? dilemma.city;
-}
-
-function neutralScenePrompt(scenePrompt: string) {
-  const firstSentence = scenePrompt.match(/^.*?[.!?](?:\s|$)/)?.[0];
-  return (firstSentence ?? scenePrompt).trim();
 }
 
 export function ChoiceButton({ choice, index, onChoose }: { choice: Choice; index: number; onChoose: (choice: Choice) => void }) {
@@ -57,7 +52,7 @@ export function CustomAnswerInput({ language, onSubmit }: { language: Language; 
         placeholder={text.dilemmaCustomPlaceholder}
         className="w-full resize-none bg-transparent text-[15px] text-[var(--text)] outline-none placeholder:text-[var(--faint)]"
       />
-      <div className="mt-2 flex flex-wrap items-center gap-3">
+      <div className="mt-2 flex flex-wrap items-center justify-end gap-3">
         <VoiceInput
           language={language}
           onTranscript={(transcript) => {
@@ -83,18 +78,21 @@ export function CustomAnswerInput({ language, onSubmit }: { language: Language; 
 
 export function DilemmaCard({
   dilemma,
-  persona,
   language,
   onAnswer,
 }: {
   dilemma: GeneratedDilemma;
-  persona?: Persona;
   language: Language;
   onAnswer: (choice: Choice, customAnswer?: string, viaVoice?: boolean) => void;
 }) {
-  const customChoice: Choice = { id: "custom", label: language === "da" ? "Egen løsning" : "Own response", valueImpacts: { trust: 1, localControl: 1, transparency: 1 } };
+  // No impacts here. A written answer used to score a fixed +1 trust / localControl
+  // / transparency regardless of what it said, so arguing for tighter central
+  // control credited you with valuing local control. It is scored from the text
+  // itself at report time (see scoreWrittenAnswers) and contributes nothing until
+  // then — the profile is only ever rendered in FinalReport.
+  const customChoice: Choice = { id: "custom", label: language === "da" ? "Egen løsning" : "Own response", valueImpacts: {} };
   const place = formatPlace(dilemma);
-  const framed = frameQuestion(dilemma, persona);
+  const framed = frameQuestion(dilemma);
 
   return (
     <section className="relative z-20 flex h-dvh items-end justify-center px-4 py-4 pt-20 md:items-center md:justify-end md:px-8 md:py-5">
@@ -110,8 +108,17 @@ export function DilemmaCard({
           </h2>
 
           <p className="dilemma-scene mt-3 text-[15px] leading-6 text-[var(--muted)]">
-            {neutralScenePrompt(dilemma.scenePrompt)}
+            {dilemma.scenePrompt}
           </p>
+
+          {/* What is actually at stake for someone here. The scene says where you
+              are; this says why it is worth stopping for. */}
+          {dilemma.stake ? (
+            <div className="dilemma-stake-wrap">
+              <p className="dilemma-context-label">{language === "da" ? "Det står på spil" : "What is at stake"}</p>
+              <p className="dilemma-stake">{dilemma.stake}</p>
+            </div>
+          ) : null}
 
           <motion.div
             className="mt-5 pb-1"
@@ -119,7 +126,8 @@ export function DilemmaCard({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
           >
-            <p className="text-[17px] font-semibold leading-6 text-[var(--text)]">{framed.question}</p>
+            <p className="dilemma-context-label">{language === "da" ? "Dit valg" : "Your choice"}</p>
+            <p className="mt-1 text-[17px] font-semibold leading-6 text-[var(--text)]">{framed.question}</p>
             <div className="mt-4 grid gap-2.5">
               {dilemma.choices.map((choice, index) => (
                 <ChoiceButton key={choice.id} choice={choice} index={index} onChoose={onAnswer} />

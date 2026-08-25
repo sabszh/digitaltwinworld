@@ -1,12 +1,13 @@
 "use client";
 
+import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { Copy, RotateCcw } from "lucide-react";
-import { AiLoader } from "@/components/ui/ai-loader";
+import { OrbLoader } from "@/components/ui/orb-loader";
 import { problemAreaLabelsByLanguage, valueLabelsByLanguage } from "@/data/taxonomies";
 import type { Language } from "@/lib/i18n";
 import { uiText } from "@/lib/i18n";
 import { getDominantValues, inferAiAttitude } from "@/lib/profileScoring";
+import { worldSound } from "@/lib/sound";
 import type { SessionResult } from "@/types/world2046";
 import { ValueProfileChart } from "./ValueProfileChart";
 import { JourneyButton, JourneyCard } from "@/components/ui/journey";
@@ -30,20 +31,23 @@ export function FinalReport({
   result,
   loading,
   language,
-  onRestart,
   onContinue,
 }: {
   result: SessionResult;
   loading: boolean;
   language: Language;
-  onRestart: () => void;
   onContinue: () => void;
 }) {
   const text = uiText[language];
   const dominant = getDominantValues(result.valueProfile, 4);
   const areas = [...new Set(result.completedDilemmas.map((item) => item.problemArea))];
   const report = result.futureReport;
-  const copy = () => navigator.clipboard.writeText(JSON.stringify(result, null, 2));
+
+  // The report resolving is the end of the journey — mark it with the app's
+  // lowest, longest cue rather than letting it appear in silence.
+  useEffect(() => {
+    if (report) worldSound.playReportReveal();
+  }, [report]);
 
   return (
     <section className="relative z-20 h-dvh overflow-y-auto px-4 py-8 md:px-8 md:py-10">
@@ -61,8 +65,8 @@ export function FinalReport({
           </Reveal>
 
           {loading ? (
-            <div className="mt-6 grid place-items-start">
-              <AiLoader texts={[text.reportLoadingStep1, text.reportLoadingStep2]} />
+            <div className="mt-6">
+              <OrbLoader texts={[text.reportLoadingStep1, text.reportLoadingStep2]} />
             </div>
           ) : (
             <>
@@ -111,11 +115,13 @@ export function FinalReport({
           </Reveal>
 
           <Reveal delay={STAGGER * 5}>
+            {/* Kun én vej videre herfra. "Start forfra" lod folk gå direkte til en
+                ny rejse uden nogensinde at tage stilling til, om den forrige måtte
+                gemmes — samtykkeskærmen er nu det eneste, der afslutter rejsen. */}
             <div className="mt-7 flex flex-wrap gap-3">
-              <JourneyButton onClick={copy} variant="secondary"><Copy size={17} /> {text.reportCopySummary}</JourneyButton>
-              <JourneyButton onClick={onContinue} direction="forward">{language === "da" ? "Afslut rejsen" : "Finish journey"}</JourneyButton>
-              <JourneyButton onClick={onRestart} variant="tertiary"><RotateCcw size={17} /> {text.reportRestart}</JourneyButton>
+              <JourneyButton onClick={onContinue} direction="forward">{language === "da" ? "Færdiggør rejsen" : "Complete journey"}</JourneyButton>
             </div>
+            <p className="mt-3 text-sm text-[var(--faint)]">{language === "da" ? "Du vælger på næste skærm, om dine svar må gemmes." : "On the next screen, you choose whether your answers may be saved."}</p>
           </Reveal>
         </JourneyCard>
 

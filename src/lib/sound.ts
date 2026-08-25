@@ -69,7 +69,13 @@ class WorldSoundEngine {
   private sfx?: GainNode;
   private ambience?: GainNode;
   private scanNodes: AudioNode[] = [];
+  private scoreNodes: ManagedNode[] = [];
+  private scoreGain?: GainNode;
+  private scoreHeartbeat?: number;
   private soundscape?: SoundscapeState;
+  private droneNodes: ManagedNode[] = [];
+  private droneGain?: GainNode;
+  private droneBellTimer?: number;
   private muted = false;
 
   async unlock() {
@@ -200,10 +206,6 @@ class WorldSoundEngine {
       oscillator.start(now + 0.5 + index * 0.12);
       oscillator.stop(now + 2.2);
     });
-  }
-
-  playRadioTune() {
-    this.playSoftTone(176, 0.018, 0.7, "triangle");
   }
 
   playStartJourney() {
@@ -614,6 +616,460 @@ class WorldSoundEngine {
       oscillator.start(now + index * 0.055);
       oscillator.stop(now + 2.35);
     });
+  }
+
+  /** A field on the boarding pass just got its tick. Two rising notes, small
+   *  enough to fire three times in a row without becoming a fanfare. */
+  playFieldComplete() {
+    const context = this.context;
+    if (!context || !this.sfx) return;
+
+    const sfx = this.sfx;
+    const now = context.currentTime;
+    [523, 784].forEach((frequency, index) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(frequency, now + index * 0.06);
+      gain.gain.setValueAtTime(0.0001, now + index * 0.06);
+      gain.gain.exponentialRampToValueAtTime(0.038, now + 0.03 + index * 0.06);
+      gain.gain.setTargetAtTime(0.0001, now + 0.14 + index * 0.06, 0.09);
+      oscillator.connect(gain);
+      gain.connect(sfx);
+      oscillator.start(now + index * 0.06);
+      oscillator.stop(now + 0.6);
+    });
+  }
+
+  /** The split-flap turning over. Deliberately near-silent: it fires many times
+   *  during the counter, so it has to sit under the ambience, not on top. */
+  playYearTick() {
+    const context = this.context;
+    if (!context || !this.sfx) return;
+
+    const now = context.currentTime;
+    const source = context.createBufferSource();
+    source.buffer = createNoiseBuffer(context, 0.05);
+    const filter = context.createBiquadFilter();
+    filter.type = "bandpass";
+    filter.frequency.setValueAtTime(2400, now);
+    filter.Q.value = 1.6;
+    const gain = context.createGain();
+    gain.gain.setValueAtTime(0.016, now);
+    gain.gain.setTargetAtTime(0.0001, now + 0.012, 0.016);
+    source.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.sfx);
+    source.start(now);
+    source.stop(now + 0.06);
+  }
+
+  /** The year lands on 2046 — the one moment the counter is allowed to be loud. */
+  playYearLanded() {
+    const context = this.context;
+    if (!context || !this.sfx) return;
+
+    const sfx = this.sfx;
+    const now = context.currentTime;
+
+    const thump = context.createOscillator();
+    const thumpGain = context.createGain();
+    thump.type = "sine";
+    thump.frequency.setValueAtTime(150, now);
+    thump.frequency.exponentialRampToValueAtTime(62, now + 0.34);
+    thumpGain.gain.setValueAtTime(0.0001, now);
+    thumpGain.gain.exponentialRampToValueAtTime(0.11, now + 0.02);
+    thumpGain.gain.setTargetAtTime(0.0001, now + 0.1, 0.16);
+    thump.connect(thumpGain);
+    thumpGain.connect(sfx);
+    thump.start(now);
+    thump.stop(now + 0.9);
+
+    [392, 587, 784].forEach((frequency, index) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = "triangle";
+      oscillator.frequency.setValueAtTime(frequency, now + 0.04);
+      gain.gain.setValueAtTime(0.0001, now + 0.04 + index * 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.05, now + 0.12 + index * 0.03);
+      gain.gain.setTargetAtTime(0.0001, now + 0.4 + index * 0.05, 0.3);
+      oscillator.connect(gain);
+      gain.connect(sfx);
+      oscillator.start(now + 0.04 + index * 0.03);
+      oscillator.stop(now + 1.9);
+    });
+  }
+
+  /** The destination card stamps in — a papery thunk, not a chime. */
+  playArrivalStamp() {
+    const context = this.context;
+    if (!context || !this.sfx) return;
+
+    const sfx = this.sfx;
+    const now = context.currentTime;
+    const source = context.createBufferSource();
+    source.buffer = createNoiseBuffer(context, 0.16);
+    const filter = context.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(900, now);
+    filter.frequency.exponentialRampToValueAtTime(220, now + 0.14);
+    const gain = context.createGain();
+    gain.gain.setValueAtTime(0.075, now);
+    gain.gain.setTargetAtTime(0.0001, now + 0.03, 0.05);
+    source.connect(filter);
+    filter.connect(gain);
+    gain.connect(sfx);
+    source.start(now);
+    source.stop(now + 0.2);
+
+    const body = context.createOscillator();
+    const bodyGain = context.createGain();
+    body.type = "sine";
+    body.frequency.setValueAtTime(196, now);
+    bodyGain.gain.setValueAtTime(0.0001, now);
+    bodyGain.gain.exponentialRampToValueAtTime(0.045, now + 0.03);
+    bodyGain.gain.setTargetAtTime(0.0001, now + 0.1, 0.12);
+    body.connect(bodyGain);
+    bodyGain.connect(sfx);
+    body.start(now);
+    body.stop(now + 0.7);
+  }
+
+  /** The final report resolves. The lowest, longest cue in the app — it should
+   *  feel like the journey settling rather than another notification. */
+  playReportReveal() {
+    const context = this.context;
+    if (!context || !this.sfx) return;
+
+    const sfx = this.sfx;
+    const now = context.currentTime;
+    [131, 196, 262, 330].forEach((frequency, index) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = index === 0 ? "sine" : "triangle";
+      oscillator.frequency.setValueAtTime(frequency, now);
+      gain.gain.setValueAtTime(0.0001, now + index * 0.16);
+      gain.gain.exponentialRampToValueAtTime(0.05 / (index * 0.5 + 1), now + 0.7 + index * 0.16);
+      gain.gain.setTargetAtTime(0.0001, now + 1.9 + index * 0.14, 0.7);
+      oscillator.connect(gain);
+      gain.connect(sfx);
+      oscillator.start(now + index * 0.16);
+      oscillator.stop(now + 4.4);
+    });
+  }
+
+
+  /**
+   * The time-travel score.
+   *
+   * Twenty years pass while this plays, and the old bed for it was a single
+   * filtered pad — pleasant, but it made a jump across two decades sound like a
+   * progress spinner. This is written as a piece instead: an E minor drone that
+   * a triad settles onto, a sweep climbing three octaves across the whole
+   * journey, and a heartbeat that starts slower than a resting pulse and
+   * accelerates. Everything opens as it goes, so the longer the generation takes
+   * the more tension there is when the year finally lands.
+   *
+   * Tuned to E so it sits with the 82 Hz (E2) scan pad rather than beating
+   * against it.
+   */
+  startTimeTravelScore() {
+    const context = this.context;
+    if (!context || !this.ambience || this.scoreNodes.length > 0) return;
+
+    const now = context.currentTime;
+    const bus = context.createGain();
+    bus.gain.setValueAtTime(0.0001, now);
+    bus.gain.exponentialRampToValueAtTime(0.9, now + 3.5);
+    bus.connect(this.ambience);
+    this.scoreGain = bus;
+
+    const keep = (node: ManagedNode | undefined) => {
+      if (node) this.scoreNodes.push(node);
+    };
+
+    // Sub drone — E1 and its fifth, the floor the whole thing stands on.
+    [
+      { frequency: 41.2, gain: 0.15, type: "sine" as OscillatorType },
+      { frequency: 61.74, gain: 0.07, type: "triangle" as OscillatorType },
+    ].forEach((layer) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = layer.type;
+      oscillator.frequency.value = layer.frequency;
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(layer.gain, now + 4);
+      oscillator.connect(gain);
+      gain.connect(bus);
+      oscillator.start(now);
+      keep(oscillator);
+    });
+
+    // Minor triad, arriving one note at a time so the chord assembles rather
+    // than switching on. The filter opens across 26s: dark at departure, bright
+    // and strained by the time the counter is near 2046.
+    const chordFilter = context.createBiquadFilter();
+    chordFilter.type = "lowpass";
+    chordFilter.frequency.setValueAtTime(320, now);
+    chordFilter.frequency.exponentialRampToValueAtTime(2400, now + 26);
+    chordFilter.Q.value = 1.6;
+    chordFilter.connect(bus);
+
+    [
+      { frequency: 164.81, gain: 0.05, at: 0 },
+      { frequency: 196.0, gain: 0.038, at: 3.2 },
+      { frequency: 246.94, gain: 0.03, at: 7.5 },
+    ].forEach((note) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = "sawtooth";
+      oscillator.frequency.value = note.frequency;
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.setValueAtTime(0.0001, now + note.at);
+      gain.gain.exponentialRampToValueAtTime(note.gain, now + note.at + 3.4);
+      oscillator.connect(gain);
+      gain.connect(chordFilter);
+      oscillator.start(now);
+      keep(oscillator);
+    });
+
+    // The climb: three octaves over 30s, narrow-banded so it reads as rising
+    // pressure rather than as a note.
+    const sweep = context.createOscillator();
+    const sweepBand = context.createBiquadFilter();
+    const sweepGain = context.createGain();
+    sweep.type = "sawtooth";
+    sweep.frequency.setValueAtTime(82.41, now);
+    sweep.frequency.exponentialRampToValueAtTime(659.25, now + 30);
+    sweepBand.type = "bandpass";
+    sweepBand.frequency.value = 900;
+    sweepBand.Q.value = 3.2;
+    sweepGain.gain.setValueAtTime(0.0001, now);
+    sweepGain.gain.exponentialRampToValueAtTime(0.05, now + 12);
+    sweep.connect(sweepBand);
+    sweepBand.connect(sweepGain);
+    sweepGain.connect(bus);
+    sweep.start(now);
+    keep(sweep);
+
+    // Air moving past — a wide, slow-breathing noise bed under the chord.
+    const air = context.createBufferSource();
+    const airFilter = context.createBiquadFilter();
+    const airGain = context.createGain();
+    air.buffer = createNoiseBuffer(context, 4);
+    air.loop = true;
+    airFilter.type = "bandpass";
+    airFilter.frequency.setValueAtTime(240, now);
+    airFilter.frequency.exponentialRampToValueAtTime(1600, now + 28);
+    airFilter.Q.value = 0.7;
+    airGain.gain.setValueAtTime(0.0001, now);
+    airGain.gain.exponentialRampToValueAtTime(0.05, now + 8);
+    air.connect(airFilter);
+    airFilter.connect(airGain);
+    airGain.connect(bus);
+    air.start(now);
+    keep(air);
+
+    this.startScoreHeartbeat();
+  }
+
+  /** Low timpani-like hits that speed up from 0.75 Hz towards 2.4 Hz. Scheduled
+   *  one at a time so the interval can shrink between beats. */
+  private startScoreHeartbeat() {
+    let beat = 0;
+    const strike = () => {
+      const context = this.context;
+      const bus = this.scoreGain;
+      if (!context || !bus) return;
+
+      const now = context.currentTime;
+      const thud = context.createOscillator();
+      const gain = context.createGain();
+      const intensity = Math.min(1, beat / 26);
+      thud.type = "sine";
+      thud.frequency.setValueAtTime(96 + intensity * 34, now);
+      thud.frequency.exponentialRampToValueAtTime(41.2, now + 0.42);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.1 + intensity * 0.12, now + 0.012);
+      gain.gain.setTargetAtTime(0.0001, now + 0.06, 0.13);
+      thud.connect(gain);
+      gain.connect(bus);
+      thud.start(now);
+      thud.stop(now + 0.7);
+
+      beat += 1;
+      const delay = Math.max(420, 1340 - beat * 34);
+      this.scoreHeartbeat = window.setTimeout(strike, delay);
+    };
+    strike();
+  }
+
+  stopTimeTravelScore() {
+    const context = this.context;
+    if (this.scoreHeartbeat !== undefined) {
+      window.clearTimeout(this.scoreHeartbeat);
+      this.scoreHeartbeat = undefined;
+    }
+    if (!context || this.scoreNodes.length === 0) return;
+
+    const now = context.currentTime;
+    const bus = this.scoreGain;
+    if (bus) {
+      bus.gain.cancelScheduledValues(now);
+      bus.gain.setValueAtTime(bus.gain.value, now);
+      bus.gain.setTargetAtTime(0.0001, now, 0.5);
+    }
+    const nodes = this.scoreNodes;
+    this.scoreNodes = [];
+    this.scoreGain = undefined;
+    window.setTimeout(() => {
+      nodes.forEach((node) => {
+        node.stop?.();
+        node.disconnect();
+      });
+      bus?.disconnect();
+    }, 1900);
+  }
+
+  /**
+   * The idle drone under the landing page: a slow D-minor pad with no pulse and
+   * no melody, so nothing in it ever asks to be listened to. Two detuned layers
+   * beat against each other roughly every 12 seconds, and a lowpass drifts open
+   * and shut on a 45-second cycle — that drift is the only thing that moves,
+   * which is what keeps a static chord from turning into a hum.
+   *
+   * Sits deliberately below the field recording (which runs at 0.16): the
+   * recording carries the place, the drone only carries the scale of it.
+   */
+  startAmbientDrone() {
+    const context = this.context;
+    if (!context || !this.ambience || this.droneNodes.length > 0) return;
+
+    const now = context.currentTime;
+    const group = context.createGain();
+    group.gain.setValueAtTime(0.0001, now);
+    group.gain.exponentialRampToValueAtTime(0.16, now + 6);
+    group.connect(this.ambience);
+
+    const filter = context.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.value = 420;
+    filter.Q.value = 0.7;
+    filter.connect(group);
+
+    // The drift: one very slow LFO opening the filter from ~200 to ~640 Hz.
+    const drift = context.createOscillator();
+    const driftDepth = context.createGain();
+    drift.type = "sine";
+    drift.frequency.value = 1 / 45;
+    driftDepth.gain.value = 220;
+    drift.connect(driftDepth);
+    driftDepth.connect(filter.frequency);
+    drift.start(now);
+
+    const nodes: ManagedNode[] = [drift as ManagedNode];
+
+    // D1 sub, D2, A2 fifth, D3, and a barely-there F3 to make it minor.
+    const layers: Array<[number, number, OscillatorType]> = [
+      [36.7, 0.5, "sine"],
+      [73.4, 0.34, "sine"],
+      [73.9, 0.2, "sine"],
+      [110, 0.22, "sine"],
+      [146.8, 0.14, "triangle"],
+      [174.6, 0.07, "sine"],
+    ];
+
+    layers.forEach(([frequency, level, type]) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = type;
+      oscillator.frequency.value = frequency;
+      gain.gain.value = level;
+      oscillator.connect(gain);
+      gain.connect(filter);
+      oscillator.start(now);
+      nodes.push(oscillator as ManagedNode);
+    });
+
+    // A breath of filtered air so the pad is not purely synthetic.
+    const air = context.createBufferSource();
+    const airFilter = context.createBiquadFilter();
+    const airGain = context.createGain();
+    air.buffer = createNoiseBuffer(context, 4);
+    air.loop = true;
+    airFilter.type = "lowpass";
+    airFilter.frequency.value = 900;
+    airGain.gain.value = 0.035;
+    air.connect(airFilter);
+    airFilter.connect(airGain);
+    airGain.connect(group);
+    air.start(now);
+    nodes.push(air as ManagedNode);
+
+    this.droneGain = group;
+    this.droneNodes = nodes;
+    this.scheduleDroneBell();
+  }
+
+  /** A single distant tone every 24-48 seconds. Sparse enough that it reads as
+   *  an event in the world rather than as a rhythm. */
+  private scheduleDroneBell() {
+    const delay = 24000 + Math.random() * 24000;
+    this.droneBellTimer = window.setTimeout(() => {
+      const context = this.context;
+      const group = this.droneGain;
+      if (!context || !group) return;
+
+      const now = context.currentTime;
+      const frequency = [293.7, 440, 587.3][Math.floor(Math.random() * 3)];
+      [frequency, frequency * 2.01].forEach((partial, index) => {
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+        oscillator.type = "triangle";
+        oscillator.frequency.value = partial;
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.045 / (index + 1) ** 2, now + 1.6);
+        gain.gain.setTargetAtTime(0.0001, now + 2.2, 2.4);
+        oscillator.connect(gain);
+        gain.connect(group);
+        oscillator.start(now);
+        oscillator.stop(now + 12);
+      });
+
+      this.scheduleDroneBell();
+    }, delay);
+  }
+
+  stopAmbientDrone() {
+    const context = this.context;
+    if (this.droneBellTimer) {
+      window.clearTimeout(this.droneBellTimer);
+      this.droneBellTimer = undefined;
+    }
+    if (!context || this.droneNodes.length === 0) return;
+
+    const now = context.currentTime;
+    const group = this.droneGain;
+    if (group) {
+      group.gain.cancelScheduledValues(now);
+      group.gain.setValueAtTime(group.gain.value, now);
+      group.gain.setTargetAtTime(0.0001, now, 1.1);
+    }
+    const nodes = this.droneNodes;
+    this.droneNodes = [];
+    this.droneGain = undefined;
+    window.setTimeout(() => {
+      nodes.forEach((node) => {
+        node.stop?.();
+        node.disconnect();
+      });
+      group?.disconnect();
+    }, 4200);
+  }
+
+  /** Language toggle — the smallest sound in the set. */
+  playToggle() {
+    this.playSoftTone(660, 0.03, 0.12, "square");
   }
 }
 

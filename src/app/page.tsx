@@ -200,7 +200,11 @@ export default function Home() {
         )}
         <AnimatePresence mode="sync">
           <motion.div
-            key={store.phase + (store.activeDilemma?.id ?? "")}
+            // A destination resolves while the app is already travelling. Keeping
+            // one key for that phase means the same year counter lands once,
+            // instead of AnimatePresence briefly running an old and a new
+            // transit window side-by-side.
+            key={store.phase === "traveling" ? "traveling" : store.phase + (store.activeDilemma?.id ?? "")}
             initial={{ opacity: 0, y: store.phase === "traveling" ? 0 : 18 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: store.phase === "traveling" ? 0 : -14 }}
@@ -216,23 +220,22 @@ export default function Home() {
             {store.phase === "persona" && (
               <PersonaBuilder
                 language={language}
-                persona={store.persona}
-                onBuildPersona={store.buildPersona}
+                onCheckIn={store.checkIn}
               />
             )}
             {store.phase === "traveling" && (
               <TravelTransition
                 dilemma={store.activeDilemma}
-                persona={store.persona}
                 language={language}
                 isFirstTrip={store.completedDilemmas.length === 0}
+                onArrive={store.enterLanding}
               />
             )}
             {store.phase === "landing" && store.activeDilemma && (
               <LandingScene dilemma={store.activeDilemma} language={language} onEnter={store.enterDilemma} />
             )}
             {store.phase === "dilemma" && store.activeDilemma && (
-              <DilemmaCard dilemma={store.activeDilemma} persona={store.persona} language={language} onAnswer={handleAnswer} />
+              <DilemmaCard dilemma={store.activeDilemma} language={language} onAnswer={handleAnswer} />
             )}
             {store.phase === "consequence" && (
               <ConsequenceCard
@@ -247,9 +250,9 @@ export default function Home() {
                 }}
               />
             )}
-            {store.phase === "report" && <FinalReport result={result} loading={store.reportLoading} language={language} onRestart={store.restart} onContinue={store.reviewConsent} />}
+            {store.phase === "report" && <FinalReport result={result} loading={store.reportLoading} language={language} onContinue={store.reviewConsent} />}
             {store.phase === "consent" && <ConsentScreen language={language} status={store.consentStatus} onAccept={() => void store.saveConsentedSession()} onDecline={store.declineConsent} onBack={() => useSessionStore.setState({ phase: "report" })} />}
-            {store.phase === "goodbye" && <GoodbyeScreen language={language} saved={store.consentStatus === "saved"} onFinish={store.restart} />}
+            {store.phase === "goodbye" && <GoodbyeScreen language={language} status={store.consentStatus === "saved" ? "saved" : "declined"} onFinish={store.restart} />}
           </motion.div>
         </AnimatePresence>
       </div>

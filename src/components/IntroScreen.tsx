@@ -3,7 +3,6 @@
 import { ArrowRight, CalendarDays, MapPin, Plane, PlaneTakeoff, Users } from "lucide-react";
 import { useState } from "react";
 import type { Language } from "@/lib/i18n";
-import { uiText } from "@/lib/i18n";
 import { UX_TIMING } from "@/lib/uxTiming";
 
 export function IntroScreen({
@@ -13,7 +12,6 @@ export function IntroScreen({
   onStart: () => void;
   language: Language;
 }) {
-  const text = uiText[language];
   const [isAutoLaunching, setIsAutoLaunching] = useState(false);
 
   const launchFromSearch = () => {

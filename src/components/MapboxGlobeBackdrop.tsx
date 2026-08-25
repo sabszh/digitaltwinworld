@@ -196,6 +196,49 @@ export function MapboxGlobeBackdrop({
     });
 
     mapRef.current = map;
+
+    /**
+     * Publish where the globe actually sits on screen, as CSS variables.
+     *
+     * Overlays that are supposed to hug the planet cannot be sized in vmin: the
+     * globe's radius follows the map's zoom, and once it is zoomed in, its limb
+     * runs off the edges and only an arc of it crosses the viewport. Four points
+     * exactly 90° of great-circle arc from the map centre land on that limb by
+     * definition, so averaging them gives the centre and radius at any zoom —
+     * and stays honest under pitch, where the disc is no longer centred on the
+     * projected map centre.
+     */
+    const publishGlobeGeometry = () => {
+      const centre = map.getCenter();
+      const lat = (centre.lat * Math.PI) / 180;
+      let sumX = 0;
+      let sumY = 0;
+      const points: { x: number; y: number }[] = [];
+
+      for (let bearing = 0; bearing < 360; bearing += 45) {
+        const theta = (bearing * Math.PI) / 180;
+        const limbLat = Math.asin(Math.cos(lat) * Math.cos(theta));
+        const limbLng =
+          centre.lng +
+          (Math.atan2(Math.sin(theta) * Math.cos(lat), -Math.sin(lat) * Math.sin(limbLat)) * 180) / Math.PI;
+        const point = map.project([limbLng, (limbLat * 180) / Math.PI]);
+        points.push(point);
+        sumX += point.x;
+        sumY += point.y;
+      }
+
+      const x = sumX / points.length;
+      const y = sumY / points.length;
+      const radius = points.reduce((total, point) => total + Math.hypot(point.x - x, point.y - y), 0) / points.length;
+      if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(radius)) return;
+
+      const root = document.documentElement.style;
+      root.setProperty("--globe-x", `${x.toFixed(1)}px`);
+      root.setProperty("--globe-y", `${y.toFixed(1)}px`);
+      root.setProperty("--globe-r", `${radius.toFixed(1)}px`);
+    };
+
+    map.on("render", publishGlobeGeometry);
     window.setTimeout(() => map.resize(), 0);
     window.setTimeout(() => map.resize(), 250);
 

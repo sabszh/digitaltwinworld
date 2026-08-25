@@ -32,6 +32,29 @@ function normalize(text: string) {
   return text.toLocaleLowerCase("da-DK");
 }
 
+/**
+ * Blocked terms are matched on word boundaries, not as bare substrings.
+ *
+ * A plain `includes("ai")` fired on every place name containing those two
+ * letters — Taiwan, Thailand, Nairobi, Dubai, Ukraine — and silently threw the
+ * whole dilemma away. That hit exactly the non-European destinations the journey
+ * is supposed to visit.
+ *
+ * Short terms need a boundary at both ends ("ai" must not match "aids"); longer
+ * ones only at the start, so "algoritme" still catches "algoritmer".
+ */
+const termPattern = new Map<string, RegExp>();
+
+function matchesTerm(normalizedText: string, term: string) {
+  let pattern = termPattern.get(term);
+  if (!pattern) {
+    const escaped = normalize(term).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    pattern = new RegExp(term.length <= 3 ? `\\b${escaped}\\b` : `\\b${escaped}`, "u");
+    termPattern.set(term, pattern);
+  }
+  return pattern.test(normalizedText);
+}
+
 function collectChoiceText(choice: Choice) {
   return [choice.label, choice.description, choice.consequence].filter(Boolean).join(" ");
 }
@@ -54,7 +77,7 @@ export function findAudienceLanguageIssues(role: UserRole, text: string) {
   if (audience.id !== "school") return [];
 
   const normalized = normalize(text);
-  return schoolBlockedTerms.filter((term) => normalized.includes(normalize(term)));
+  return schoolBlockedTerms.filter((term) => matchesTerm(normalized, term));
 }
 
 export function hasAudienceLanguageIssues(dilemma: GeneratedDilemma) {

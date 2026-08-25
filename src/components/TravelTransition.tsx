@@ -2,14 +2,12 @@
 
 import { motion, useMotionValue, useMotionValueEvent, animate } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { MapPin } from "lucide-react";
 import { AiLoader } from "@/components/ui/ai-loader";
-import { WarpCanvas } from "@/components/WarpCanvas";
 import type { Language } from "@/lib/i18n";
 import { uiText } from "@/lib/i18n";
+import { worldSound } from "@/lib/sound";
 import { UX_TIMING } from "@/lib/uxTiming";
-import type { GeneratedDilemma, Persona } from "@/types/world2046";
-import { problemAreaLabelsByLanguage } from "@/data/taxonomies";
+import type { GeneratedDilemma } from "@/types/world2046";
 
 function FlipDigit({ digit }: { digit: string }) {
   return (
@@ -28,31 +26,78 @@ function FlipDigit({ digit }: { digit: string }) {
   );
 }
 
-function YearCounter() {
+/**
+ * Counts 2026 → 2046 while the destination is being generated.
+ *
+ * It must not reach 2046 before the app has somewhere to land: arriving early
+ * and then sitting there makes the wait feel broken. So the counter eases
+ * towards 2045 over a span far longer than any generation, decelerating as it
+ * goes, and only steps onto 2046 once `ready` turns true. `onLanded` fires after
+ * the glitch so the caller can hold the view until the number has actually
+ * arrived.
+ */
+function YearCounter({ ready, onLanded }: { ready: boolean; onLanded: () => void }) {
   const year = useMotionValue(2026);
   const [display, setDisplay] = useState("2026");
   const [isGlitching, setIsGlitching] = useState(false);
   const glitchFiredRef = useRef(false);
+  const lastDigitsRef = useRef("2026");
+  // Kept in a ref so the motion-value subscription always calls the latest
+  // callback without resubscribing on every render.
+  const landedRef = useRef(onLanded);
+  useEffect(() => {
+    landedRef.current = onLanded;
+  }, [onLanded]);
+  // Written straight to the DOM rather than through state: this changes on every
+  // frame of a 30s animation, and re-rendering four flip digits that often is
+  // wasted work. CSS reads it to grow the glow as 2046 approaches.
+  const counterRef = useRef<HTMLSpanElement>(null);
 
   useMotionValueEvent(year, "change", (value) => {
+    counterRef.current?.style.setProperty("--year-progress", ((value - 2026) / 20).toFixed(3));
     const rounded = Math.round(value);
-    setDisplay(String(rounded).padStart(4, "0").slice(-4));
-    // Trigger chromatic aberration glitch as we hit 2046
+    const next = String(rounded).padStart(4, "0").slice(-4);
+    if (next !== lastDigitsRef.current) {
+      lastDigitsRef.current = next;
+      setDisplay(next);
+      if (rounded < 2046) worldSound.playYearTick();
+    }
     if (rounded >= 2046 && !glitchFiredRef.current) {
       glitchFiredRef.current = true;
       setIsGlitching(true);
-      setTimeout(() => setIsGlitching(false), 620);
+      worldSound.playYearLanded();
+      window.setTimeout(() => {
+        setIsGlitching(false);
+        landedRef.current();
+      }, 620);
     }
   });
 
   useEffect(() => {
-    const controls = animate(year, 2046, { duration: UX_TIMING.yearCounterMs / 1000, ease: "easeInOut" });
+    // Stops one short of 2046 — the last year belongs to the arrival.
+    const controls = animate(year, 2045, {
+      duration: UX_TIMING.yearCounterApproachMs / 1000,
+      ease: [0.12, 0.62, 0.2, 1],
+    });
     return () => controls.stop();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (!ready) return;
+    // Scale the final run to the distance left, so a fast generation still
+    // reads as a run-up rather than a jump cut.
+    const remaining = Math.max(0, 2046 - year.get());
+    const controls = animate(year, 2046, {
+      duration: Math.min(2.4, UX_TIMING.yearCounterLandMs / 1000 + remaining * 0.09),
+      ease: "easeOut",
+    });
+    return () => controls.stop();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready]);
+
   return (
-    <span className={`year-counter inline-flex gap-1 ${isGlitching ? "year-glitch" : ""}`}>
+    <span ref={counterRef} className={`year-counter inline-flex gap-1 ${isGlitching ? "year-glitch" : ""}`}>
       {display.split("").map((digit, index) => (
         <FlipDigit key={index} digit={digit} />
       ))}
@@ -64,25 +109,54 @@ export function TravelTransition({
   dilemma,
   language,
   isFirstTrip,
+  onArrive,
 }: {
   dilemma?: GeneratedDilemma;
-  persona?: Persona;
   language: Language;
   isFirstTrip: boolean;
+  onArrive: () => void;
 }) {
   const text = uiText[language];
+  // The loading view stays up until the counter has actually reached 2046, even
+  // if the destination arrived earlier — otherwise the year is cut off mid-flip.
+  const [landed, setLanded] = useState(false);
 
-  if (!dilemma) {
+  useEffect(() => {
+    if (!landed) return;
+    worldSound.playArrivalStamp();
+    onArrive();
+  }, [landed, onArrive]);
+
+  if (!dilemma || !landed) {
     const steps = isFirstTrip
       ? [text.timeMachineTripOneStep1, text.timeMachineTripOneStep2, text.timeMachineTripOneStep3]
       : [text.timeMachineTripNextStep1, text.timeMachineTripNextStep2, text.timeMachineTripNextStep3];
 
     return (
       <div className="pointer-events-none fixed inset-0 z-20 flex h-screen items-center justify-center overflow-hidden px-6">
-        {/* Warp star streaks */}
-        <WarpCanvas />
-
         <div aria-hidden className="absolute inset-0 bg-[rgba(0,0,0,0.32)]" />
+
+        {/* A gradient orb wrapped around the globe rather than a grid over the
+            viewport: it reads as energy gathering at the planet itself, and it
+            scales with the globe instead of squaring off at the screen edges.
+            Two counter-rotating layers keep the light moving without a seam. */}
+        <div aria-hidden className="transit-orb">
+          <motion.div
+            className="transit-orb-halo"
+            animate={{ scale: [1, 1.05, 1], opacity: [0.55, 0.9, 0.55] }}
+            transition={{ duration: 5.2, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="transit-orb-sheen"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 26, repeat: Infinity, ease: "linear" }}
+          />
+          <motion.div
+            className="transit-orb-sheen transit-orb-sheen--reverse"
+            animate={{ rotate: -360 }}
+            transition={{ duration: 38, repeat: Infinity, ease: "linear" }}
+          />
+        </div>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -96,11 +170,7 @@ export function TravelTransition({
             transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
           />
           <div className="time-transit">
-            <span className="time-transit-label">
-              {language === "da" ? "Tidsrejse i gang" : "Time transit in progress"}
-            </span>
-            <YearCounter />
-            <span className="time-transit-route">2026 → 2046</span>
+            <YearCounter ready={Boolean(dilemma)} onLanded={() => setLanded(true)} />
           </div>
           <AiLoader texts={steps} className="loader-wrapper--globe-scan" />
         </motion.div>
@@ -108,15 +178,5 @@ export function TravelTransition({
     );
   }
 
-  const destination = dilemma.exactPlace?.name ?? `${dilemma.city}, ${dilemma.country}`;
-  const context = language === "da" ? `${dilemma.problemArea} · ${dilemma.technology}` : problemAreaLabelsByLanguage.en[dilemma.problemArea];
-
-  return (
-    <div className="pointer-events-none relative z-20 flex min-h-screen items-center justify-center px-6">
-      <motion.div initial={{ opacity: 0, y: 10, scale: 0.99 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="approach-card">
-        <h2><MapPin className="h-5 w-5" aria-hidden="true" /> {destination}</h2>
-        <p>{context} · 2046</p>
-      </motion.div>
-    </div>
-  );
+  return null;
 }

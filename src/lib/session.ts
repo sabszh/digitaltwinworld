@@ -8,14 +8,12 @@ import type {
   CompletedDilemma,
   FutureProfileReport,
   GeneratedDilemma,
-  Persona,
   PersonaAnswers,
   SessionResult,
   UserRole,
   ValueProfile,
 } from "@/types/world2046";
 import { generateDilemma } from "./randomizer";
-import { buildLocalPersona } from "./persona";
 import { addProfiles, buildFallbackReport, generateSummary, normalizeImpacts } from "./profileScoring";
 import { UX_TIMING } from "./uxTiming";
 import type { Language } from "./i18n";
@@ -24,7 +22,7 @@ type SessionStore = {
   phase: AppPhase;
   language: Language;
   role?: UserRole;
-  persona?: Persona;
+  personaAnswers?: PersonaAnswers;
   activeDilemma?: GeneratedDilemma;
   lastChoice?: Choice;
   lastCustomAnswer?: string;
@@ -37,8 +35,9 @@ type SessionStore = {
   createdAt: string;
   start: () => void;
   setLanguage: (language: Language) => void;
-  buildPersona: (answers: PersonaAnswers) => Promise<void>;
+  checkIn: (answers: PersonaAnswers) => Promise<void>;
   generateNext: () => Promise<void>;
+  enterLanding: () => void;
   enterDilemma: () => void;
   answer: (choice: Choice, customAnswer?: string, viaVoice?: boolean) => void;
   saveReflection: (text: string, viaVoice: boolean) => void;
@@ -65,30 +64,14 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   createdAt: new Date().toISOString(),
   start: () => set({ phase: "persona" }),
   setLanguage: (language) => set({ language }),
-  buildPersona: async (answers) => {
-    const { language } = get();
-    const fallback = () => buildLocalPersona(answers, language);
-    let persona: Persona;
-    try {
-      const response = await fetch("/api/persona", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...answers, language }),
-      });
-      if (!response.ok) throw new Error("Failed to build persona");
-      const data = (await response.json()) as { persona?: Persona };
-      persona = data.persona ?? fallback();
-    } catch {
-      persona = fallback();
-    }
-    // The persona stays behind the scenes — it grounds the dilemmas in the user's
-    // own answers, but it is never shown back to them as a claim about who they
-    // are. They travel as themselves; a wrong characterisation would break that.
-    set({ persona, role: answers.role });
+  // The traveller's own answers go straight to the generator. There is no
+  // character in between: nothing summarises them, so nothing can get them wrong.
+  checkIn: async (answers) => {
+    set({ personaAnswers: answers, role: answers.role });
     await get().generateNext();
   },
   generateNext: async () => {
-    const { role, persona, completedDilemmas, sessionId, language } = get();
+    const { role, personaAnswers, completedDilemmas, sessionId, language } = get();
     if (!role) return;
     if (completedDilemmas.length >= SESSION_DILEMMA_COUNT) {
       set({ phase: "report", activeDilemma: undefined });
@@ -108,7 +91,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       const response = await fetch("/api/dilemma", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role, persona, previousDilemmas: completedDilemmas, preferredSeverity, language }),
+        body: JSON.stringify({ role, answers: personaAnswers, previousDilemmas: completedDilemmas, preferredSeverity, language }),
         signal: controller.signal,
       }).finally(() => window.clearTimeout(timeout));
       if (!response.ok) throw new Error("Failed to generate dilemma");
@@ -125,9 +108,9 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 
     if (get().sessionId !== sessionId || get().phase !== "traveling") return;
     set({ activeDilemma: nextDilemma });
-    window.setTimeout(() => {
-      if (get().phase === "traveling") set({ phase: "landing" });
-    }, UX_TIMING.destinationRevealHoldMs);
+  },
+  enterLanding: () => {
+    if (get().phase === "traveling" && get().activeDilemma) set({ phase: "landing" });
   },
   enterDilemma: () => {
     if (get().phase === "landing") set({ phase: "dilemma" });
@@ -146,6 +129,8 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       locationType: activeDilemma.locationType,
       technology: activeDilemma.technology,
       question: activeDilemma.question,
+      coreTension: activeDilemma.coreTension,
+      futurePressureId: activeDilemma.futurePressureId,
       selectedChoiceId: choice.id,
       selectedChoiceLabel: customAnswer ? (get().language === "da" ? "Egen løsning" : "Own response") : choice.label,
       customAnswer,
@@ -199,24 +184,29 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     }
   },
   finishJourney: async () => {
-    const { persona, completedDilemmas, valueProfile, sessionId, language } = get();
+    const { personaAnswers, completedDilemmas, valueProfile, sessionId, language } = get();
     set({ reportLoading: true });
     const fallback = () => buildFallbackReport(completedDilemmas, valueProfile, language);
     let report: FutureProfileReport;
+    let scoredProfile = valueProfile;
     try {
       const response = await fetch("/api/report", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ persona, completedDilemmas, valueProfile, language }),
+        body: JSON.stringify({ answers: personaAnswers, completedDilemmas, valueProfile, language }),
       });
       if (!response.ok) throw new Error("Failed to build report");
-      const data = (await response.json()) as { report?: FutureProfileReport };
+      const data = (await response.json()) as { report?: FutureProfileReport; valueProfile?: ValueProfile };
       report = data.report ?? fallback();
+      // The written answers are scored server-side and folded in there, so the
+      // returned profile supersedes the one accumulated during the journey.
+      // Nothing renders the profile before this point.
+      if (data.valueProfile) scoredProfile = data.valueProfile;
     } catch {
       report = fallback();
     }
     if (get().sessionId !== sessionId) return;
-    set({ futureReport: report, reportLoading: false });
+    set({ futureReport: report, reportLoading: false, valueProfile: scoredProfile });
   },
   reviewConsent: () => set({ phase: "consent", consentStatus: "idle" }),
   saveConsentedSession: async () => {
@@ -240,7 +230,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       phase: "intro",
       language: get().language,
       role: undefined,
-      persona: undefined,
+      personaAnswers: undefined,
       activeDilemma: undefined,
       lastChoice: undefined,
       lastCustomAnswer: undefined,
@@ -253,13 +243,13 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       createdAt: new Date().toISOString(),
     }),
   getResult: () => {
-    const { sessionId, createdAt, role, persona, completedDilemmas, valueProfile, futureReport, language } = get();
+    const { sessionId, createdAt, role, personaAnswers, completedDilemmas, valueProfile, futureReport, language } = get();
     return {
       sessionId,
       createdAt,
       year: 2046,
       role: role ?? "Borger",
-      persona,
+      personaAnswers,
       completedDilemmas,
       valueProfile,
       generatedSummary: generateSummary(completedDilemmas, valueProfile, language),

@@ -15,7 +15,7 @@
 
 :is(main[data-phase="intro"], .intro-scope) .hero-flight-search {
   background: var(--ds-accent);
-  box-shadow: 0 10px 24px rgba(29, 78, 216, 0.22);
+  box-shadow: 0 10px 24px rgba(11, 53, 104, 0.24);
 }
 
 :is(main[data-phase="intro"], .intro-scope) .hero-flight-search:hover,
@@ -57,11 +57,19 @@
   margin-top: 1.4rem;
   color: var(--ds-ink);
   font-family: var(--font-serif), serif;
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  /* Place names run long ("Katrinebjergskolen") and the card clips overflow, so
+     the title needs break opportunities: hyphens:auto gives language-aware breaks
+     (the root lang is set per language), overflow-wrap catches whatever is left. */
+  font-size: clamp(2.2rem, 5.2vw, 3.9rem);
   font-style: normal;
   font-weight: 400;
-  line-height: 1;
+  line-height: 1.02;
   letter-spacing: -0.04em;
+  /* No hyphens: the browser's Danish dictionary breaks compounds in nonsense
+     places ("Katrineb-jergskolen"). Long names are handled by scaling the type
+     down to fit instead, so breaks only ever happen at real word boundaries. */
+  hyphens: none;
+  overflow-wrap: break-word;
 }
 
 .arrival-card .arrival-card-meta {
@@ -77,6 +85,18 @@
   color: #2ca66d;
   font-size: 0.78rem;
   font-weight: 600;
+}
+
+/* The stake line has to be the most present text on the card, so it must beat
+   `.sky-scope .journey-card p` — a single class loses to it. */
+.sky-scope .journey-card p.dilemma-stake {
+  color: var(--ds-text, var(--text));
+}
+
+/* Beats `.sky-scope .journey-card p`, which would otherwise pull the credit up
+   to --ds-muted and make it as loud as the scene text above it. */
+.sky-scope .journey-card p.arrival-card-credit {
+  color: var(--ds-faint);
 }
 
 .arrival-card .arrival-card-scene {
@@ -125,9 +145,9 @@
 }
 
 .dilemma-briefing .decision-choice:hover {
-  border-color: rgba(29, 78, 216, 0.52);
+  border-color: rgba(28, 93, 156, 0.52);
   background: #fbfdff;
-  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.07);
+  box-shadow: 0 0 0 3px rgba(28, 93, 156, 0.08);
   transform: none;
 }
 
@@ -175,3 +195,9 @@ main[data-phase="consent"] .surface-card {
   color: var(--ds-ink);
 }
 
+
+/* The consent scope box sits inside the card it belongs to — a border made it
+   look like a separate quoted document. Tint alone is enough separation. */
+main[data-phase="consent"] .consent-scope-list.surface-card {
+  border: 0;
+}

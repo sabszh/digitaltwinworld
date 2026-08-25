@@ -127,7 +127,13 @@ const plainLanguageRules: Array<[RegExp, string]> = [
 ];
 
 function applyRules(text: string, rules: Array<[RegExp, string]>) {
-  return rules.reduce((result, [pattern, replacement]) => result.replace(pattern, replacement), text);
+  const rewritten = rules.reduce((result, [pattern, replacement]) => result.replace(pattern, replacement), text);
+  // The replacements are written lowercase, so a rule that fires on the first
+  // word ("Data deles…" → "oplysninger deles…") silently decapitalises the
+  // sentence. Put the original's opening case back.
+  const first = text.trimStart().charAt(0);
+  if (!first || first !== first.toUpperCase()) return rewritten;
+  return rewritten.replace(/\p{L}/u, (letter) => letter.toUpperCase());
 }
 
 export function simplifyTextForAudience(role: UserRole, text: string) {

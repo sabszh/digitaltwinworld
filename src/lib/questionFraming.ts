@@ -1,7 +1,6 @@
-import type { GeneratedDilemma, Persona } from "@/types/world2046";
+import type { GeneratedDilemma } from "@/types/world2046";
 
-export function frameQuestion(dilemma: GeneratedDilemma, persona?: Persona): { lead?: string; question: string } {
-  void persona;
+export function frameQuestion(dilemma: GeneratedDilemma): { lead?: string; question: string } {
   return {
     question: dilemma.question,
   };

@@ -1,8 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { VoiceInput } from "@/components/VoiceInput";
 import { simplifyTextForAudience } from "@/lib/audience";
 import type { Language } from "@/lib/i18n";
 import { uiText } from "@/lib/i18n";
@@ -26,8 +24,6 @@ export function ConsequenceCard({
   onContinue: (reflection: string, viaVoice: boolean) => void;
 }) {
   const text = uiText[language];
-  const [reflection, setReflection] = useState("");
-  const [reflectionViaVoice, setReflectionViaVoice] = useState(false);
   const place = dilemma?.exactPlace?.name ?? dilemma?.locationType ?? "stedet";
   const technology = dilemma ? simplifyTextForAudience(dilemma.role, dilemma.technology) : "teknologien";
 
@@ -51,15 +47,6 @@ export function ConsequenceCard({
         <h2 className="text-3xl font-semibold tracking-[-0.025em] text-[var(--text)]">{customAnswer ? text.consequenceOwnPath : choice?.label}</h2>
         <p className="mt-5 text-lg font-normal leading-7 text-[var(--muted)]">{consequenceText}</p>
 
-        <div className="mt-7 border-t border-[var(--line)] pt-6">
-          <label htmlFor="reflection" className="block font-semibold text-[var(--text)]">{text.reflectionPrompt}</label>
-          <p className="mt-1 text-sm text-[var(--faint)]">{language === "da" ? "Valgfrit — dine egne ord kan indgå i rapporten." : "Optional — your own words may appear in the report."}</p>
-          <div className="mt-3 flex gap-2">
-            <textarea id="reflection" value={reflection} onChange={(event) => setReflection(event.target.value)} maxLength={400} rows={2} placeholder={text.reflectionPlaceholder} className="surface-control min-w-0 flex-1 resize-none rounded-2xl px-4 py-3 text-[var(--text)] outline-none focus:ring-2 focus:ring-[var(--accent)]" />
-            <VoiceInput language={language} onTranscript={(transcript) => { setReflectionViaVoice(true); setReflection((current) => current ? `${current} ${transcript}` : transcript); }} />
-          </div>
-        </div>
-
         <div className="mt-7 flex flex-wrap justify-end gap-3">
           <JourneyButton
             onClick={() => {
@@ -74,7 +61,7 @@ export function ConsequenceCard({
           <JourneyButton
             onClick={() => {
               worldSound.playButtonTap();
-              onContinue(reflection.trim(), reflectionViaVoice);
+              onContinue("", false);
             }}
             variant="primary"
             direction="forward"

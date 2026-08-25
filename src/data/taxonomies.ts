@@ -6,6 +6,7 @@ export const userRoles: UserRole[] = [
   "Ung",
   "Forælder",
   "Lærer / pædagog",
+  "Fagperson",
   "Arbejdsgiver",
   "Medarbejder",
   "For alle",
