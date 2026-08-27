@@ -1,14 +1,15 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { getAudienceProfile } from "@/lib/audience";
-import type { AiDilemma, DilemmaGenerationRequest } from "@/lib/dilemmaGenerationTypes";
+import { creativeDilemmaSchema, validateCreativeDilemma } from "@/lib/creativeDilemma";
+import type { AiDilemma, CreativeDilemma, DilemmaGenerationRequest } from "@/lib/dilemmaGenerationTypes";
 import { locationTypes, responseSchema, technologies, validateAiDilemmaDetailed } from "@/lib/dilemmaStructuredOutput";
+import type { JsonUsage } from "@/lib/openaiJson";
 import { requestJson } from "@/lib/openaiJson";
-import { buildDilemmaPrompt } from "@/lib/prompts/dilemmaPrompt";
+import { buildDilemmaPrompt, buildLegacyDilemmaPrompt } from "@/lib/prompts/dilemmaPrompt";
 import { planRound } from "@/lib/roundPlan";
-import type { GeneratedDilemma, UserRole } from "@/types/world2046";
+import type { RoundPlan } from "@/lib/roundPlan";
+import type { UserRole } from "@/types/world2046";
 
-/** Bounded diagnostic: ten roles, one model call each, no retries. */
 const CASES: Array<{ role: UserRole; hope: string; fear: string }> = [
   { role: "Barn", hope: "at der er plads til at lege og være sammen", fear: "at computere bestemmer for meget" },
   { role: "Ung", hope: "at der stadig er tid til at kede sig", fear: "at man aldrig får fred for at blive målt" },
@@ -22,14 +23,31 @@ const CASES: Array<{ role: UserRole; hope: string; fear: string }> = [
   { role: "Beslutningstager", hope: "at vi kan handle tidligt på de store problemer", fear: "at gevinsterne skjuler hvem der betaler prisen" },
 ];
 
-type DiagnosticCase = {
+type SetupId = "A" | "B" | "C";
+type EvalSetup = { id: SetupId; label: string; model: string; simplified: boolean };
+const SETUPS: EvalSetup[] = [
+  { id: "A", label: "baseline", model: "gpt-5.6-luna", simplified: false },
+  { id: "B", label: "simplified", model: "gpt-5.6-luna", simplified: true },
+  { id: "C", label: "simplified + Terra", model: "gpt-5.6-terra", simplified: true },
+];
+
+type EvalCase = {
+  setup: SetupId;
   role: UserRole;
-  callNumber: number;
-  plan: { futurePressureId: string; response: string; problemAreas: string[]; severity: string };
+  planIndex: number;
+  model: string;
+  plan: {
+    futurePressureId: string;
+    pressure: string;
+    responses: string[];
+    problemAreas: string[];
+    city: string;
+    country: string;
+  };
+  usage?: JsonUsage;
   transportError?: string;
-  raw?: AiDilemma;
+  raw?: AiDilemma | CreativeDilemma;
   validation: { accepted: true } | { accepted: false; reason: string };
-  acceptedDilemma?: GeneratedDilemma;
 };
 
 function loadEnvLocal() {
@@ -42,114 +60,157 @@ function loadEnvLocal() {
   }
 }
 
-function renderCase(item: DiagnosticCase) {
-  const raw = item.raw;
-  const status = item.validation.accepted
-    ? "GODKENDT"
-    : item.transportError
-      ? `PROVIDER-FEJL (${item.transportError})`
-      : `AFVIST (${item.validation.reason})`;
+function fixedPlan(index: number, item: typeof CASES[number]): RoundPlan {
+  const pick = (max: number) => index % max;
+  return planRound([], pick, `${item.hope} ${item.fear}`);
+}
 
+function requestFor(item: typeof CASES[number], plan: RoundPlan): DilemmaGenerationRequest {
+  return {
+    role: item.role,
+    answers: { role: item.role, hope: item.hope, fear: item.fear },
+    previousDilemmas: [],
+    preferredSeverity: "low",
+    language: "da",
+    generationPlan: plan,
+  };
+}
+
+function renderCase(item: EvalCase) {
+  const raw = item.raw;
+  const status = item.validation.accepted ? "GODKENDT" : `AFVIST (${item.validation.reason})`;
+  const choices = raw && Array.isArray(raw.choices)
+    ? raw.choices.map((choice, index) => `${index + 1}. **${choice.label}** — ${choice.description} → ${choice.consequence}`)
+    : [];
   return [
-    `## ${item.callNumber}. ${item.role} — ${status}`,
+    `### ${item.setup}${item.planIndex + 1}. ${item.role} — ${status}`,
     "",
-    `- **Plan:** ${item.plan.futurePressureId} · ${item.plan.problemAreas.join(", ")} · ${item.plan.severity}`,
-    `- **Planlagt 2046-svar:** ${item.plan.response}`,
+    `- Plan: ${item.plan.futurePressureId} · ${item.plan.city}, ${item.plan.country}`,
+    `- Model: ${item.model}`,
+    `- Latency/tokens: ${item.usage?.latencyMs ?? 0} ms · ${item.usage?.inputTokens ?? 0} in · ${item.usage?.outputTokens ?? 0} out`,
     ...(raw ? [
-      `- **Modelsted:** ${String(raw.city)}, ${String(raw.country)} · ${String(raw.locationType)}`,
-      `- **2046-virkelighed:** ${String(raw.normalized2046)}`,
-      `- **Konflikt:** ${String(raw.coreTension?.want)} · men også ${String(raw.coreTension?.butAlsoWant)}`,
-      `- **Kan ikke få begge:** ${String(raw.coreTension?.whyCannotHaveBoth)}`,
       "",
-      `### ${String(raw.title)}`,
+      `#### ${raw.title}`,
       "",
-      String(raw.landingScene),
+      raw.landingScene ?? "",
       "",
-      String(raw.scenePrompt),
+      raw.scenePrompt,
       "",
-      `*${String(raw.stake)}*`,
+      `*${raw.stake}*`,
       "",
-      `**${String(raw.question)}**`,
+      `**${raw.question}**`,
       "",
-      ...(Array.isArray(raw.choices)
-        ? raw.choices.map((choice, index) => `${index + 1}. **${String(choice.label)}** — ${String(choice.description)} → ${String(choice.consequence)}`)
-        : ["Choices mangler."]),
+      ...choices,
     ] : ["", "Intet model-JSON blev returneret."]),
     "",
   ].join("\n");
 }
 
-describe("bounded dilemma generator diagnostic", () => {
-  it("makes exactly one model call for each of the ten roles", async () => {
+describe("bounded A/B/C dilemma diagnostic", () => {
+  it("runs the same ten plans once per setup with no retries", async () => {
     loadEnvLocal();
     if (!process.env.OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is required for the bounded diagnostic");
-
     expect(CASES).toHaveLength(10);
-    expect(new Set(CASES.map((item) => item.role)).size).toBe(10);
 
-    let modelCalls = 0;
-    const results: DiagnosticCase[] = [];
+    const plans = CASES.map((item, index) => fixedPlan(index, item));
+    const calls: Record<SetupId, number> = { A: 0, B: 0, C: 0 };
+    const results: EvalCase[] = [];
 
-    for (const item of CASES) {
-      if (modelCalls >= 10) throw new Error("Hard stop: refusing an eleventh model call");
-      const plan = planRound([], undefined, undefined, getAudienceProfile(item.role).preferredProblemAreas);
-      const input: DilemmaGenerationRequest = {
-        role: item.role,
-        answers: { role: item.role, hope: item.hope, fear: item.fear },
-        previousDilemmas: [],
-        preferredSeverity: "low",
-        language: "da",
-        generationPlan: plan,
-      };
+    for (const setup of SETUPS) {
+      for (let index = 0; index < CASES.length; index += 1) {
+        if (calls[setup.id] >= 10) throw new Error(`Hard stop: refusing an eleventh ${setup.id} call`);
+        const item = CASES[index];
+        const plan = plans[index];
+        const input = requestFor(item, plan);
+        calls[setup.id] += 1;
 
-      modelCalls += 1;
-      const outcome = await requestJson<AiDilemma>({
-        apiKey: process.env.OPENAI_API_KEY,
-        schemaName: "world2046_dilemma_bounded_diagnostic",
-        schema: responseSchema,
-        prompt: buildDilemmaPrompt(input, { technologies, locationTypes }),
-        language: input.language,
-        timeoutMs: 40_000,
-      });
+        const common = {
+          apiKey: process.env.OPENAI_API_KEY,
+          model: setup.model,
+          reasoningEffort: "low" as const,
+          language: input.language,
+          timeoutMs: 60_000,
+        };
+        const outcome = setup.simplified
+          ? await requestJson<CreativeDilemma>({
+              ...common,
+              schemaName: `world2046_eval_${setup.id.toLowerCase()}`,
+              schema: creativeDilemmaSchema,
+              prompt: buildDilemmaPrompt(input),
+            })
+          : await requestJson<AiDilemma>({
+              ...common,
+              schemaName: "world2046_eval_a",
+              schema: responseSchema,
+              prompt: buildLegacyDilemmaPrompt(input, { technologies, locationTypes }),
+            });
 
-      const planRecord = {
-        futurePressureId: plan.pressure.id,
-        response: plan.response,
-        problemAreas: plan.problemAreas,
-        severity: plan.severity,
-      };
-      if ("error" in outcome) {
-        results.push({
+        const base = {
+          setup: setup.id,
           role: item.role,
-          callNumber: modelCalls,
-          plan: planRecord,
-          transportError: outcome.error,
-          validation: { accepted: false, reason: outcome.error },
-        });
-        continue;
-      }
+          planIndex: index,
+          model: setup.model,
+          plan: {
+            futurePressureId: plan.pressure.id,
+            pressure: plan.pressure.pressure,
+            responses: plan.responses,
+            problemAreas: plan.problemAreas,
+            city: plan.location.city,
+            country: plan.location.country,
+          },
+        } as const;
 
-      const validation = validateAiDilemmaDetailed(outcome.data, input);
-      results.push({
-        role: item.role,
-        callNumber: modelCalls,
-        plan: planRecord,
-        raw: outcome.data,
-        validation: "dilemma" in validation ? { accepted: true } : { accepted: false, reason: validation.reason },
-        acceptedDilemma: "dilemma" in validation ? validation.dilemma : undefined,
-      });
+        if ("error" in outcome) {
+          results.push({ ...base, usage: outcome.usage, transportError: outcome.error, validation: { accepted: false, reason: outcome.error } });
+          continue;
+        }
+
+        const validation = setup.simplified
+          ? validateCreativeDilemma(outcome.data, input)
+          : validateAiDilemmaDetailed(outcome.data, input);
+        results.push({
+          ...base,
+          usage: outcome.usage,
+          raw: outcome.data,
+          validation: "creative" in validation || "dilemma" in validation
+            ? { accepted: true }
+            : { accepted: false, reason: validation.reason },
+        });
+      }
     }
 
-    writeFileSync("dilemma-eval-raw.json", `${JSON.stringify({ modelCalls, cases: results }, null, 2)}\n`);
-    writeFileSync("dilemma-eval.md", [
-      "# Bounded dilemma-diagnostic",
+    const summary = SETUPS.map((setup) => {
+      const items = results.filter((item) => item.setup === setup.id);
+      return {
+        setup: setup.id,
+        label: setup.label,
+        model: setup.model,
+        accepted: items.filter((item) => item.validation.accepted).length,
+        attempts: items.length,
+        averageLatencyMs: Math.round(items.reduce((sum, item) => sum + (item.usage?.latencyMs ?? 0), 0) / items.length),
+        inputTokens: items.reduce((sum, item) => sum + (item.usage?.inputTokens ?? 0), 0),
+        outputTokens: items.reduce((sum, item) => sum + (item.usage?.outputTokens ?? 0), 0),
+      };
+    });
+
+    writeFileSync("dilemma-comparison-raw.json", `${JSON.stringify({ calls, plans, summary, cases: results }, null, 2)}\n`);
+    writeFileSync("dilemma-comparison.md", [
+      "# World 2046 A/B/C diagnostic",
       "",
-      `Præcis ${modelCalls} modelkald. Ingen retries eller regenerationer.`,
+      "Samme 10 planer i hvert setup. Ét authoring-kald per rolle per setup. Ingen retries eller regenerationer.",
       "",
-      ...results.map(renderCase),
+      "## Automatisk summary",
+      "",
+      ...summary.map((item) => `- ${item.setup}: ${item.accepted}/${item.attempts} accepted · ${item.averageLatencyMs} ms avg · ${item.inputTokens} input · ${item.outputTokens} output`),
+      "",
+      ...SETUPS.flatMap((setup) => [
+        `## Setup ${setup.id} — ${setup.label}`,
+        "",
+        ...results.filter((item) => item.setup === setup.id).map(renderCase),
+      ]),
     ].join("\n"));
 
-    expect(modelCalls).toBe(10);
-    expect(results).toHaveLength(10);
-  }, 600_000);
+    expect(calls).toEqual({ A: 10, B: 10, C: 10 });
+    expect(results).toHaveLength(30);
+  }, 1_800_000);
 });

@@ -8,7 +8,9 @@ export const UX_TIMING = {
   /** The final step onto 2046, once the destination is actually ready. */
   yearCounterLandMs: 900,
   minimumTravelLoadingMs: 6400,
-  dilemmaFetchTimeoutMs: 45000,
+  // Creative authoring and the separate value-classification call share one
+  // request, so the browser must outlive both bounded provider calls.
+  dilemmaFetchTimeoutMs: 75000,
   /** Failed destination generations stay behind the travel animation and retry
    *  with a capped backoff rather than turning into a participant-facing error. */
   dilemmaRetryBaseMs: 1500,

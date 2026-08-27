@@ -24,6 +24,7 @@ export type GeocodeQuery = {
 export type Coordinates = { lat: number; lng: number };
 export type GeocodeResult = {
   coordinates: Coordinates;
+  name?: string;
   address?: string;
   source: "searchbox" | "model";
 };
@@ -36,13 +37,13 @@ const TIMEOUT_MS = 5000;
 const MAX_DRIFT_KM = 25;
 
 /** Search Box returns [lng, lat] — the opposite order to everything else here. */
-export function readSearchResult(payload: unknown): { coordinates: Coordinates; address?: string } | null {
+export function readSearchResult(payload: unknown): { coordinates: Coordinates; name?: string; address?: string } | null {
   if (!payload || typeof payload !== "object") return null;
   const features = (payload as { features?: unknown }).features;
   if (!Array.isArray(features) || features.length === 0) return null;
 
   for (const feature of features) {
-    const entry = feature as { geometry?: { coordinates?: unknown }; properties?: { full_address?: unknown } };
+    const entry = feature as { geometry?: { coordinates?: unknown }; properties?: { name?: unknown; full_address?: unknown } };
     const pair = entry.geometry?.coordinates;
     if (!Array.isArray(pair) || pair.length < 2) continue;
     const lng = Number(pair[0]);
@@ -50,7 +51,8 @@ export function readSearchResult(payload: unknown): { coordinates: Coordinates; 
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
     if (Math.abs(lat) > 90 || Math.abs(lng) > 180) continue;
     const address = typeof entry.properties?.full_address === "string" ? entry.properties.full_address : undefined;
-    return { coordinates: { lat, lng }, address };
+    const name = typeof entry.properties?.name === "string" ? entry.properties.name : undefined;
+    return { coordinates: { lat, lng }, name, address };
   }
   return null;
 }
@@ -84,7 +86,7 @@ export async function locatePlace(
     if (distanceKm(fallback.lat, fallback.lng, found.coordinates.lat, found.coordinates.lng) > MAX_DRIFT_KM) {
       return { coordinates: fallback, source: "model" };
     }
-    return { coordinates: found.coordinates, address: found.address, source: "searchbox" };
+    return { coordinates: found.coordinates, name: found.name, address: found.address, source: "searchbox" };
   } catch {
     return { coordinates: fallback, source: "model" };
   } finally {

@@ -40,7 +40,69 @@ GOD FORM: "Skolens computer har lavet jeres grupper. Din ven står alene, men di
 DÅRLIG FORM: "Hvordan bør skolen balancere algoritmisk effektivitet og social inklusion?"
 `;
 
-export function buildDilemmaPrompt(input: DilemmaGenerationRequest, options: BuildDilemmaPromptOptions) {
+export function buildDilemmaPrompt(input: DilemmaGenerationRequest) {
+  const audience = getAudienceProfile(input.role);
+  const plan = input.generationPlan ?? planRound(input.previousDilemmas);
+  const languageName = input.language === "da" ? "dansk" : "English";
+  const allowedLocationTypes = [...new Set(plan.problemAreas.flatMap((area) => locationTypesByProblemArea[area]))];
+  const previous = input.previousDilemmas.length
+    ? input.previousDilemmas.map((item) => `${item.problemArea}: ${item.question}`).join("\n")
+    : "Ingen";
+
+  return `Skab ét stærkt World 2046-dilemma på ${languageName}.
+
+Deltageren skal gennem en konkret situation tage stilling til en vigtig mulighed eller udfordring ved livet i 2046.
+
+Byg dilemmaet sådan:
+FREMTIDSUDVIKLING
+→ noget er blevet normalt i 2046
+→ det løser et reelt problem eller giver en reel mulighed
+→ samme løsning skaber en menneskelig pris
+→ rollen oplever denne pris personligt
+→ personen skal vælge
+
+Det vigtigste spørgsmål er: "Hvis verden faktisk bliver sådan her, hvad synes jeg så om det, og hvad ville jeg selv gøre?"
+
+Et godt dilemma har:
+- mindst to forståelige ting personen gerne vil beskytte
+- en reel pris uanset valg
+- ingen åbenlys rigtig løsning
+- ingen kunstig deadline, knaphed eller game mechanic
+- ingen workaround der opløser konflikten
+- en situation rollen realistisk selv kan handle i
+
+Teknologien er ikke dilemmaet. Den skaber situationen.
+
+Rolle: ${input.role}
+Rolleperspektiv: ${audience.complexityGuidance}
+Mulig handlekraft: ${audience.agencyExamples.join("; ")}
+Nære relationer: ${audience.relationshipTypes.join("; ")}
+Reelle stakes: ${audience.relevantStakes.join("; ")}
+Rollen må ikke: ${audience.forbiddenResponsibilities.join("; ")}
+
+Fremtidspres: ${plan.pressure.pressure}
+Mulige samfundssvar i 2046:
+${plan.responses.map((response) => `- ${response}`).join("\n")}
+Problemområder: ${plan.problemAreas.join(", ")}
+Sted: ${plan.location.city}, ${plan.location.country}
+Tilladte locationType: ${allowedLocationTypes.join(", ")}
+
+Vælg selv den response eller en nærliggende udvikling, der giver det stærkeste dilemma for denne rolle. Du behøver ikke bruge alle input eller formuleringer ordret.
+
+De fire svar skal være fire reelt forskellige måder at tage stilling til samme situation. Hvis du kun kan finde to positioner og er nødt til at omskrive dem for at få fire, så vælg et andet dilemma. Alle fire accepterer situationens grundvilkår og har en mærkbar pris.
+
+Skriv kort, konkret og naturligt. ${input.role === "Barn" ? "Brug korte, kendte ord og korte sætninger, men bevar det store fremtidsspørgsmål." : "Skriv som et menneske ville forklare situationen til en ven."}
+Title højst 58 tegn. ScenePrompt højst 360 tegn. Stake højst 190 tegn. Question højst 160 tegn. Choice label højst 46 tegn, description højst 124 tegn og consequence højst 192 tegn.
+
+Undgå at gentage disse tidligere dilemmaer:
+${previous}
+
+Skriv først og fremmest et dilemma, mennesker ville have lyst til at diskutere bagefter. Returnér kun JSON.`;
+}
+
+/** Frozen pre-refactor authoring prompt, used only by setup A in the bounded
+ * comparison so the baseline remains genuinely comparable. */
+export function buildLegacyDilemmaPrompt(input: DilemmaGenerationRequest, options: BuildDilemmaPromptOptions) {
   const audience = getAudienceProfile(input.role);
   const plan = input.generationPlan ?? planRound(input.previousDilemmas, undefined, undefined, audience.preferredProblemAreas);
   const round = input.previousDilemmas.length;

@@ -1,6 +1,7 @@
 import { futurePressures, pressureFamilies, pressuresById } from "@/data/futurePressures";
+import { locations } from "@/data/locations";
 import type { FuturePressure, PressureFamily } from "@/data/futurePressures";
-import type { CompletedDilemma, ProblemArea } from "@/types/world2046";
+import type { CompletedDilemma, LocationNode, ProblemArea } from "@/types/world2046";
 
 /**
  * What one stop on the journey is for.
@@ -82,9 +83,14 @@ export type RoundPlan = {
   pressure: FuturePressure;
   /** The normalised societal response this dilemma takes place inside. */
   response: string;
+  /** All plausible societal responses. The creative model chooses the one (or
+   * a close sibling) that produces the strongest human conflict. */
+  responses: string[];
   severity: "low" | "medium";
   /** Areas that both fit this pressure and have not already been visited. */
   problemAreas: ProblemArea[];
+  /** Geography is planned in code; the author only writes what happens there. */
+  location: LocationNode;
 };
 
 /** Which pressure families a journey has already spent a stop on. */
@@ -192,49 +198,52 @@ export function planRound(
   previous: CompletedDilemma[],
   pick: Picker = randomPick,
   openingCue?: string,
-  preferredProblemAreas?: ProblemArea[],
+  _preferredProblemAreas?: ProblemArea[],
 ): RoundPlan {
   const round = previous.length;
 
   const usedFamilies = usedPressureFamilies(previous);
   const usedIds = new Set(previous.map((item) => item.futurePressureId).filter(Boolean));
   const usedAreas = new Set(previous.map((item) => item.problemArea));
-  const preferred = preferredProblemAreas?.length ? new Set(preferredProblemAreas) : undefined;
-  const fitsAudience = (pressure: FuturePressure) => !preferred || pressure.problemAreas.some((area) => preferred.has(area));
   const fitsUnusedArea = (pressure: FuturePressure) => pressure.problemAreas.some(
-    (area) => !usedAreas.has(area) && (!preferred || preferred.has(area)),
+    (area) => !usedAreas.has(area),
   );
   const openFamilies = pressureFamilies.filter(
     (family) => !usedFamilies.has(family) && futurePressures.some((pressure) => pressure.family === family && fitsUnusedArea(pressure)),
   );
-  const audienceFamilies = pressureFamilies.filter(
-    (family) => futurePressures.some((pressure) => pressure.family === family && fitsAudience(pressure)),
-  );
-  const families = openFamilies.length ? openFamilies : audienceFamilies.length ? audienceFamilies : pressureFamilies;
+  const families = openFamilies.length ? openFamilies : pressureFamilies;
   const cued = round === 0 && openingCue?.trim() ? familyFromCue(openingCue, families, pick) : undefined;
   const family = cued ?? families[pick(families.length)];
 
   const candidates = futurePressures.filter(
-    (item) => item.family === family && !usedIds.has(item.id) && fitsUnusedArea(item) && fitsAudience(item),
+    (item) => item.family === family && !usedIds.has(item.id) && fitsUnusedArea(item),
   );
-  const compatible = futurePressures.filter((item) => item.family === family && fitsUnusedArea(item) && fitsAudience(item));
-  const audienceCompatible = futurePressures.filter((item) => item.family === family && fitsAudience(item));
+  const compatible = futurePressures.filter((item) => item.family === family && fitsUnusedArea(item));
   const pool = candidates.length
     ? candidates
     : compatible.length
       ? compatible
-      : audienceCompatible.length
-        ? audienceCompatible
-        : futurePressures.filter((item) => item.family === family);
+      : futurePressures.filter((item) => item.family === family);
   const pressure = pool[pick(pool.length)];
   const response = pressure.responses[pick(pressure.responses.length)];
-  const audienceProblemAreas = pressure.problemAreas.filter((area) => !preferred || preferred.has(area));
-  const unusedProblemAreas = audienceProblemAreas.filter((area) => !usedAreas.has(area));
+  const unusedProblemAreas = pressure.problemAreas.filter((area) => !usedAreas.has(area));
   const problemAreas = unusedProblemAreas.length
     ? unusedProblemAreas
-    : audienceProblemAreas.length
-      ? audienceProblemAreas
-      : pressure.problemAreas;
+    : pressure.problemAreas;
 
-  return { round, pressure, response, severity: round === 0 ? "low" : "medium", problemAreas };
+  const previousCountries = new Set(previous.map((item) => item.country));
+  const geographyPool = round === 0
+    ? locations.filter((item) => item.country === "Danmark")
+    : locations.filter((item) => item.country !== "Danmark" && !previousCountries.has(item.country));
+  const location = geographyPool[pick(geographyPool.length)] ?? locations[0];
+
+  return {
+    round,
+    pressure,
+    response,
+    responses: pressure.responses,
+    severity: round === 0 ? "low" : "medium",
+    problemAreas,
+    location,
+  };
 }

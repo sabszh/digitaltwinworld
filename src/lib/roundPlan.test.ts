@@ -49,8 +49,17 @@ describe("planRound", () => {
       const plan = planRound([]);
       expect(pressuresById.has(plan.pressure.id)).toBe(true);
       expect(plan.pressure.responses).toContain(plan.response);
+      expect(plan.responses).toEqual(plan.pressure.responses);
       expect(plan.problemAreas.every((area) => plan.pressure.problemAreas.includes(area))).toBe(true);
+      expect(plan.location.country).toBe("Danmark");
     }
+  });
+
+  it("does not let an audience profile filter out major future pressures", () => {
+    const unfiltered = planRound([], () => 0);
+    const artificiallyNarrow = planRound([], () => 0, undefined, ["Uddannelse og læring"]);
+    expect(artificiallyNarrow.pressure.id).toBe(unfiltered.pressure.id);
+    expect(artificiallyNarrow.problemAreas).toEqual(unfiltered.problemAreas);
   });
 
   it("only offers problem areas that have not already been visited", () => {

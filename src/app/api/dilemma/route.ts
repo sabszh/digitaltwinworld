@@ -1,39 +1,37 @@
 import { userRoles } from "@/data/taxonomies";
-import type { AiDilemma, DilemmaGenerationRequest } from "@/lib/dilemmaGenerationTypes";
-import { locationTypes, responseSchema, technologies, validateAiDilemmaDetailed } from "@/lib/dilemmaStructuredOutput";
-import { locatePlace } from "@/lib/geocode";
 import { haversineKm } from "@/lib/aporee";
+import { creativeDilemmaSchema, enrichCreativeDilemma, validateCreativeDilemma } from "@/lib/creativeDilemma";
+import type { CreativeDilemma, DilemmaGenerationRequest } from "@/lib/dilemmaGenerationTypes";
+import { locatePlace } from "@/lib/geocode";
+import { dilemmaModel, requestJson } from "@/lib/openaiJson";
 import { buildDilemmaPrompt } from "@/lib/prompts/dilemmaPrompt";
 import { planRound } from "@/lib/roundPlan";
-import { getAudienceProfile } from "@/lib/audience";
-import { requestJson } from "@/lib/openaiJson";
+import { scoreDilemmaValues } from "@/lib/valueScoring";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
 const generationError = (reason: string) => NextResponse.json({ error: reason }, { status: 502 });
-
-/** Keep a small margin before the browser ends its 30-second request. */
 const GENERATION_TIMEOUT_MS = 40_000;
 const RETRY_BUDGET_MS = 9_000;
 
 type Attempt =
   | { transport: string }
-  | { parsed: AiDilemma; result: ReturnType<typeof validateAiDilemmaDetailed> };
+  | { validation: ReturnType<typeof validateCreativeDilemma> };
 
 async function requestDilemma(input: DilemmaGenerationRequest, apiKey: string): Promise<Attempt> {
-  const outcome = await requestJson<AiDilemma>({
+  const outcome = await requestJson<CreativeDilemma>({
     apiKey,
-    schemaName: "world2046_dilemma",
-    schema: responseSchema,
-    prompt: buildDilemmaPrompt(input, { technologies, locationTypes }),
+    model: dilemmaModel(),
+    reasoningEffort: "medium",
+    schemaName: "world2046_creative_dilemma",
+    schema: creativeDilemmaSchema,
+    prompt: buildDilemmaPrompt(input),
     language: input.language,
     timeoutMs: GENERATION_TIMEOUT_MS,
   });
   if ("error" in outcome) return { transport: outcome.error };
-
-  const parsed = outcome.data;
-  return { parsed, result: validateAiDilemmaDetailed(parsed, input) };
+  return { validation: validateCreativeDilemma(outcome.data, input) };
 }
 
 export async function POST(request: Request) {
@@ -48,13 +46,10 @@ export async function POST(request: Request) {
     previousDilemmas: body.previousDilemmas,
     preferredSeverity: body.preferredSeverity === "medium" ? "medium" : "low",
     language: body.language === "en" ? "en" : "da",
-    // The traveller's own words steer the opening stop only. planRound ignores
-    // them from round two onward, and they are never put in front of the model.
     generationPlan: planRound(
       body.previousDilemmas,
       undefined,
       [body.answers?.hope, body.answers?.fear].filter(Boolean).join(" "),
-      getAudienceProfile(body.role).preferredProblemAreas,
     ),
   };
 
@@ -62,44 +57,28 @@ export async function POST(request: Request) {
   if (!apiKey) return generationError("missing_openai_api_key");
 
   try {
-    // The content gates reject roughly a third of first attempts — most often
-    // because the options never engage the 2046 arrangement. A rejection costs
-    // the player a real destination, and a second attempt at the same prompt
-    // usually clears it, so retry once when there is time left in the client's
-    // budget rather than falling back straight away.
-    let dilemma;
+    let creative: CreativeDilemma | undefined;
     let lastReason = "unknown";
     for (let attempt = 0; attempt < 2; attempt += 1) {
       const startedAt = Date.now();
       const outcome = await requestDilemma(input, apiKey);
       if ("transport" in outcome) return generationError(outcome.transport);
-      if ("dilemma" in outcome.result) {
-        dilemma = outcome.result.dilemma;
+      if ("creative" in outcome.validation) {
+        creative = outcome.validation.creative;
         break;
       }
-
-      lastReason = outcome.result.reason;
-      const parsed = outcome.parsed;
-      console.warn(
-        `[dilemma] rejected ${lastReason} (attempt ${attempt + 1})`,
-        JSON.stringify({
-          round: input.previousDilemmas.length + 1,
-          got: { country: parsed?.country, region: parsed?.region, problemArea: parsed?.problemArea },
-          used: input.previousDilemmas.map((item) => item.country),
-        }),
-      );
-
+      lastReason = outcome.validation.reason;
+      console.warn(`[dilemma] rejected ${lastReason} (attempt ${attempt + 1})`);
       if (Date.now() - startedAt > RETRY_BUDGET_MS) break;
     }
+    if (!creative || !input.generationPlan) return generationError(`rejected_${lastReason}`);
 
-    if (!dilemma) return generationError(`rejected_${lastReason}`);
+    const impacts = await scoreDilemmaValues(creative, apiKey, input.language);
+    const dilemma = enrichCreativeDilemma(creative, input, input.generationPlan, impacts);
 
-    // The model's marker is a guess at the city, not at the building it just
-    // named. Put the camera on the real place when we can find it.
-    const place = dilemma.exactPlace;
-    if (place?.name) {
+    if (creative.placeHint?.trim()) {
       const located = await locatePlace(
-        { name: place.name, city: dilemma.city, country: dilemma.country },
+        { name: creative.placeHint, city: dilemma.city, country: dilemma.country },
         dilemma.marker,
         process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
         haversineKm,
@@ -107,20 +86,23 @@ export async function POST(request: Request) {
       if (located.source === "searchbox") {
         dilemma.marker = located.coordinates;
         dilemma.exactPlace = {
-          ...place,
+          id: `${input.generationPlan.location.id}-${dilemma.locationType}`,
+          name: located.name ?? creative.placeHint,
+          address: located.address,
+          region: dilemma.region,
+          country: dilemma.country,
+          city: dilemma.city,
           lat: located.coordinates.lat,
           lng: located.coordinates.lng,
-          address: located.address ?? place.address,
+          locationType: dilemma.locationType,
+          problemAreas: [dilemma.problemArea],
         };
-      } else {
-        // Nothing found usually means the institution does not exist. The
-        // dilemma still works; the camera just stays at the city.
-        console.warn(`[dilemma] place not found: ${place.name}, ${dilemma.city}`);
       }
     }
 
     return NextResponse.json({ source: "openai", dilemma });
-  } catch {
-    return generationError("openai_exception");
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : "openai_exception";
+    return generationError(reason);
   }
 }

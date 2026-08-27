@@ -105,6 +105,11 @@ describe("validateAiDilemmaDetailed", () => {
       locationType: item.locationType as "folkeskole",
       technology: item.technology as "personlig læringsassistent",
       question: item.question,
+      presented: {
+        title: item.title,
+        scene: item.scenePrompt,
+        choices: item.choices.map(({ id, label, description }) => ({ id, label, description })),
+      },
       selectedChoiceId: "a",
       selectedChoiceLabel: "x",
       valueImpacts: impacts({}),
