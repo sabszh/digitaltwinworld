@@ -2,7 +2,7 @@ import { locationTypesByProblemArea, problemAreas } from "@/data/taxonomies";
 import { getAudienceProfile } from "@/lib/audience";
 import type { CreativeDilemma, DilemmaGenerationRequest } from "@/lib/dilemmaGenerationTypes";
 import type { RoundPlan } from "@/lib/roundPlan";
-import type { Choice, FutureTechnology, GeneratedDilemma, LocationType, ProblemArea, ValueProfile } from "@/types/world2046";
+import type { Choice, GeneratedDilemma, LocationType, ValueProfile } from "@/types/world2046";
 
 export const creativeLocationTypes = [...new Set(Object.values(locationTypesByProblemArea).flat())] as LocationType[];
 
@@ -135,16 +135,6 @@ export function validateCreativeDilemma(
   return { creative: value as unknown as CreativeDilemma };
 }
 
-const technologyByArea: Record<ProblemArea, FutureTechnology> = {
-  "Uddannelse og læring": "personlig læringsassistent",
-  "Arbejde og arbejdsliv": "automation",
-  "Sundhed og omsorg": "sundhedsdata",
-  "Mobilitet, byliv og bolig": "bydigital tvilling",
-  "Klima, energi og resiliens": "energi-AI",
-  "Mad, vand og forsyning": "forsynings-AI",
-  "Digital tillid, rettigheder og styring": "personlig data-agent",
-};
-
 function shuffled<T>(items: T[]): T[] {
   const result = [...items];
   for (let i = result.length - 1; i > 0; i -= 1) {
@@ -187,7 +177,7 @@ export function enrichCreativeDilemma(
   impacts: Record<"a" | "b" | "c" | "d", ValueProfile>,
 ): GeneratedDilemma {
   const problemArea = problemAreaForLocation(creative.locationType, input, plan);
-  const technology = technologyByArea[problemArea];
+  const technology = plan.pressure.technology;
   const audience = getAudienceProfile(input.role);
   const choices: Choice[] = creative.choices.map((choice) => ({
     ...choice,

@@ -87,9 +87,7 @@ Sted: ${plan.location.city}, ${plan.location.country}
 
 Vælg selv den response eller en nærliggende udvikling, der giver det stærkeste dilemma for denne rolle. Du behøver ikke bruge alle input eller formuleringer ordret.
 
-De fire svar skal være fire reelt forskellige måder at tage stilling til samme situation. Hvis du kun kan finde to positioner og er nødt til at omskrive dem for at få fire, så vælg et andet dilemma. Alle fire accepterer situationens grundvilkår og har en mærkbar pris.
-
-Alle fire svar skal acceptere den samme situation som given. De skal være forskellige måder at leve med konsekvensen på — ikke forslag til at ændre situationen, få den vurderet igen eller finde en ny løsning. Hvis du ikke naturligt kan finde fire sådanne positioner, vælg et andet dilemma.
+De fire svar skal være fire reelt forskellige måder at tage stilling til samme situation, og alle skal have en mærkbar pris. Alle fire svar skal acceptere den samme situation som given. De skal være forskellige måder at leve med konsekvensen på — ikke forslag til at ændre situationen, få den vurderet igen eller finde en ny løsning. Hvis du ikke naturligt kan finde fire sådanne positioner, vælg et andet dilemma.
 
 Skriv kort, konkret og naturligt. ${input.role === "Barn" ? "Brug korte, kendte ord og korte sætninger, men bevar det store fremtidsspørgsmål." : "Skriv som et menneske ville forklare situationen til en ven."}
 Title højst 58 tegn. ScenePrompt højst 360 tegn. Stake højst 190 tegn. Question højst 160 tegn. Choice label højst 46 tegn, description højst 124 tegn og consequence højst 192 tegn.

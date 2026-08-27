@@ -70,12 +70,15 @@ describe("creative dilemma boundary", () => {
     expect(result.futurePressureId).toBe(plan.pressure.id);
     expect(result.country).toBe(plan.location.country);
     expect(result.role).toBe("Barn");
+    expect(result.technology).toBe(plan.pressure.technology);
+    expect(result.technologies).toEqual([plan.pressure.technology]);
     expect(result.choices.every((choice) => choice.valueImpacts)).toBe(true);
   });
 
   it("derives problem area from the authored scene location when it is adjacent to the pressure", () => {
     const result = enrichCreativeDilemma(creative({ locationType: "folkeskole" }), input, plan, zeroValueImpacts());
     expect(result.problemArea).toBe("Uddannelse og læring");
+    expect(result.technology).toBe(plan.pressure.technology);
     expect(result.validLocationTypes).toContain("folkeskole");
   });
 
