@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { futureDevelopments } from "@/data/futureDevelopments";
+import { developmentIsSuitableForRole, futureDevelopments } from "@/data/futureDevelopments";
 import type { FutureTheme } from "@/types/world2046";
 
 const validThemes = new Set<FutureTheme>([
@@ -22,6 +22,22 @@ describe("future developments", () => {
       expect(item.development.trim()).not.toBe("");
       expect(item.themes.length).toBeGreaterThan(0);
       expect(item.themes.every((theme) => validThemes.has(theme))).toBe(true);
+    }
+  });
+
+  it("keeps every major future theme available to children", () => {
+    for (const theme of validThemes) {
+      expect(futureDevelopments.some((item) =>
+        item.themes.includes(theme) && developmentIsSuitableForRole(item, "Barn"),
+      )).toBe(true);
+    }
+  });
+
+  it("keeps intimate authority and inferred-distress developments away from child seeds", () => {
+    for (const id of ["ai-detects-distress", "ai-simulates-life-choices", "school-detects-isolation", "robots-personal-care"]) {
+      const item = futureDevelopments.find((candidate) => candidate.id === id);
+      expect(item).toBeDefined();
+      expect(developmentIsSuitableForRole(item!, "Barn")).toBe(false);
     }
   });
 });

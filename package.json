@@ -8,7 +8,9 @@
     "build": "next build",
     "lint": "eslint .",
     "test": "vitest run",
-    "eval:dilemmas": "vitest run -c vitest.eval.config.ts"
+    "eval:dilemmas": "vitest run -c vitest.eval.config.ts",
+    "eval:dilemmas:followup": "vitest run -c vitest.followup.config.ts",
+    "eval:dilemmas:verify-content": "vitest run -c vitest.verification.config.ts"
   },
   "keywords": [],
   "author": "",

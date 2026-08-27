@@ -12,6 +12,7 @@ export type DilemmaExample = {
   themes: FutureTheme[];
   futureQuestions: string[];
   development?: string;
+  developmentIds?: string[];
   enabled?: boolean;
   dilemma: {
     futureNormal: string;
@@ -55,24 +56,25 @@ const Q = {
  */
 export const dilemmaExamples: DilemmaExample[] = [
   {
-    id: "child-distress-message",
+    id: "child-digital-grandmother",
     role: "Barn",
-    themes: ["AI og beslutninger", "Uddannelse", "Sundhed og bioteknologi"],
-    futureQuestions: [Q.inferredCare, Q.privacySafety],
-    development: "AI kan opdage mistrivsel, før et barn selv fortæller om den",
+    themes: ["Sandhed og autenticitet", "Relationer, familie og hverdagsliv"],
+    futureQuestions: [Q.memory, Q.authenticity],
+    development: "En digital version af en afdød kan fortsætte samtaler med familien",
+    developmentIds: ["digital-deceased"],
     dilemma: {
-      futureNormal: "Skolens computer lægger mærke til tegn på, at et barn ikke har det godt.",
-      humanCost: "Hjælpen kan komme hurtigt, men en voksen får noget at vide, før barnet selv har fortalt det.",
-      decision: "Barnet vælger, hvad det gør med computerens besked.",
-      title: "DET SER UD SOM OM, DU ER KED AF DET",
-      scene: "Du kommer ind i klassen efter frikvarteret. På din skærm står der: ‘Du har været meget alene. Skal jeg fortælle din lærer, at du måske har brug for hjælp?’ Din bedste ven sidder ved siden af dig.",
-      stake: "Du vil måske gerne have hjælp. Men du vil også selv bestemme, hvornår du fortæller andre, hvordan du har det.",
-      question: "Hvad gør du med beskeden?",
+      futureNormal: "Et barn kan tale med en digital udgave af et familiemedlem, der er død.",
+      humanCost: "Samtalerne kan holde minder levende, men den digitale person siger også nye ting, som den virkelige aldrig har sagt.",
+      decision: "Barnet vælger, hvilken plads den digitale bedstemor skal have ved fødselsdagen.",
+      title: "SKAL DIGITALE MORMOR MED TIL FESTEN?",
+      scene: "Du fylder ti år på lørdag. På familiens skærm bor en digital udgave af din mormor, som døde for to år siden. Hun kan fortælle gamle historier og finde på nye svar med mormors stemme. Du vil gerne have hende med til festen. Din mor bliver både glad og ked af det, når skærmen taler.",
+      stake: "Du vil have mormor med til din store dag. Du vil også passe på de rigtige minder og på din mor.",
+      question: "Hvad gør du med digitale mormor til festen?",
       choices: choices(
-        ["SEND DEN TIL LÆREREN", "Du kan få hjælp hurtigt, men læreren får noget at vide, før du selv har sagt det."],
-        ["LUK BESKEDEN", "Ingen blander sig, men du kan komme til at stå alene med det."],
-        ["FORTÆL LÆREREN SELV", "Du får sagt det med dine egne ord, men skal selv tage det svære første skridt."],
-        ["FORTÆL DIN VEN FØRST", "Du står ikke alene, men læreren ved stadig ikke, at du måske har brug for hjælp."],
+        ["LAD HENDE TALE MED VED BORDET", "Du får følelsen af, at mormor er med, men nye ord kan blive blandet sammen med det, hun virkelig sagde."],
+        ["VIS KUN GAMLE VIDEOER AF HENDE", "I hører mormors egne ord, men du kan ikke spørge hende om noget nyt på din fødselsdag."],
+        ["HOLD SKÆRMEN SLUKKET", "Din mor og de gamle minder får ro, men du savner den mormor, du stadig kan tale med."],
+        ["TAL MED HENDE ALENE EFTER FESTEN", "Du beholder samtalen med mormor, men gør den til en hemmelig del af dagen, som familien ikke deler."],
       ),
     },
   },
@@ -82,6 +84,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Robotter og autonome systemer", "Relationer, familie og hverdagsliv", "Data, identitet og privatliv"],
     futureQuestions: [Q.memory, Q.privacySafety],
     development: "En social robot kan huske alt, et barn har delt med den gennem mange år",
+    developmentIds: ["social-robots-lasting"],
     dilemma: {
       futureNormal: "Et barn kan have den samme robotven i mange år, og robotten husker alle deres samtaler.",
       humanCost: "Robotten kan være en tryg ven, men dens minder kan også vise de voksne, hvad barnet har sagt.",
@@ -104,6 +107,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Klima, energi og ressourcer", "Uddannelse", "Relationer, familie og hverdagsliv"],
     futureQuestions: [Q.climateRights],
     development: "Meget varme dage kan flytte skole og fritid til aftenen",
+    developmentIds: ["heat-shifts-daily-rhythm"],
     dilemma: {
       futureNormal: "På meget varme dage begynder skoledagen først, når solen går ned.",
       humanCost: "Børn kan lære uden farlig varme, men mister den tid, hvor familien og vennerne plejer at være sammen.",
@@ -127,6 +131,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["AI og beslutninger", "Uddannelse"],
     futureQuestions: [Q.prediction, Q.fairness],
     development: "AI kan forudsige risiko for frafald og tilbyde et andet uddannelsesforløb tidligt",
+    developmentIds: ["ai-predicts-dropout"],
     dilemma: {
       futureNormal: "Uddannelser bruger løbende arbejde til at forudsige, hvem der får svært ved at gennemføre.",
       humanCost: "Tidlig støtte kan hjælpe, men forudsigelsen kan også ændre en ungs muligheder, før noget er sket.",
@@ -149,6 +154,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Sandhed og autenticitet", "Relationer, familie og hverdagsliv"],
     futureQuestions: [Q.authenticity, Q.memory],
     development: "En personlig AI-klon kan skrive og svare i en ungs egen stil",
+    developmentIds: ["personal-ai-clones"],
     dilemma: {
       futureNormal: "Unge kan lade en AI-klon holde samtaler i gang, når de ikke selv er online.",
       humanCost: "Ingen bliver glemt, men venner kan ikke altid vide, om relationen er med personen eller klonen.",
@@ -171,6 +177,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Sundhed og bioteknologi", "Data, identitet og privatliv"],
     futureQuestions: [Q.privacySafety, Q.inferredCare],
     development: "Kropssensorer kan opdage overbelastning før en ung selv mærker den",
+    developmentIds: ["continuous-body-sensors"],
     dilemma: {
       futureNormal: "Sportsfællesskaber bruger kropssensorer til at opdage skader, før de gør ondt.",
       humanCost: "Tidlig beskyttelse kan holde unge raske, men kroppen bliver også et argument for, hvad de må være med til.",
@@ -194,6 +201,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Sundhed og bioteknologi", "Data, identitet og privatliv"],
     futureQuestions: [Q.prediction, Q.privacySafety],
     development: "En genetisk profil kan vise et barns sygdomsrisiko årtier frem",
+    developmentIds: ["genetic-risk-decades"],
     dilemma: {
       futureNormal: "Forældre kan få et kort over sygdomme, deres barn måske udvikler som voksen.",
       humanCost: "Viden kan forebygge sygdom, men kan også forme et barns liv omkring noget, der måske aldrig sker.",
@@ -216,6 +224,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Robotter og autonome systemer", "Relationer, familie og hverdagsliv"],
     futureQuestions: [Q.humanContact, Q.delegation],
     development: "En robot kan passe et barn sikkert i korte perioder og lære familiens rutiner",
+    developmentIds: ["robots-watch-children"],
     dilemma: {
       futureNormal: "Familier kan lade en kendt omsorgsrobot være alene med børn efter skole.",
       humanCost: "Robotten giver tid og stabilitet, men barnet kan begynde at gå til den med ting, familien før delte med hinanden.",
@@ -238,6 +247,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Klima, energi og ressourcer", "Relationer, familie og hverdagsliv"],
     futureQuestions: [Q.climateRights],
     development: "Familier kan bo et andet sted i årets varmeste måneder",
+    developmentIds: ["seasonal-homes"],
     dilemma: {
       futureNormal: "Skole og arbejde kan flyttes digitalt, så familier kan forlade meget varme byer om sommeren.",
       humanCost: "Flytningen beskytter helbred og giver en tålelig hverdag, men deler lokale fællesskaber efter, hvem der kan rejse.",
@@ -261,6 +271,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Uddannelse", "AI og beslutninger", "Data, identitet og privatliv"],
     futureQuestions: [Q.inferredCare, Q.privacySafety],
     development: "Skolen kan opdage mønstre af ensomhed, før et barn selv fortæller om dem",
+    developmentIds: ["school-detects-isolation"],
     dilemma: {
       futureNormal: "En lærer kan få private advarsler om børn, der gradvist bliver holdt udenfor.",
       humanCost: "Læreren kan reagere tidligere, men relationen kan ændres af en viden, barnet aldrig har valgt at dele.",
@@ -283,6 +294,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Uddannelse", "AI og beslutninger"],
     futureQuestions: [Q.prediction, Q.fairness],
     development: "Undervisningen kan ændre sværhedsgrad automatisk for hver elev",
+    developmentIds: ["adaptive-lessons"],
     dilemma: {
       futureNormal: "Hver elev kan få sin egen usynlige vej gennem det samme fag.",
       humanCost: "Flere lærer i et passende tempo, men klassen mister erfaringen af at kæmpe med det samme og blive overrasket sammen.",
@@ -305,6 +317,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Uddannelse", "AI og beslutninger", "Sandhed og autenticitet"],
     futureQuestions: [Q.humanContact, Q.responsibility],
     development: "En AI-person kan være fast gruppemedlem i elevernes projektarbejde",
+    developmentIds: ["ai-classmates"],
     dilemma: {
       futureNormal: "Klasser kan have AI-elever, der bidrager med idéer, arbejde og feedback som andre gruppemedlemmer.",
       humanCost: "Alle grupper kan komme videre, men det bliver uklart, hvem der lærer, skaber og bærer et fælles resultat.",
@@ -328,6 +341,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Sundhed og bioteknologi", "AI og beslutninger"],
     futureQuestions: [Q.prediction, Q.responsibility],
     development: "Sygdom kan opdages flere år før symptomer med betydelig usikkerhed",
+    developmentIds: ["disease-before-symptoms"],
     dilemma: {
       futureNormal: "Sundhedsfaglige modtager tidlige risikosignaler om sygdomme, som endnu ikke kan bekræftes.",
       humanCost: "Tidlig viden kan give behandling og tid, men kan også gøre et raskt menneske til patient i mange år.",
@@ -350,6 +364,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Offentlige systemer og demokrati", "AI og beslutninger"],
     futureQuestions: [Q.fairness, Q.responsibility],
     development: "En offentlig afgørelse kan udarbejdes automatisk og forklares individuelt",
+    developmentIds: ["automated-public-decisions"],
     dilemma: {
       futureNormal: "Sagsbehandlere får færdige afgørelser med en personlig forklaring til borgeren.",
       humanCost: "Flere får hurtige og ensartede svar, men fagpersonen kan blive ansvarlig for en afgørelse, der bygger på mønstre uden for sagen.",
@@ -372,6 +387,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Robotter og autonome systemer", "Sundhed og bioteknologi"],
     futureQuestions: [Q.humanContact, Q.responsibility],
     development: "En specialist kan behandle en patient fysisk gennem en robot på afstand",
+    developmentIds: ["remote-specialist-robots"],
     dilemma: {
       futureNormal: "En lokal fagperson kan være hænder for en fjern specialist gennem en behandlingsrobot.",
       humanCost: "Ekspertise når flere steder, men nærvær, ansvar og den kropslige vurdering bliver delt mellem mennesker og maskine.",
@@ -395,6 +411,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Arbejde", "AI og beslutninger", "Sundhed og bioteknologi"],
     futureQuestions: [Q.inferredCare, Q.prediction],
     development: "AI kan opdage sandsynlig udbrændthed gennem medarbejderens daglige arbejdsmønstre",
+    developmentIds: ["ai-detects-burnout"],
     dilemma: {
       futureNormal: "En leder kan få tidlige advarsler om medarbejdere, der sandsynligvis bliver syge af arbejdet.",
       humanCost: "Arbejdspladsen kan forebygge skade, men medarbejderen bliver behandlet ud fra private mønstre og en mulig fremtid.",
@@ -417,6 +434,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Arbejde", "AI og beslutninger"],
     futureQuestions: [Q.responsibility, Q.delegation],
     development: "En virksomhed kan lade AI foreslå og udføre beslutninger, som en navngiven leder hæfter for",
+    developmentIds: ["humans-liable-for-ai"],
     dilemma: {
       futureNormal: "Ledelser kan automatisere mange beslutninger, hvis et menneske påtager sig det endelige ansvar.",
       humanCost: "Virksomheden bliver hurtigere og mere ensartet, men ansvar kan blive en underskrift under handlinger, ingen har set enkeltvis.",
@@ -439,6 +457,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Arbejde", "AI og beslutninger", "Data, identitet og privatliv"],
     futureQuestions: [Q.fairness, Q.delegation],
     development: "Medarbejderes personlige agenter kan forhandle løn ud fra detaljerede data om deres værdi og liv",
+    developmentIds: ["agents-negotiate-pay"],
     dilemma: {
       futureNormal: "Lønforhandling kan foregå direkte mellem virksomhedens agent og medarbejdernes egne agenter.",
       humanCost: "Aftaler kan blive præcise og hurtige, men ens arbejde kan få forskellig pris alt efter, hvad agenten ved og kan afsløre.",
@@ -462,6 +481,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Arbejde", "Data, identitet og privatliv", "AI og beslutninger"],
     futureQuestions: [Q.privacySafety, Q.fairness],
     development: "Arbejdsindsats kan vurderes gennem løbende digitale spor fra det daglige arbejde",
+    developmentIds: ["work-measured-continuously"],
     dilemma: {
       futureNormal: "Medarbejdere kan erstatte årlige vurderinger med en løbende profil af deres faktiske bidrag.",
       humanCost: "Usynligt arbejde kan endelig tælle, men pauser, relationer og arbejdsstil bliver også målbare.",
@@ -484,6 +504,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Arbejde", "Robotter og autonome systemer"],
     futureQuestions: [Q.humanContact, Q.responsibility],
     development: "En robot kan overtage det farligste arbejde fra et erfarent menneske",
+    developmentIds: ["robots-dangerous-work"],
     dilemma: {
       futureNormal: "Farlige fag kan udføres af robotter, mens erfarne medarbejdere leder arbejdet på afstand.",
       humanCost: "Færre bliver skadet, men håndværk, identitet og den direkte erfaring forsvinder fra menneskets arbejde.",
@@ -506,6 +527,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Arbejde", "AI og beslutninger", "Sandhed og autenticitet"],
     futureQuestions: [Q.responsibility, Q.humanContact],
     development: "Et arbejdsteam kan have autonome AI-agenter som faste kolleger",
+    developmentIds: ["mixed-agent-teams"],
     dilemma: {
       futureNormal: "AI-agenter kan eje opgaver, skrive til kunder og træffe løbende valg som andre teammedlemmer.",
       humanCost: "Holdet kan levere mere, men menneskelige medarbejdere må leve med kollegers handlinger, som ingen person fuldt forstår.",
@@ -524,24 +546,25 @@ export const dilemmaExamples: DilemmaExample[] = [
   },
 
   {
-    id: "public-digital-deceased",
+    id: "public-verified-footage",
     role: "For alle",
-    themes: ["Sandhed og autenticitet", "Relationer, familie og hverdagsliv"],
-    futureQuestions: [Q.memory, Q.authenticity],
-    development: "En digital version af en afdød kan fortsætte samtaler ud fra personens egne spor",
+    themes: ["Sandhed og autenticitet", "Data, identitet og privatliv"],
+    futureQuestions: [Q.authenticity, Q.privacySafety],
+    development: "En video kan bevise sin oprindelse fra optagelse til offentliggørelse",
+    developmentIds: ["verified-media-origin"],
     dilemma: {
-      futureNormal: "Familier kan fortsætte med at skrive og tale med en digital udgave af et menneske, de har mistet.",
-      humanCost: "Stemmen og historierne kan blive ved med at være nærværende, men den digitale person kan også forme minder, den afdøde aldrig selv valgte.",
-      decision: "En person vælger, om den digitale udgave skal have en plads i familiens liv.",
-      title: "EN BESKED FRA ÉN, DU HAR MISTET",
-      scene: "Din mors digitale udgave sender stadig fødselsdagshilsner og svarer med hendes stemme. Dit barn elsker samtalerne og føler, at det kender sin bedstemor. Din søster siger, at familien ikke længere kan huske, hvad mor faktisk sagde.",
-      stake: "Du kan bevare en levende forbindelse for barnet eller beskytte familiens minder mod at blive skrevet videre af en maskine.",
-      question: "Lader du samtalerne fortsætte?",
+      futureNormal: "Videoer kan bære et bevis på, hvilken enhed der optog dem, hvornår de blev ændret, og hvem der offentliggjorde dem.",
+      humanCost: "Beviset kan gøre virkelige optagelser troværdige, men det kan også gøre den person, der filmede, mulig at finde.",
+      decision: "En familie vælger, hvordan barnets vigtige video skal offentliggøres.",
+      title: "VIDEOEN ER ÆGTE — OG KAN FØRE TILBAGE TIL JER",
+      scene: "Dit barn har filmet en fabriks ulovlige udledning i åen ved jeres boligområde. Virksomheden siger, at videoen er kunstig. Kameraets oprindelsesbevis kan vise, at optagelsen er ægte, men beviset indeholder også tidspunkt, enhed og præcis placering tæt på jeres hjem.",
+      stake: "I kan gøre videoen svær at afvise eller beskytte barnet mod at blive fundet af dem, optagelsen rammer.",
+      question: "Hvordan deler I videoen?",
       choices: choices(
-        ["BEHOLD DE FRI SAMTALER", "Barnet får en levende bedstemor-relation, men nye ord bliver blandet ind i minderne om den virkelige person."],
-        ["LUK DEN DIGITALE UDGAVE", "Familiens minder står urørte, men barnet mister en relation, der føles virkelig og vigtig."],
-        ["BRUG KUN GAMLE OPTAGELSER", "I kan høre hendes egne ord, men mister de svar og samtaler, som gjorde nærværet personligt."],
-        ["LAD HVERT FAMILIEMEDLEM VÆLGE", "Ingen tvinges til samme sorg, men familien kan ende med helt forskellige udgaver af den samme person."],
+        ["DEL MED HELE OPRINDELSESBEVISET", "Offentligheden kan se, at videoen er ægte, men sporet kan føre virksomheden tilbage til barnet og jeres hjem."],
+        ["DEL VIDEOEN UDEN BEVISET", "Barnets identitet er bedre beskyttet, men virksomheden kan fortsætte med at kalde optagelsen falsk."],
+        ["DEL DEN UNDER DIT EGET VERIFICEREDE NAVN", "Du tager den synlige risiko som voksen, men gør barnets optagelse og mod til din offentlige påstand."],
+        ["BEHOLD VIDEOEN I FAMILIEN", "I beskytter barnet og hjemmet, men det stærkeste bevis på udledningen får ingen virkning udenfor."],
       ),
     },
   },
@@ -551,6 +574,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Relationer, familie og hverdagsliv", "AI og beslutninger"],
     futureQuestions: [Q.delegation, Q.privacySafety],
     development: "Et hjem kan tage mange små beslutninger om familiens hverdag uden at spørge først",
+    developmentIds: ["automatic-home-decisions"],
     dilemma: {
       futureNormal: "Hjemmet kan planlægge mad, varme, indkøb og rutiner ud fra hele husstandens behov.",
       humanCost: "Hverdagen bliver lettere og bruger færre ressourcer, men familiens små valg bliver gradvist hjemmets beslutninger.",
@@ -568,24 +592,25 @@ export const dilemmaExamples: DilemmaExample[] = [
     },
   },
   {
-    id: "public-neighbour-energy",
+    id: "public-floodable-home",
     role: "For alle",
     themes: ["Klima, energi og ressourcer", "Relationer, familie og hverdagsliv"],
-    futureQuestions: [Q.climateRights, Q.fairness],
-    development: "Et nabolag kan dele lokalt produceret energi direkte mellem hjem",
+    futureQuestions: [Q.climateRights],
+    development: "Et boligområde kan være bygget til at leve med regelmæssige oversvømmelser",
+    developmentIds: ["floodable-neighbourhoods"],
     dilemma: {
-      futureNormal: "Naboer kan lægge deres strøm i en fælles pulje, der holder hele kvarteret i gang.",
-      humanCost: "Fællesskabet kan bruge mere lokal grøn energi, men hvert hjem mister sikkerheden for, at egen produktion altid er deres egen.",
-      decision: "En husstand vælger, om dens ekstra strøm skal blive i fællespuljen under en presset uge.",
-      title: "STRØMMEN FRA DIT TAG ER IKKE KUN DIN",
-      scene: "En mørk vinteruge producerer kvarteret for lidt strøm. Dit tag har et sjældent overskud, fordi familien er bortrejst. Fællespuljen vil bruge det til naboernes varme; du havde gemt det til hjemkomsten.",
-      stake: "Du kan sikre din egen families varme senere eller lade den energi, I ikke bruger nu, holde naboerne varme i dag.",
-      question: "Hvad gør du med overskuddet?",
+      futureNormal: "Boliger kan åbne deres nederste etager og gårdrum for vand, så hele kvarteret kan blive stående gennem oversvømmelser.",
+      humanCost: "Familier kan beholde deres område, men dele af hjemmet skifter fra privat hverdagsrum til fælles beskyttelse mod vand.",
+      decision: "En familie vælger, hvordan den vil leve med, at hjemmets nederste etage bliver en del af kvarterets vandlandskab.",
+      title: "NÅR STUEN BLIVER EN DEL AF FLODEN",
+      scene: "Dit rækkehus ligger i et kvarter, der nu leder regnvand gennem gårde og nederste etager. Huset kan blive stående, hvis jeres stue hver vinter må tømmes og åbnes for vandet. Ovenpå kan familien bo tørt. Naboerne bliver, og børnene elsker de nye broer mellem husene.",
+      stake: "I kan beholde kvarteret og miste en del af hjemmet, eller beskytte et almindeligt privat hjem ved at give slip på stedet og fællesskabet.",
+      question: "Hvordan vil familien bo fremover?",
       choices: choices(
-        ["GIV ALT TIL FÆLLESPULJEN", "Naboerne får varme nu, men din familie vender hjem uden den reserve, I havde regnet med."],
-        ["BEHOLD DET HELE", "Din familie har sikkerhed ved hjemkomsten, men naboerne må spare mere i den kolde uge."],
-        ["DEL OVERSKUDDET LIGE", "Begge får noget sikkerhed, men ingen får nok til at undgå et mærkbart afsavn."],
-        ["GIV DET TIL DE MEST SÅRBARE HJEM", "Energien hjælper dem med størst behov, men du accepterer, at en fælles vurdering bestemmer over din produktion."],
+        ["BLIV OG ÅBN STUEN FOR VANDET", "I beholder naboerne og livet ovenpå, men familiens hjem er ikke længere helt privat eller tilgængeligt hele året."],
+        ["FLYT TIL ET TØRT KVARTER", "I får et almindeligt hjem med tørre rum, men forlader menneskene og stedet, der har formet familien."],
+        ["BEHOLD HUSET SOM SOMMERHJEM", "I kan vende tilbage til kvarteret i tørre måneder, men får et delt liv og to steder, der aldrig helt føles som hjem."],
+        ["BLIV SOM LEJERE HOS EN NABO OVENPÅ", "I bliver i fællesskabet uden at eje risikoen, men giver afkald på jeres eget hus og den frihed, ejerskabet gav."],
       ),
     },
   },
@@ -596,6 +621,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Data, identitet og privatliv", "Sandhed og autenticitet"],
     futureQuestions: [Q.authenticity, Q.privacySafety],
     development: "En borger kan bevise digitalt, at de er et virkeligt menneske uden at vise hele identiteten",
+    developmentIds: ["prove-human-online"],
     dilemma: {
       futureNormal: "Offentlige digitale samtaler kan skelne virkelige mennesker fra bots gennem et anonymt identitetsbevis.",
       humanCost: "Debatten får færre falske deltagere, men enhver ægte stemme kan i sidste ende forbindes med et godkendt menneske.",
@@ -618,6 +644,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Offentlige systemer og demokrati", "AI og beslutninger", "Data, identitet og privatliv"],
     futureQuestions: [Q.inferredCare, Q.fairness],
     development: "Det offentlige kan opdage behov for hjælp, før borgeren selv søger",
+    developmentIds: ["needs-before-application"],
     dilemma: {
       futureNormal: "Borgere kan få tilbudt støtte automatisk, når deres økonomi, helbred og hverdag viser et behov.",
       humanCost: "Hjælpen når mennesker tidligere, men livet bliver også læst som en ansøgning, de aldrig selv har skrevet.",
@@ -640,6 +667,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Klima, energi og ressourcer", "Offentlige systemer og demokrati"],
     futureQuestions: [Q.climateRights, Q.prediction],
     development: "En digital tvilling kan vise, hvilke gader der sandsynligvis oversvømmes gentagne gange",
+    developmentIds: ["city-digital-twins"],
     dilemma: {
       futureNormal: "Borgere kan se detaljerede klimaprognoser for deres eget hjem og kvarter mange år frem.",
       humanCost: "Viden gør tidlig tilpasning mulig, men kan få et hjem og et fællesskab til at miste værdi før skaden sker.",
@@ -658,24 +686,25 @@ export const dilemmaExamples: DilemmaExample[] = [
   },
 
   {
-    id: "decisionmaker-heat-priority",
+    id: "decisionmaker-night-city",
     role: "Beslutningstager",
-    themes: ["Klima, energi og ressourcer", "Offentlige systemer og demokrati", "AI og beslutninger"],
-    futureQuestions: [Q.climateRights, Q.fairness],
-    development: "AI kan prioritere strøm og køling mellem offentlige tilbud under ekstrem varme",
+    themes: ["Klima, energi og ressourcer", "Offentlige systemer og demokrati", "Arbejde"],
+    futureQuestions: [Q.climateRights],
+    development: "Ekstrem varme kan flytte skole, arbejde og byliv til aftenen og natten",
+    developmentIds: ["heat-shifts-daily-rhythm"],
     dilemma: {
-      futureNormal: "Et beredskabssystem kan flytte strøm og køling derhen, hvor det forventes at forhindre mest skade.",
-      humanCost: "Byen kan beskytte flere samlet, men kendte steder og grupper mister beskyttelse gennem en beregnet prioritering.",
-      decision: "Beslutningstageren vælger, hvilket princip der skal styre den konkrete fordeling under hedebølgen.",
-      title: "BYEN KAN IKKE KØLE ALLE RUM",
-      scene: "En lang hedebølge presser elnettet. Systemet anbefaler at lukke kølingen i biblioteker og skoler for at sikre hospitaler og plejehjem. Bibliotekerne er samtidig de eneste kølige steder for tusinder af familier uden aircondition.",
-      stake: "Du skal beskytte de mest medicinsk sårbare uden at gøre resten af byen afhængig af, hvad deres eget hjem kan klare.",
-      question: "Hvilket princip godkender du for denne hedebølge?",
+      futureNormal: "Byer kan flytte undervisning, byggeri, levering og offentlige åbningstider væk fra dagens farligste varme.",
+      humanCost: "Flere kan arbejde og lære sikkert, men søvn, familietid og retten til stille nætter ændres for hele byen.",
+      decision: "Beslutningstageren vælger, hvilken døgnrytme byen vil gøre normal gennem de varme måneder.",
+      title: "NÅR BYENS DAG BEGYNDER EFTER SOLNEDGANG",
+      scene: "Somrene er blevet så varme, at udendørs arbejde og skoletransport midt på dagen giver mange hedeslag. En ny plan flytter skoler, leverancer og byggeri til sen eftermiddag og aften. Den vil beskytte kroppe og holde byen i gang, men børn og voksne får færre fælles aftener, og boligkvarterer får støj langt ind i natten.",
+      stake: "Du kan lade samfundets rytme følge klimaet eller holde fast i den kendte dag og betale med mere køling, mindre aktivitet og større helbredsrisiko.",
+      question: "Hvilken døgnrytme gør du til byens nye normal?",
       choices: choices(
-        ["FØLG SYSTEMETS MAKSIMALE SKADESREDUKTION", "Hospitaler og plejehjem sikres, men mange familier mister deres eneste fælles kølige rum."],
-        ["HOLD ALLE TYPER TILBUD DELVIST ÅBNE", "Flere bevarer adgang, men ingen steder får den fulde sikkerhed, deres brugere behøver."],
-        ["PRIORITÉR HJEMLØSE OG VARME BOLIGOMRÅDER", "Beskyttelsen følger hverdagsrisikoen, men sundhedsinstitutioner må acceptere mindre reserve."],
-        ["GIV LOKALE LEDERE RET TIL AT VÆLGE", "Beslutningen kommer tættere på mennesker, men beskyttelsen bliver forskellig fra bydel til bydel."],
+        ["FLYT BYENS DAG TIL AFTENEN", "Flere undgår den farlige varme, men familieliv, børns sengetider og boligområders ro må indrette sig efter arbejde og skole."],
+        ["BEHOLD DAGTIMERNE MED MERE KØLING", "Hverdagen beholder sin rytme, men byen bruger langt mere energi og efterlader udendørs arbejde med en højere risiko."],
+        ["LAD HVER INSTITUTION VÆLGE SIN RYTME", "Arbejdspladser og skoler kan tilpasse sig lokalt, men familier med flere hverdage skal få uforenelige tider til at hænge sammen."],
+        ["GØR SOMMEREN TIL EN LANG PAUSEPERIODE", "Byen beskytter søvn og helbred ved at skrue ned for aktivitet, men læring, indkomst og offentlige tjenester går mærkbart tilbage hvert år."],
       ),
     },
   },
@@ -685,6 +714,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Offentlige systemer og demokrati", "AI og beslutninger"],
     futureQuestions: [Q.fairness, Q.responsibility],
     development: "Mange offentlige afgørelser kan udarbejdes automatisk med individuelle forklaringer",
+    developmentIds: ["automated-public-decisions"],
     dilemma: {
       futureNormal: "En myndighed kan give næsten alle borgere svar samme dag gennem automatisk sagsbehandling.",
       humanCost: "Ventetiden forsvinder og regler anvendes ens, men få mennesker ser den enkelte sag før afgørelsen rammer.",
@@ -707,6 +737,7 @@ export const dilemmaExamples: DilemmaExample[] = [
     themes: ["Sandhed og autenticitet", "Data, identitet og privatliv", "Offentlige systemer og demokrati"],
     futureQuestions: [Q.authenticity, Q.privacySafety],
     development: "Anonymt indhold kan behandles automatisk som mindre troværdigt i offentlige digitale rum",
+    developmentIds: ["anonymous-content-downranked"],
     dilemma: {
       futureNormal: "Offentlige platforme kan fremhæve bidrag fra verificerede mennesker og dæmpe indhold uden identitetsbevis.",
       humanCost: "Koordineret manipulation mister kraft, men mennesker med god grund til anonymitet mister også rækkevidde.",
@@ -742,19 +773,19 @@ export type SelectedDilemmaExamples = {
 /** Select exactly two distinct taste references without turning either into a template. */
 export function selectDilemmaExamples(
   role: UserRole,
-  themes: FutureTheme[],
-  targetDevelopment: string,
+  target: { id: string; development: string; themes: FutureTheme[] },
   pick: Picker = randomPick,
 ): SelectedDilemmaExamples {
+  const { id: targetDevelopmentId, development: targetDevelopment, themes } = target;
   const roleCandidates = enabledDilemmaExamples.filter((item) =>
-    item.role === role && item.development !== targetDevelopment,
+    item.role === role && item.development !== targetDevelopment && !item.developmentIds?.includes(targetDevelopmentId),
   );
   const differentTheme = roleCandidates.filter((item) => !item.themes.some((theme) => themes.includes(theme)));
   const sameRole = pickOne(differentTheme.length ? differentTheme : roleCandidates, pick);
 
   const relatedCandidates = enabledDilemmaExamples.filter((item) =>
     item.id !== sameRole.id && item.role !== role && item.themes.some((theme) => themes.includes(theme)) &&
-    item.development !== targetDevelopment,
+    item.development !== targetDevelopment && !item.developmentIds?.includes(targetDevelopmentId),
   );
   const fallback = enabledDilemmaExamples.filter((item) => item.id !== sameRole.id && item.role !== role);
   const relatedQuestion = pickOne(relatedCandidates.length ? relatedCandidates : fallback, pick);

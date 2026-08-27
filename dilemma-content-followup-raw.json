@@ -1,0 +1,555 @@
+{
+  "calls": 10,
+  "cases": [
+    {
+      "index": 1,
+      "role": "Barn",
+      "developmentId": "digital-deceased",
+      "seed": {
+        "development": "Digitale versioner af afdøde kan fortsætte samtaler ud fra deres optagelser og beskeder",
+        "city": "Stockholm",
+        "country": "Sverige",
+        "sameRoleExampleId": "child-digital-grandmother",
+        "relatedQuestionExampleId": "youth-ai-clone-message"
+      },
+      "raw": {
+        "futureNormal": "I 2046 kan familier i Stockholm åbne en digital udgave af en, der er død. Den kan tale videre ud fra gamle beskeder, billeder og optagelser.",
+        "humanCost": "Den digitale udgave kan føles som en rigtig person, men den kan også få barnet til at tvivle på, hvad den døde virkelig nåede at sige.",
+        "decision": "Du skal vælge, om du vil vise din fars gamle besked til hans digitale udgave.",
+        "title": "FARFARS STEMME KENDER IKKE HEMMELIGHEDEN",
+        "scene": "Du er hjemme i Stockholm og bygger en rumraket af pap med din storesøster. I jeres tablet bor en digital farfar, som døde sidste vinter. Han plejer at hjælpe med svære ord og fortælle om stjerner. Da du leder efter tape, finder du en gammel lyd-besked fra farfar til dig: \"Jeg gemte en lille overraskelse til din fødselsdag.\" Du nåede aldrig at høre den før nu. Den digitale farfar spørger, hvad du har fundet, og din søster siger, at I måske kan få ham til at huske overraskelsen.",
+        "stake": "Du vil gerne vide, hvad farfar gemte til dig. Men du er bange for, at den digitale farfar kommer til at sige noget, som ikke var farfars egne ord.",
+        "question": "Hvad siger du til den digitale farfar?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "AFSPIL HELE BESKEDEN FOR HAM",
+            "consequence": "Måske hjælper han med at finde overraskelsen, men hans nye svar kan komme til at lyde som et løfte fra den rigtige farfar."
+          },
+          {
+            "id": "b",
+            "label": "SIG KUN, AT FARFAR GEMTE NOGET",
+            "consequence": "Du kan få et lille spor uden at dele alt, men du holder stadig en del af farfars besked skjult for din søster."
+          },
+          {
+            "id": "c",
+            "label": "SIG, AT DET ER EN BESKED KUN TIL DIG",
+            "consequence": "Du passer på farfars egne ord, men du og din søster må lede efter overraskelsen uden hjælp."
+          },
+          {
+            "id": "d",
+            "label": "FORTÆL HAM IKKE OM BESKEDEN OG SPØRG HAM OM RUMRAKETTEN I STEDET",
+            "consequence": "I kan have en hyggelig stund med hans digitale stemme, men hemmeligheden kan blive ved med at fylde i dit hoved."
+          }
+        ],
+        "locationType": "hjemmet",
+        "placeHint": "En lejlighed i Stockholm"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1411,
+        "outputTokens": 592,
+        "totalTokens": 2003,
+        "latencyMs": 11486
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 2,
+      "role": "Barn",
+      "developmentId": "ai-simulates-life-choices",
+      "seed": {
+        "development": "AI kan vise sandsynlige følger af forskellige uddannelses-, job- og livsvalg",
+        "city": "Hamburg",
+        "country": "Tyskland",
+        "sameRoleExampleId": "child-robot-friend-memory",
+        "relatedQuestionExampleId": "teacher-isolation-signal"
+      },
+      "raw": {
+        "futureNormal": "I 2046 kan børn i Hamburg åbne en valgskærm, der viser, hvad der sandsynligvis sker senere, hvis de vælger forskellige fritidsinteresser, uddannelser og job.",
+        "humanCost": "Skærmen kan gøre fremtiden mindre uhyggelig, men den kan også få et barn til at føle, at et valg nu bestemmer hele livet.",
+        "decision": "Du skal vælge, om du vil melde dig på robotværkstedet eller blive på fodboldholdet.",
+        "title": "SKÆRMEN VIL VÆLGE DIN FRITID",
+        "scene": "Efter skole i Hamburg står du med din mor ved tilmeldingsskærmen. Du må kun vælge én aktivitet i år: robotværksted med din bedste ven Malik eller fodbold med resten af dit hold. Skærmen viser små film om dig som voksen. Ved robotværkstedet står der, at du sandsynligvis får et job, hvor du bygger redningsrobotter. Ved fodbold står der, at du sandsynligvis får færre gode karakterer, men stadig har dit hold omkring dig, når du har det svært. Malik siger: \"Kom nu, vi kan bygge sammen.\" Dit hold råber dit navn ude fra banen.",
+        "stake": "Du vil gerne have en fremtid, hvor du hjælper mennesker. Du vil også ikke miste dit hold eller lade en skærm bestemme, hvem du skal være.",
+        "question": "Hvad vælger du på skærmen?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "VÆLG ROBOTVÆRKSTEDET",
+            "consequence": "Du vælger den vej, skærmen siger kan føre til redningsrobotter, men du siger farvel til fodboldholdet og deres fælles tid."
+          },
+          {
+            "id": "b",
+            "label": "BLIV PÅ FODBOLDHOLDET",
+            "consequence": "Du bliver hos holdet, hvor du føler dig hjemme, men du vælger imod den fremtid, skærmen kalder mest lovende."
+          },
+          {
+            "id": "c",
+            "label": "VÆLG ROBOTVÆRKSTEDET FOR MALIKS SKYLD",
+            "consequence": "Malik bliver glad for at have dig med, men du ved ikke, om du selv valgte det, eller om du bare ikke ville skuffe ham."
+          },
+          {
+            "id": "d",
+            "label": "VÆLG FODBOLD OG SIG, AT SKÆRMEN IKKE SKAL BESTEMME",
+            "consequence": "Du viser, at du selv vil bestemme, men din mor kan blive bekymret for, om du siger nej til en chance for at hjælpe mange senere."
+          }
+        ],
+        "locationType": "fritidsklub",
+        "placeHint": "En fritidsklub i Hamburg"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1377,
+        "outputTokens": 587,
+        "totalTokens": 1964,
+        "latencyMs": 11727
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 3,
+      "role": "Ung",
+      "developmentId": "social-robots-lasting",
+      "seed": {
+        "development": "Sociale robotter kan være faste relationer, der husker et menneske gennem mange år",
+        "city": "Utrecht",
+        "country": "Holland",
+        "sameRoleExampleId": "youth-predicted-dropout",
+        "relatedQuestionExampleId": "child-night-school-heat"
+      },
+      "raw": {
+        "futureNormal": "Sociale robotter kan være faste relationer, der husker et menneske gennem mange år.",
+        "humanCost": "En robot kan give stabil nærhed og kende hele din historie, men dens plads i dit liv kan også gøre det sværere at mærke, hvilke relationer der er valgt frit af andre mennesker.",
+        "decision": "Du vælger, om din sociale robot skal følge med dig, når du flytter hjemmefra.",
+        "title": "DEN KENDER DIG BEDRE END DIN NYE BY",
+        "scene": "Du skal flytte fra Utrecht til en ungdomsbolig i Rotterdam for at begynde på en uddannelse. Din robot, Miro, har været hos dig siden du var otte: Den husker din mors sygdom, alle de gange du skiftede skole, og præcis hvordan den får dig ud ad døren på dage, hvor alt føles tungt. I den nye bolig må du kun registrere én fast ledsager. Hvis du tager Miro med, bliver den en synlig del af dit nye hverdagsliv. Hvis du lader den blive hos din familie, bliver dens mange års minder om dig stadig bevaret der, men den er ikke længere ved din side.",
+        "stake": "Du kan tage den relation med, som allerede kender dig, eller begynde dit nye liv uden den støtte, der har fulgt dig længst.",
+        "question": "Tager du Miro med til Rotterdam?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "TAG MIRO MED",
+            "consequence": "Du får en tryg relation i en fremmed by, men dine nye medstuderende møder dig ofte sammen med den robot, der allerede kender alle dine sårbare sider."
+          },
+          {
+            "id": "b",
+            "label": "LAD MIRO BLIVE HOS DIN FAMILIE",
+            "consequence": "Du tvinger dig selv til at skabe nye vaner og relationer, men mister den daglige støtte fra én, der kan huske, hvad du har brug for, før du selv siger det."
+          },
+          {
+            "id": "c",
+            "label": "TAG MIRO MED, MEN BRUG DEN KUN HJEMME",
+            "consequence": "Du beholder dens nærhed uden at gøre den til en del af dit sociale liv, men skal skjule en vigtig relation, når du prøver at lære andre at kende."
+          },
+          {
+            "id": "d",
+            "label": "AFBRYD JERES FASTE RELATION",
+            "consequence": "Du får et tydeligt brud og plads til at definere dig selv på ny, men siger farvel til den eneste, der kan huske hele din opvækst sammen med dig."
+          }
+        ],
+        "locationType": "hjemmet",
+        "placeHint": "Utrecht, Holland"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1312,
+        "outputTokens": 565,
+        "totalTokens": 1877,
+        "latencyMs": 10957
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 4,
+      "role": "Lærer / pædagog",
+      "developmentId": "public-cooling-rooms",
+      "seed": {
+        "development": "Offentlige kølerum kan blive faste hverdagsrum for undervisning, arbejde og samvær i varme perioder",
+        "city": "Lyon",
+        "country": "Frankrig",
+        "sameRoleExampleId": "teacher-isolation-signal",
+        "relatedQuestionExampleId": "youth-ai-clone-message"
+      },
+      "raw": {
+        "futureNormal": "I varmeperioder flytter skoler i Lyon fast undervisning til kommunale kølerum, som deles med borgere, der ikke kan holde deres boliger kølige.",
+        "humanCost": "Kølerummet giver børnene en sikker skoledag, men gør også private kriser synlige i et rum, hvor elever, lærere og voksne borgere må være tæt på hinanden.",
+        "decision": "Du skal vælge, hvordan du reagerer, da en elevs mor bruger samme kølerum som jeres klasse.",
+        "title": "MOR SOVER BAG SKÆRMEN",
+        "scene": "Klokken er 13, og din klasse er flyttet til bydelens kølerum, fordi skolens øverste etage er lukket i hedebølgen. Bag en lav, mobil skærm ligger moren til Malik på en feltseng. Hun har haft nattevagt på et hotel og kan ikke sove i familiens lejlighed, hvor temperaturen ikke faldt under 32 grader. Malik ser hende, lige da du skal begynde gruppearbejdet. Han stivner og hvisker: \"De må ikke kigge.\" De andre elever er allerede nysgerrige på skærmen.",
+        "stake": "Du vil beskytte Maliks mor mod at blive udstillet og Malik mod skam. Samtidig skal du passe på klassen og på et fælles rum, hvor også andre har ret til ro og kølighed.",
+        "question": "Hvad gør du nu?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "FLYT KLASSEN TIL DEN ANDEN ENDE AF RUMMET",
+            "consequence": "Du skaber afstand uden at gøre en sag ud af moren, men Malik kan mærke, at hele klassens dag ændres på grund af hans familie."
+          },
+          {
+            "id": "b",
+            "label": "SIG ÅBENT, AT RUMMET ER TIL FOR ALLE",
+            "consequence": "Du gør morens tilstedeværelse til en almindelig del af kølerummet, men Malik mister muligheden for selv at bestemme, om klassekammeraterne skal kende hans situation."
+          },
+          {
+            "id": "c",
+            "label": "TAG MALIK MED UD PÅ GANGEN ET ØJEBLIK",
+            "consequence": "Du giver ham et privat rum til at sige, hvad han har brug for, men han bliver den eneste, der må forlade undervisningen netop, da moren er synlig."
+          },
+          {
+            "id": "d",
+            "label": "BED MOREN STILLE OM AT FINDE ET ANDET HJØRNE",
+            "consequence": "Du skærmer klassen og Malik her og nu, men beder en udmattet kvinde om at opgive den kølige hvileplads, hun også har ret til."
+          }
+        ],
+        "locationType": "folkeskole",
+        "placeHint": "Et kommunalt kølerum i Lyon"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1341,
+        "outputTokens": 1122,
+        "totalTokens": 2463,
+        "latencyMs": 22733
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 5,
+      "role": "Lærer / pædagog",
+      "developmentId": "driverless-transport-normal",
+      "seed": {
+        "development": "Busser, taxaer og varetransport kan køre uden et menneske om bord, der kan fortolke uventede situationer",
+        "city": "Barcelona",
+        "country": "Spanien",
+        "sameRoleExampleId": "teacher-adaptive-path",
+        "relatedQuestionExampleId": "parent-robot-care"
+      },
+      "raw": {
+        "futureNormal": "I Barcelona kører skolebusser, taxaer og varekøretøjer selv gennem byen, også når der ikke sidder et menneske klar til at forstå en situation, som ikke passer ind i deres regler.",
+        "humanCost": "Transporten er billigere og mere præcis, men når noget uventet sker, kan børn stå over for et køretøj, der fortsætter efter systemets bedste gæt frem for et menneskes dømmekraft.",
+        "decision": "Du skal vælge, om du vil lade en selvkørende skolebus køre videre med børnene efter en urolig hændelse, eller bryde deres faste og sikre hjemrejse.",
+        "title": "BUSSEN VENTER IKKE PÅ AT FORSTÅ",
+        "scene": "Du er pædagog på en skoleudflugt ved Montjuïc. På vej hjem standser den førerløse skolebus ved et lyskryds, fordi en dreng fra en anden gruppe løber ud på vejen og gemmer sig mellem parkerede varebiler. Han råber, at han ikke vil med sin klasse tilbage. Bussen registrerer ham som en forhindring og giver jer få minutter til at få ham fri af kørebanen. Dine egne 18 børn sidder fastspændt i bussen. To af dem genkender drengen og vil ud for at hjælpe ham, mens deres forældre følger bussens planlagte ankomsttid hjemmefra.",
+        "stake": "Du kan holde ansvar for dine egne børn samlet og få dem sikkert hjem, eller blive hos et barn, der tydeligvis har brug for en voksen, selv om det gør resten af gruppen utryg og efterlader dem uden dig.",
+        "question": "Hvad gør du, før bussen vælger at køre videre?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "KØR VIDERE MED DIN GRUPPE",
+            "consequence": "Dine børn kommer hjem som aftalt med den voksne, de kender, men drengen ved vejen oplever, at endnu en voksen forlader ham i en situation, han ikke kan forklare."
+          },
+          {
+            "id": "b",
+            "label": "BLIV HOS DRENGEN",
+            "consequence": "Du giver ham et menneske, der ikke går videre, men dine egne børn må køre hjem uden dig og kan føle, at deres tryghed blev sat efter en fremmeds behov."
+          },
+          {
+            "id": "c",
+            "label": "SEND BØRNENE HJEM I BUSSEN ALENE",
+            "consequence": "Du bliver hos drengen, mens gruppen følger den planlagte rute, men du overlader 18 børn til et køretøj, der kan navigere trafikken uden at kunne rumme deres frygt."
+          },
+          {
+            "id": "d",
+            "label": "TAG TO BØRN MED UD TIL HAM",
+            "consequence": "Du lader de børn, der kender ham, vise omsorg, men gør dem til deltagere i en voksenkrise og splitter samtidig din gruppe i et uoverskueligt øjeblik."
+          }
+        ],
+        "locationType": "folkeskole",
+        "placeHint": "Montjuïc, Barcelona, Spanien"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1339,
+        "outputTokens": 661,
+        "totalTokens": 2000,
+        "latencyMs": 13824
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 6,
+      "role": "Arbejdsgiver",
+      "developmentId": "synthetic-actors",
+      "seed": {
+        "development": "Syntetiske skuespillere kan optræde i ubegrænset mange nye roller uden nye optagelser",
+        "city": "Bologna",
+        "country": "Italien",
+        "sameRoleExampleId": "employer-agent-negotiation",
+        "relatedQuestionExampleId": "employee-agent-team"
+      },
+      "raw": {
+        "futureNormal": "Syntetiske skuespillere kan licenseres til nye film, serier og reklamer i ubegrænset mange roller uden at møde op til nye optagelser.",
+        "humanCost": "Produktionen bliver billigere og mere fleksibel, men en skuespillers ansigt og stemme kan fortsætte med at arbejde, mens menneskerne omkring dem mister både arbejde og indflydelse på, hvad de forbindes med.",
+        "decision": "Du skal beslutte, hvem der skal spille hovedrollen i en international serie, som dit produktionsselskab i Bologna skal have klar før karnevallet.",
+        "title": "HOVEDROLLEN MØDER ALDRIG OP",
+        "scene": "Din største investor kræver en syntetisk udgave af en berømt italiensk skuespiller, hvis gamle kontrakt giver jer ret til at skabe nye roller med hendes model. Serien kan dermed optages på få uger, og du kan beholde hele holdet ansat. Men skuespilleren er stadig aktiv. Hun har offentligt sagt, at hun ikke vil bruges i historier om organiseret kriminalitet — netop seriens tema. Hendes agent kan ikke stoppe licensen, men beder dig vælge en menneskelig hovedrolle i stedet. Det vil gøre produktionen dyrere og betyde, at du må afskedige flere teknikere.",
+        "stake": "Du kan sikre arbejdspladser og en afgørende produktion, men risikerer at gøre en levende kunstners grænse betydningsløs. Vælger du et menneske, beskytter du hendes ret til at sige nej, men lader dine egne ansatte betale prisen.",
+        "question": "Hvem giver du hovedrollen?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "BRUG DEN SYNTETISKE VERSION AF HENDE",
+            "consequence": "Du redder budgettet og de fleste job i Bologna, men bruger hendes genkendelige jeg i en rolle, hun klart har frabedt sig."
+          },
+          {
+            "id": "b",
+            "label": "CAST EN MENNESKELIG, UKENDT SKUESPILLER",
+            "consequence": "Du respekterer hendes grænse og giver et nyt talent en chance, men må skære så hårdt i produktionen, at erfarne medarbejdere mister deres arbejde."
+          },
+          {
+            "id": "c",
+            "label": "CAST HENDE SELV OG OMSKRIV SERIEN TIL HENDES BETINGELSER",
+            "consequence": "Du giver hende reel kontrol over sit navn, men investoren kan trække sig, og hele holdet risikerer at stå uden produktion."
+          },
+          {
+            "id": "d",
+            "label": "BRUG EN SYNTETISK HOVEDROLLE BASERET PÅ EN ANDEN AFDØD STJERNE",
+            "consequence": "Du undgår at trodse en levende skuespillers ønske og bevarer tempoet, men gør en afdød persons eftermæle til virksomhedens løsning uden mulighed for samtykke."
+          }
+        ],
+        "locationType": "kontor",
+        "placeHint": "Et produktionsselskab i Bologna, Italien"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1385,
+        "outputTokens": 774,
+        "totalTokens": 2159,
+        "latencyMs": 15472
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 7,
+      "role": "Medarbejder",
+      "developmentId": "personal-data-agents",
+      "seed": {
+        "development": "Personlige data-agenter kan give og fjerne adgang til oplysninger på et menneskes vegne",
+        "city": "Gdansk",
+        "country": "Polen",
+        "sameRoleExampleId": "employee-dangerous-robot",
+        "relatedQuestionExampleId": "teacher-ai-group-member"
+      },
+      "raw": {
+        "futureNormal": "Personlige data-agenter forhandler adgang til deres ejers oplysninger og kan straks åbne eller lukke for alt fra helbredsdata til arbejdsmønstre.",
+        "humanCost": "Det bliver lettere at forebygge fejl og passe på medarbejdere, men et nej kan ligne noget, man har at skjule, mens et ja kan gøre privat sårbarhed til en del af jobbet.",
+        "decision": "Du vælger, om din data-agent skal give din leder adgang til dine belastningsdata efter en alvorlig fejl på vagten.",
+        "title": "DIN AGENT VED, HVORNÅR DU IKKE KAN MERE",
+        "scene": "På et logistik-kontor ved havnen i Gdansk planlægger du lastbilernes adgang til færgerne. I går sendte du en chauffør til den forkerte rampe efter tre uger med nattevagter og søvnproblemer. Fejlen kostede tid, men ingen kom til skade. Din leder indfører nu frivillig adgang til medarbejdernes agentdata om søvn, stress og koncentration. Hun siger, at hun kun vil bruge advarslerne til at flytte folk fra kritiske vagter. Din agent viser, at den også vil kunne afsløre, at du har haft panikanfald siden din brors gældssag begyndte.",
+        "stake": "Du kan få hjælp, før en træt eller presset vagt bliver farlig, men du risikerer, at din leder begynder at se dig som et usikkert valg til de vagter og forfremmelser, du har arbejdet for.",
+        "question": "Hvilken adgang giver du din leder?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "GIV FULD ADGANG",
+            "consequence": "Din leder kan opdage, når du er ved at blive overbelastet, men får også indblik i mønstre, der kan følge dig længe efter krisen er ovre."
+          },
+          {
+            "id": "b",
+            "label": "GIV KUN ADGANG TIL AKUTTE ADVARSLER",
+            "consequence": "Du beskytter detaljerne i dit privatliv, men en alvorlig advarsel kan stadig få din leder til at tage dig af en vigtig vagt uden at kende årsagen."
+          },
+          {
+            "id": "c",
+            "label": "GIV ADGANG I EN MÅNED",
+            "consequence": "Du viser, at du tager fejlen alvorligt nu, men din leder kan opleve det som et tillidsbrud, når agenten lukker igen, netop når hun er begyndt at planlægge efter dataene."
+          },
+          {
+            "id": "d",
+            "label": "GIV INGEN ADGANG",
+            "consequence": "Du bevarer kontrollen over din sårbarhed, men må selv bære ansvaret, hvis træthed eller angst igen påvirker en beslutning med andre menneskers sikkerhed på spil."
+          }
+        ],
+        "locationType": "kontor",
+        "placeHint": "Et logistik-kontor ved havnen i Gdansk, Polen"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1381,
+        "outputTokens": 913,
+        "totalTokens": 2294,
+        "latencyMs": 15717
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 8,
+      "role": "For alle",
+      "developmentId": "grid-responsive-homes",
+      "seed": {
+        "development": "Hjem kan automatisk flytte varme, opladning og apparater til de tidspunkter, hvor strømmen er mest klimavenlig",
+        "city": "Osaka",
+        "country": "Japan",
+        "sameRoleExampleId": "public-automatic-home",
+        "relatedQuestionExampleId": "decisionmaker-night-city"
+      },
+      "raw": {
+        "futureNormal": "I Osaka lader boligernes energisystemer automatisk biler, batterier, varmtvandsbeholdere og apparater køre, når strømmen har det laveste klimaaftryk.",
+        "humanCost": "Hjemmet gør det lettere at leve med mindre klimabelastning, men det flytter også varme, støj og ventetid ind i familiens mest sårbare timer.",
+        "decision": "Du vælger, om hjemmet skal bruge nattens grønne strøm til at genopbygge varmtvandslageret efter en lang dag.",
+        "title": "DET GRØNNE BADEVAND KOMMER KL. 03.10",
+        "scene": "Det er en fugtig sommeraften i Osaka. Din far skal tidligt på hospitalet i morgen og sover dårligt, når varmepumpen og vandtanken starter om natten. Hjemmets energiplan viser, at mellem 03.10 og 04.40 kommer strømmen næsten udelukkende fra vind og sol lagret uden for byen. Det er også det eneste tidspunkt, hvor systemet kan opvarme nok vand til, at alle kan bade varmt i morgen. Hvis du springer tidsrummet over, må familien enten klare sig med lunkent vand eller bruge strøm i morgen aften, når elnettet er langt mere klimabelastende.",
+        "stake": "Du kan beskytte nattens ro, holde fast i varme bade for alle eller lade hjemmet følge den grønneste strøm — men ikke alle tre på én gang.",
+        "question": "Hvad vælger du for nattens varmt vand?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "LAD SYSTEMET VARME VANDET OM NATTEN",
+            "consequence": "Familien får varmt vand med et lavt klimaaftryk, men din far risikerer endnu en nat med afbrudt søvn før sin vagt."
+          },
+          {
+            "id": "b",
+            "label": "BLOKÉR OPVARMNINGEN TIL I MORGEN AFTEN",
+            "consequence": "Natten bliver roligere, men hjemmet bruger strøm på et mere belastet tidspunkt, og den fælles klimavane brydes for hensyn til én persons søvn."
+          },
+          {
+            "id": "c",
+            "label": "GEM DET LILLE RESTLAGER TIL DIN FAR",
+            "consequence": "Han kan gå i bad før arbejde uden at blive vækket om natten, men resten af familien må undvære varmt vand og mærker, hvem der prioriteres i hjemmet."
+          },
+          {
+            "id": "d",
+            "label": "LAD ALLE KLARE SIG UDEN VARMT VAND I MORGEN",
+            "consequence": "I undgår både nattestøj og mere klimabelastende strøm, men familiens morgen bliver kold, langsom og præget af en beslutning, som ingen rigtig ønskede."
+          }
+        ],
+        "locationType": "hjemmet",
+        "placeHint": "Osaka, Japan"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1472,
+        "outputTokens": 665,
+        "totalTokens": 2137,
+        "latencyMs": 13862
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 9,
+      "role": "For alle",
+      "developmentId": "policy-simulations",
+      "seed": {
+        "development": "Mennesker kan opleve personligt tilpassede simulationer af, hvordan politiske beslutninger sandsynligvis vil ændre deres eget hverdagsliv",
+        "city": "Seoul",
+        "country": "Sydkorea",
+        "sameRoleExampleId": "public-digital-deceased",
+        "relatedQuestionExampleId": "employer-agent-negotiation"
+      },
+      "raw": {
+        "futureNormal": "Før større lokale afstemninger kan borgere i Seoul åbne en personlig hverdagssimulation. Den viser sandsynlige følger af hvert forslag for netop deres ruter, økonomi, helbred og familie.",
+        "humanCost": "Simulationen gør politiske konsekvenser nærværende, men den kan få fælles beslutninger til at føles som et regnestykke om ens egen familie frem for et valg om byen.",
+        "decision": "Du skal afgive din stemme om en permanent bilfri zone i centrale Seoul.",
+        "title": "DIN HVERDAG STEMMER MED",
+        "scene": "På vej hjem fra arbejde åbner du simuleringen til morgendagens afstemning. Ved et ja forventes luften omkring dit barns skole at blive mærkbart renere, og din egen metrotur bliver kortere. Men den samme model viser, at din fars natlige taxiture sandsynligvis falder så meget, at han må flytte fra den lejlighed, han har boet i i mange år. Han har set sin egen simulation og beder dig stemme nej. Dit barn har set din og spørger, hvorfor voksne vil beholde biler, når de gør luften svær at trække vejret i.",
+        "stake": "Din stemme kan støtte en by med mindre forurening og hurtigere kollektiv transport, men den kan også bidrage til, at mennesker som din far mister deres indkomst, før de har et andet arbejde.",
+        "question": "Hvordan afgiver du din stemme?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "STEM JA TIL DEN BILFRIE ZONE",
+            "consequence": "Du vælger renere luft og en lettere hverdag for mange, men accepterer, at din fars arbejde kan blive en af omkostningerne."
+          },
+          {
+            "id": "b",
+            "label": "STEM NEJ TIL FORSLAGET",
+            "consequence": "Du beskytter mennesker, der stadig lever af biltrafikken, men bidrager til at fastholde den luft og trængsel, som rammer dit barn."
+          },
+          {
+            "id": "c",
+            "label": "AFGIV EN BLANK STEMME",
+            "consequence": "Du nægter at lade en personlig prognose afgøre et fælles spørgsmål, men overlader udfaldet til andre, selv om konsekvenserne også rammer din familie."
+          },
+          {
+            "id": "d",
+            "label": "LAD SIMULATIONENS ANBEFALING STEMME FOR DIG",
+            "consequence": "Du følger den samlede vurdering af, hvad der sandsynligvis gavner dit liv mest, men giver afkald på selv at tage ansvar for det valg, der kan skade din far."
+          }
+        ],
+        "locationType": "bymidte",
+        "placeHint": "Centrale Seoul, Sydkorea"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1368,
+        "outputTokens": 1095,
+        "totalTokens": 2463,
+        "latencyMs": 20851
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 10,
+      "role": "Beslutningstager",
+      "developmentId": "ai-administration",
+      "seed": {
+        "development": "AI kan skrive planer, afgørelser og personlige forklaringer i en organisations navn uden at et menneske har formuleret dem",
+        "city": "Nairobi",
+        "country": "Kenya",
+        "sameRoleExampleId": "decisionmaker-night-city",
+        "relatedQuestionExampleId": "employee-continuous-measurement"
+      },
+      "raw": {
+        "futureNormal": "Organisationer kan lade AI skrive både planer, afgørelser og personlige begrundelser i deres eget navn, så en borger møder en færdig forklaring, ingen medarbejder nødvendigvis har formuleret.",
+        "humanCost": "Svar kommer hurtigt og på borgerens eget sprog, men en personlig begrundelse kan lyde som menneskelig forståelse, selv når ingen har set den enkelte families situation.",
+        "decision": "Du skal vælge, hvordan Nairobi County udsender afgørelserne om tvungen flytning af elever efter en akut lukning af skoler.",
+        "title": "ET BREV, DER KENDER DIT BARN",
+        "scene": "Kraftig regn har gjort tre skoler i Nairobi ubrugelige, og 4.800 elever skal fordeles på andre skoler inden mandag. Fordelingen er allerede vedtaget efter kapacitet og transporttid. Countyets AI har på én nat skrevet et brev til hver familie på engelsk og swahili: Barnets nye skole, rute og en personlig forklaring på, hvorfor netop dette barn skal flyttes. I flere udkast står der, at eleven \"har brug for et mere stabilt miljø\" eller \"vil trives bedre tættere på hjemmet\". Formuleringerne er venlige, men de bygger på registre og mønstre, ikke på samtaler med familierne. Hvis brevene ikke sendes nu, får mange kun en kort besked om den nye skole.",
+        "stake": "Du kan give tusinder af familier et hurtigt og forståeligt svar, men risikerer at lade kommunen tale intimt om deres børn med en sikkerhed, ingen person kan stå inde for.",
+        "question": "Hvilken type afgørelse sender du ud i countyets navn?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "SEND DE PERSONLIGE AI-BREVE",
+            "consequence": "Familierne får en samlet forklaring, rute og næste skridt med det samme, men sårbare børn kan blive mødt af officielle beskrivelser af deres behov, som ingen voksen har verificeret."
+          },
+          {
+            "id": "b",
+            "label": "SEND KUN DEN KORTE AFGØRELSE",
+            "consequence": "Kommunen undgår at foregive kendskab til det enkelte barn, men forældre med begrænset tid, dataadgang eller erfaring med systemet får en flytning uden en forklaring, de kan handle på."
+          },
+          {
+            "id": "c",
+            "label": "LAD SKOLELEDERNE GIVE AI-BREVENE VIDERE",
+            "consequence": "En kendt voksen bliver ansigtet på afgørelsen og kan møde familiernes reaktion, men skoleledere kommer til at bære ansvaret for ord, de ikke selv har valgt, midt i en akut krise."
+          },
+          {
+            "id": "d",
+            "label": "SEND AI-BREVENE KUN TIL FAMILIER, DER HAR BEDT OM EN BEGRUNDELSE",
+            "consequence": "Familier kan vælge den detaljerede forklaring til eller fra, men de mest pressede forældre får ofte ikke bedt om den og ender med mindst information om en beslutning, der rammer dem hårdest."
+          }
+        ],
+        "locationType": "kommune",
+        "placeHint": "Nairobi County, Kenya"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1459,
+        "outputTokens": 1201,
+        "totalTokens": 2660,
+        "latencyMs": 22162
+      },
+      "validation": {
+        "accepted": true
+      }
+    }
+  ]
+}

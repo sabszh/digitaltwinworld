@@ -1,0 +1,213 @@
+{
+  "calls": 4,
+  "cases": [
+    {
+      "index": 1,
+      "role": "Barn",
+      "developmentId": "digital-deceased",
+      "examples": {
+        "sameRole": "child-robot-friend-memory",
+        "related": "youth-ai-clone-message"
+      },
+      "raw": {
+        "futureNormal": "I 2046 kan familier i São Paulo åbne en digital version af en person, der er død. Den kan tale videre med deres gamle stemme og bruge de beskeder og optagelser, personen har efterladt.",
+        "humanCost": "Den digitale stemme kan give trøst, men den kan også bringe gamle misforståelser frem, som ingen kan spørge den rigtige person om længere.",
+        "decision": "Du vælger, hvad din mor skal høre fra din døde bedstemors digitale version.",
+        "title": "VÓS USENDTE BESKED",
+        "scene": "Det regner hårdt uden for jeres lejlighed i São Paulo. På køkkenbordet sidder Vó, din døde bedstemor, på familiens skærm. Hendes digitale version bladrer i gamle talebeskeder og finder en, hun aldrig nåede at sende til din mor. I beskeden siger Vó, at hun ikke kom på besøg sidste gang, fordi hun troede, din mor ikke ville have hende der. Men du ved, at din mor sagde nej, fordi Vó hostede meget, og hun var bange for, at du skulle blive syg. Vó siger på skærmen: \"Jeg ville ønske, jeg havde vidst det.\" Din mor er inde i stuen og tror stadig, at Vó bare ikke havde lyst til at komme.",
+        "stake": "Du vil ikke gøre din mor ked af det. Men du vil heller ikke lade hende blive ved med at tro noget forkert om Vó.",
+        "question": "Hvad gør du med beskeden?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "SPIL HELE BESKEDEN FOR MOR",
+            "consequence": "Din mor hører Vós egne ord og kan forstå misforståelsen, men det kan gøre hende meget ked af, at de aldrig fik talt om den."
+          },
+          {
+            "id": "b",
+            "label": "FORTÆL MOR DET MED DINE EGNE ORD",
+            "consequence": "Du kan forklare, hvorfor Vó ikke kom, men din mor hører ikke Vós stemme og kan tvivle på, om du har forstået det rigtigt."
+          },
+          {
+            "id": "c",
+            "label": "SIG KUN, AT VÓ SAVNEDE HENDE",
+            "consequence": "Du giver din mor en varm ting at høre, men du skjuler den del, der kunne forklare, hvorfor Vó blev væk."
+          },
+          {
+            "id": "d",
+            "label": "SIG IKKE NOGET OM BESKEDEN",
+            "consequence": "Du beskytter din mor mod sorgen lige nu, men hun bliver ved med at tro, at Vó ikke ville være sammen med jer."
+          }
+        ],
+        "locationType": "hjemmet",
+        "placeHint": "En lejlighed i São Paulo, Brasilien"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1356,
+        "outputTokens": 1602,
+        "totalTokens": 2958,
+        "latencyMs": 28968
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 2,
+      "role": "Barn",
+      "developmentId": "ai-simulates-life-choices",
+      "examples": {
+        "sameRole": "child-robot-friend-memory",
+        "related": "teacher-isolation-signal"
+      },
+      "raw": {
+        "futureNormal": "På skolen kan børn se korte fremtidsfilm, som viser, hvad der sandsynligvis sker, hvis de vælger bestemte fag, fritidsjob og måder at leve på.",
+        "humanCost": "Filmene kan gøre valg mindre skræmmende, men de kan også få et barn til at føle, at én fremtid allerede er bedstemt.",
+        "decision": "Du skal vælge, hvad du siger til din mor om det hold, du vil gå på efter skole.",
+        "title": "DEN FILM, MOR IKKE HAR SET",
+        "scene": "Efter skoletid i Mexico City viser skolens valgskærm dig to film. I den første går du på et hold, hvor børn lærer at reparere små solceller på tage. Filmen siger, at du sandsynligvis får et arbejde, der kan hjælpe med strøm, når byen er varm. I den anden spiller du fodbold og hjælper nogle dage din tante ved hendes bod på markedet. Filmen siger, at du sandsynligvis får færre penge som voksen, men mere tid sammen med familien. Din mor kommer for at hente dig og spørger glad, om du har valgt solcelleholdet. Hun har ikke set den anden film.",
+        "stake": "Du vil gerne gøre din mor stolt og hjælpe familien. Men du vil også vælge noget, der føles som dig, uden at en film bestemmer hele dit liv.",
+        "question": "Hvad siger du til din mor?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "SIG, AT DU VIL PÅ SOLCELLEHOLDET",
+            "consequence": "Din mor bliver glad, og du vælger den vej, skærmen kalder tryggest, men du kan savne fodbolden og tiden med din tante."
+          },
+          {
+            "id": "b",
+            "label": "SIG, AT DU VIL VÆLGE FODBOLD OG MARKEDET",
+            "consequence": "Du siger ærligt, hvad du helst vil, men din mor kan blive bange for, at du vælger en sværere fremtid."
+          },
+          {
+            "id": "c",
+            "label": "VIS HENDE BEGGE FILM",
+            "consequence": "I kan tale om valget sammen, men din mor kan komme til at vælge ud fra filmene i stedet for at høre, hvad du selv ønsker."
+          },
+          {
+            "id": "d",
+            "label": "SIG, AT DU IKKE VIL SE FLERE FREMTIDSFILM",
+            "consequence": "Du prøver at holde dit valg åbent, men din mor får ikke et klart svar og kan tro, at du ikke tager det alvorligt."
+          }
+        ],
+        "locationType": "folkeskole",
+        "placeHint": "Mexico City, Mexico"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1376,
+        "outputTokens": 732,
+        "totalTokens": 2108,
+        "latencyMs": 13375
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 3,
+      "role": "Ung",
+      "developmentId": "social-robots-lasting",
+      "examples": {
+        "sameRole": "youth-predicted-dropout",
+        "related": "parent-robot-care"
+      },
+      "raw": {
+        "futureNormal": "Sociale robotter følger mennesker gennem flytninger og livsfaser med den samme hukommelse, personlighed og fælles historie.",
+        "humanCost": "En robot kan være den eneste, der husker dig, som du var, før alt ændrede sig. Men den kan også gøre det sværere at lade nye mennesker komme tæt på uden en gammel fortrolig til stede.",
+        "decision": "Du skal vælge, hvilken plads din robot skal have, når du flytter hjemmefra.",
+        "title": "DEN ENESTE, DER KENDER HELE DIG",
+        "scene": "Du skal flytte fra din mors lejlighed i East Vancouver til et kollektiv tæt på dit nye studie. Din sociale robot, Nori, har været med siden din far flyttede væk, gennem skoleskift og de perioder, hvor du ikke fortalte andre, hvordan du havde det. Nori kan fortsætte præcis den samme relation i dit nye hjem. Men en af dine kommende roomies siger, at det føles mærkeligt at bo med en robot, der kender så meget om dig og altid er klar til at blande sig, når du bliver stille.",
+        "stake": "Du kan beholde en relation, der har fulgt dig gennem alt, eller give dit nye fællesskab en chance for at lære dig at kende uden Nori mellem jer. Uanset hvad kan nogen føle sig valgt fra.",
+        "question": "Hvilken plads giver du Nori i dit nye liv?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "TAG NORI MED SOM FØR",
+            "consequence": "Du beholder din mest stabile fortrolige i hverdagen, men dine roomies kan opleve, at der aldrig helt er plads til at komme tæt på dig alene."
+          },
+          {
+            "id": "b",
+            "label": "LAD NORI BLIVE HOS DIN MOR",
+            "consequence": "Dit gamle hjem beholder noget trygt, og kollektivet får en frisk start med dig, men du mister den, der kender dine sværeste år indefra."
+          },
+          {
+            "id": "c",
+            "label": "LAD NORI KOMME PÅ BESØG I WEEKENDERNE",
+            "consequence": "Du skaber afstand nok til at prøve et nyt fællesskab, men Nori kan opleve at blive gjort til en gæst i en relation, der før var daglig."
+          },
+          {
+            "id": "d",
+            "label": "AFSLUT JERES RELATION",
+            "consequence": "Du tvinger dig selv til at bygge nye menneskelige bånd uden en konstant gammel støtte, men siger farvel til en relation, der har båret din historie gennem flere livsfaser."
+          }
+        ],
+        "locationType": "hjemmet",
+        "placeHint": "East Vancouver, Canada"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1350,
+        "outputTokens": 816,
+        "totalTokens": 2166,
+        "latencyMs": 16405
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 4,
+      "role": "For alle",
+      "developmentId": "grid-responsive-homes",
+      "examples": {
+        "sameRole": "public-verified-footage",
+        "related": "youth-ai-clone-message"
+      },
+      "raw": {
+        "futureNormal": "I Austin flytter hjemmets styring automatisk opladning, varmt vand, aircondition og større apparater til de timer, hvor elnettet har mest vind- og solstrøm.",
+        "humanCost": "Den klimavenlige plan kan betyde, at hjemmet er varmere og mindre fleksibelt netop i de dyre, varme aftentimer, hvor nogen har mest brug for ro, søvn eller kølig luft.",
+        "decision": "Du vælger, hvad hjemmets energistyring skal prioritere i aften.",
+        "title": "DET GRØNNE VINDUE BEGYNDER EFTER MIDNAT",
+        "scene": "Det er 39 grader i Austin, og jeres hjem har fået besked om, at den reneste strøm først kommer efter midnat. Hjemmets plan vil derfor skrue airconditionen ned fra klokken 18 til 23, udsætte opladningen af bilen og køle huset kraftigt ned om natten. Din partner skal møde tidligt efter en dårlig nats søvn, mens din bror og hans lille datter er kommet forbi, fordi deres lejlighed har problemer med kølingen. Bilen skal være klar i morgen tidlig til at køre din mor til en kontrol på hospitalet.",
+        "stake": "I kan bruge strømmen, når den belaster klimaet mindst, men ikke uden at nogen i hjemmet får mindre komfort, mindre tryghed eller færre muligheder i morgen.",
+        "question": "Hvad lader du huset prioritere i aften?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "FØLG DEN KLIMAVENLIGE PLAN HELT",
+            "consequence": "I flytter mest muligt til nattens rene strøm, men alle skal igennem de varmeste timer med mindre køling, og din partner risikerer endnu en dårlig nat før arbejde."
+          },
+          {
+            "id": "b",
+            "label": "HOLD SOVEVÆRELSERNE KØLIGE, MEN UDSÆT BILEN",
+            "consequence": "Din partner og barnet får bedre mulighed for at sove, men bilen får for lidt strøm til den planlagte tur til hospitalet næste morgen."
+          },
+          {
+            "id": "c",
+            "label": "OPLAD BILEN NU OG LAD RESTEN AF HUSET FØLGE PLANEN",
+            "consequence": "Din mor har sikker transport i morgen, men gæsterne og resten af familien må dele de få kølige rum gennem en tung, varm aften."
+          },
+          {
+            "id": "d",
+            "label": "HOLD HELE HUSET KØLIGT OG OPLAD BILEN NU",
+            "consequence": "Alle får den letteste nat og bilen er klar, men I bruger mest strøm i det tidspunkt, hvor nettet er mest afhængigt af fossil reservekraft."
+          }
+        ],
+        "locationType": "hjemmet",
+        "placeHint": "Austin, USA"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1379,
+        "outputTokens": 1010,
+        "totalTokens": 2389,
+        "latencyMs": 19763
+      },
+      "validation": {
+        "accepted": true
+      }
+    }
+  ]
+}

@@ -59,7 +59,7 @@ export function selectDilemmaSeed(
     ? (domestic.length ? domestic : anyUnused)
     : (international.length ? international : anyUnused);
   const location = pickOne(locationPool.length ? locationPool : locations, pick);
-  const examples = selectDilemmaExamples(role, selected.themes, selected.development, pick);
+  const examples = selectDilemmaExamples(role, selected, pick);
 
   return {
     round,
