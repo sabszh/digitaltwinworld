@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { creativeDilemmaSchema, enrichCreativeDilemma, validateCreativeDilemma } from "@/lib/creativeDilemma";
+import {
+  creativeDilemmaSchema,
+  dilemmaDisplayLimits,
+  enrichCreativeDilemma,
+  trimCreativeText,
+  validateCreativeDilemma,
+} from "@/lib/creativeDilemma";
 import type { CreativeDilemma, DilemmaGenerationRequest } from "@/lib/dilemmaGenerationTypes";
 import { planRound } from "@/lib/roundPlan";
 import { zeroValueImpacts } from "@/lib/valueScoring";
@@ -51,11 +57,11 @@ describe("creative dilemma boundary", () => {
     expect(validateCreativeDilemma(value, input)).toHaveProperty("creative");
   });
 
-  it("rejects duplicate ids and locations outside the planned taxonomy", () => {
+  it("rejects duplicate ids but allows a natural adjacent location taxonomy", () => {
     const duplicate = creative();
     duplicate.choices[3].id = "a";
     expect(validateCreativeDilemma(duplicate, input)).toEqual({ reason: "bad_choice_ids" });
-    expect(validateCreativeDilemma(creative({ locationType: "grænsekontrol" }), input)).toEqual({ reason: "bad_location_fit" });
+    expect(validateCreativeDilemma(creative({ locationType: "folkeskole" }), input)).toHaveProperty("creative");
   });
 
   it("adds server-owned metadata and scores after authoring", () => {
@@ -65,5 +71,28 @@ describe("creative dilemma boundary", () => {
     expect(result.country).toBe(plan.location.country);
     expect(result.role).toBe("Barn");
     expect(result.choices.every((choice) => choice.valueImpacts)).toBe(true);
+  });
+
+  it("derives problem area from the authored scene location when it is adjacent to the pressure", () => {
+    const result = enrichCreativeDilemma(creative({ locationType: "folkeskole" }), input, plan, zeroValueImpacts());
+    expect(result.problemArea).toBe("Uddannelse og læring");
+    expect(result.validLocationTypes).toContain("folkeskole");
+  });
+
+  it("gives the schema headroom and trims final copy only at whole words", () => {
+    expect(creativeDilemmaSchema.properties.title.maxLength).toBeGreaterThan(dilemmaDisplayLimits.title);
+    expect(creativeDilemmaSchema.properties.scenePrompt.maxLength).toBeGreaterThan(dilemmaDisplayLimits.scenePrompt);
+    expect(creativeDilemmaSchema.properties.stake.maxLength).toBeGreaterThan(dilemmaDisplayLimits.stake);
+    expect(creativeDilemmaSchema.properties.question.maxLength).toBeGreaterThan(dilemmaDisplayLimits.question);
+    expect(trimCreativeText("alpha beta gamma", 11)).toBe("alpha beta…");
+    expect(trimCreativeText("averylongsingleword", 8)).toBe("…");
+
+    const result = enrichCreativeDilemma(creative({
+      title: "Et meget langt dilemma om fremtiden og de mennesker som skal leve med konsekvensen hver eneste dag",
+      stake: "Mennesker mister noget vigtigt ".repeat(12),
+    }), input, plan, zeroValueImpacts());
+    expect(result.title.length).toBeLessThanOrEqual(dilemmaDisplayLimits.title);
+    expect(result.title).toMatch(/\s\S+…$/u);
+    expect(result.stake?.length).toBeLessThanOrEqual(dilemmaDisplayLimits.stake);
   });
 });

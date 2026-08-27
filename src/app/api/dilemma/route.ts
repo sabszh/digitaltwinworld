@@ -1,6 +1,12 @@
 import { userRoles } from "@/data/taxonomies";
 import { haversineKm } from "@/lib/aporee";
-import { creativeDilemmaSchema, enrichCreativeDilemma, validateCreativeDilemma } from "@/lib/creativeDilemma";
+import {
+  creativeDilemmaSchema,
+  dilemmaDisplayLimits,
+  enrichCreativeDilemma,
+  trimCreativeText,
+  validateCreativeDilemma,
+} from "@/lib/creativeDilemma";
 import type { CreativeDilemma, DilemmaGenerationRequest } from "@/lib/dilemmaGenerationTypes";
 import { locatePlace } from "@/lib/geocode";
 import { dilemmaModel, requestJson } from "@/lib/openaiJson";
@@ -75,10 +81,11 @@ export async function POST(request: Request) {
 
     const impacts = await scoreDilemmaValues(creative, apiKey, input.language);
     const dilemma = enrichCreativeDilemma(creative, input, input.generationPlan, impacts);
+    const placeHint = trimCreativeText(creative.placeHint ?? "", dilemmaDisplayLimits.placeHint, false);
 
-    if (creative.placeHint?.trim()) {
+    if (placeHint) {
       const located = await locatePlace(
-        { name: creative.placeHint, city: dilemma.city, country: dilemma.country },
+        { name: placeHint, city: dilemma.city, country: dilemma.country },
         dilemma.marker,
         process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
         haversineKm,
@@ -87,7 +94,7 @@ export async function POST(request: Request) {
         dilemma.marker = located.coordinates;
         dilemma.exactPlace = {
           id: `${input.generationPlan.location.id}-${dilemma.locationType}`,
-          name: located.name ?? creative.placeHint,
+          name: located.name ?? placeHint,
           address: located.address,
           region: dilemma.region,
           country: dilemma.country,

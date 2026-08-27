@@ -54,6 +54,96 @@ type SessionStore = {
 const createSessionId = () => `world2046-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 let dilemmaGenerationRun = 0;
 let activeDilemmaController: AbortController | undefined;
+let prefetchedDilemmaController: AbortController | undefined;
+
+type DilemmaPrefetch = {
+  sessionId: string;
+  language: Language;
+  currentDilemmaId: string;
+  completedCount: number;
+  promise: Promise<GeneratedDilemma | undefined>;
+};
+
+let dilemmaPrefetch: DilemmaPrefetch | undefined;
+
+function projectedCompletion(dilemma: GeneratedDilemma): CompletedDilemma {
+  return {
+    dilemmaId: dilemma.id,
+    problemArea: dilemma.problemArea,
+    region: dilemma.region,
+    country: dilemma.country,
+    city: dilemma.city,
+    exactPlaceName: dilemma.exactPlace?.name,
+    locationType: dilemma.locationType,
+    technology: dilemma.technology,
+    question: dilemma.question,
+    presented: {
+      title: dilemma.title,
+      scene: dilemma.scenePrompt,
+      stake: dilemma.stake,
+      landingScene: dilemma.landingScene,
+      landingDetail: dilemma.landingDetail,
+      choices: dilemma.choices.map(({ id, label, description }) => ({ id, label, description })),
+    },
+    coreTension: dilemma.coreTension,
+    futurePressureId: dilemma.futurePressureId,
+    selectedChoiceId: "__prefetch__",
+    selectedChoiceLabel: "__prefetch__",
+    valueImpacts: { ...emptyValueProfile },
+  };
+}
+
+function startNextDilemmaPrefetch(input: {
+  role: UserRole;
+  personaAnswers?: PersonaAnswers;
+  completedDilemmas: CompletedDilemma[];
+  activeDilemma: GeneratedDilemma;
+  sessionId: string;
+  language: Language;
+}) {
+  if (input.completedDilemmas.length + 1 >= SESSION_DILEMMA_COUNT) return;
+  // Production dilemmas always have these fields. The guard keeps incomplete
+  // fixtures and legacy stored data from starting an invalid background call.
+  if (!input.activeDilemma.problemArea || !input.activeDilemma.country || !input.activeDilemma.futurePressureId) return;
+
+  prefetchedDilemmaController?.abort();
+  const controller = new AbortController();
+  prefetchedDilemmaController = controller;
+  const previousDilemmas = [...input.completedDilemmas, projectedCompletion(input.activeDilemma)];
+  const promise = (async () => {
+    const timeout = window.setTimeout(() => controller.abort(), UX_TIMING.dilemmaFetchTimeoutMs);
+    try {
+      const response = await fetch("/api/dilemma", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          role: input.role,
+          answers: input.personaAnswers,
+          previousDilemmas,
+          preferredSeverity: "medium",
+          language: input.language,
+        }),
+        signal: controller.signal,
+      });
+      if (!response.ok) return undefined;
+      const data = (await response.json()) as { dilemma?: GeneratedDilemma };
+      return data.dilemma;
+    } catch {
+      return undefined;
+    } finally {
+      window.clearTimeout(timeout);
+      if (prefetchedDilemmaController === controller) prefetchedDilemmaController = undefined;
+    }
+  })();
+
+  dilemmaPrefetch = {
+    sessionId: input.sessionId,
+    language: input.language,
+    currentDilemmaId: input.activeDilemma.id,
+    completedCount: input.completedDilemmas.length,
+    promise,
+  };
+}
 
 export const useSessionStore = create<SessionStore>((set, get) => ({
   phase: "intro",
@@ -65,7 +155,12 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   sessionId: createSessionId(),
   createdAt: new Date().toISOString(),
   start: () => set({ phase: "persona" }),
-  setLanguage: (language) => set({ language }),
+  setLanguage: (language) => {
+    prefetchedDilemmaController?.abort();
+    prefetchedDilemmaController = undefined;
+    dilemmaPrefetch = undefined;
+    set({ language });
+  },
   // The traveller's own answers go straight to the generator. There is no
   // character in between: nothing summarises them, so nothing can get them wrong.
   checkIn: async (answers) => {
@@ -85,9 +180,20 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     const runId = ++dilemmaGenerationRun;
     activeDilemmaController?.abort();
 
+    const lastCompleted = completedDilemmas.at(-1);
+    const matchingPrefetch = dilemmaPrefetch &&
+      dilemmaPrefetch.sessionId === sessionId &&
+      dilemmaPrefetch.language === language &&
+      dilemmaPrefetch.completedCount + 1 === completedDilemmas.length &&
+      dilemmaPrefetch.currentDilemmaId === lastCompleted?.dilemmaId
+      ? dilemmaPrefetch
+      : undefined;
+    if (dilemmaPrefetch && !matchingPrefetch) prefetchedDilemmaController?.abort();
+    dilemmaPrefetch = undefined;
+
     set({ activeDilemma: undefined, phase: "traveling" });
 
-    let nextDilemma: GeneratedDilemma | undefined;
+    let nextDilemma = await matchingPrefetch?.promise;
     let attempt = 0;
     const isCurrentRun = () =>
       dilemmaGenerationRun === runId &&
@@ -139,6 +245,14 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 
     if (!isCurrentRun()) return;
     set({ activeDilemma: nextDilemma });
+    startNextDilemmaPrefetch({
+      role,
+      personaAnswers,
+      completedDilemmas,
+      activeDilemma: nextDilemma,
+      sessionId,
+      language,
+    });
   },
   enterLanding: () => {
     if (get().phase === "traveling" && get().activeDilemma) set({ phase: "landing" });
@@ -280,6 +394,9 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     dilemmaGenerationRun += 1;
     activeDilemmaController?.abort();
     activeDilemmaController = undefined;
+    prefetchedDilemmaController?.abort();
+    prefetchedDilemmaController = undefined;
+    dilemmaPrefetch = undefined;
     set({
       phase: "intro",
       language: get().language,

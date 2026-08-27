@@ -44,7 +44,6 @@ export function buildDilemmaPrompt(input: DilemmaGenerationRequest) {
   const audience = getAudienceProfile(input.role);
   const plan = input.generationPlan ?? planRound(input.previousDilemmas);
   const languageName = input.language === "da" ? "dansk" : "English";
-  const allowedLocationTypes = [...new Set(plan.problemAreas.flatMap((area) => locationTypesByProblemArea[area]))];
   const previous = input.previousDilemmas.length
     ? input.previousDilemmas.map((item) => `${item.problemArea}: ${item.question}`).join("\n")
     : "Ingen";
@@ -83,13 +82,14 @@ Rollen må ikke: ${audience.forbiddenResponsibilities.join("; ")}
 Fremtidspres: ${plan.pressure.pressure}
 Mulige samfundssvar i 2046:
 ${plan.responses.map((response) => `- ${response}`).join("\n")}
-Problemområder: ${plan.problemAreas.join(", ")}
+Nærliggende problemområder (vejledende, ikke en lokationsbegrænsning): ${plan.problemAreas.join(", ")}
 Sted: ${plan.location.city}, ${plan.location.country}
-Tilladte locationType: ${allowedLocationTypes.join(", ")}
 
 Vælg selv den response eller en nærliggende udvikling, der giver det stærkeste dilemma for denne rolle. Du behøver ikke bruge alle input eller formuleringer ordret.
 
 De fire svar skal være fire reelt forskellige måder at tage stilling til samme situation. Hvis du kun kan finde to positioner og er nødt til at omskrive dem for at få fire, så vælg et andet dilemma. Alle fire accepterer situationens grundvilkår og har en mærkbar pris.
+
+Alle fire svar skal acceptere den samme situation som given. De skal være forskellige måder at leve med konsekvensen på — ikke forslag til at ændre situationen, få den vurderet igen eller finde en ny løsning. Hvis du ikke naturligt kan finde fire sådanne positioner, vælg et andet dilemma.
 
 Skriv kort, konkret og naturligt. ${input.role === "Barn" ? "Brug korte, kendte ord og korte sætninger, men bevar det store fremtidsspørgsmål." : "Skriv som et menneske ville forklare situationen til en ven."}
 Title højst 58 tegn. ScenePrompt højst 360 tegn. Stake højst 190 tegn. Question højst 160 tegn. Choice label højst 46 tegn, description højst 124 tegn og consequence højst 192 tegn.

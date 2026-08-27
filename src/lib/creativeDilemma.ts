@@ -1,4 +1,4 @@
-import { locationTypesByProblemArea } from "@/data/taxonomies";
+import { locationTypesByProblemArea, problemAreas } from "@/data/taxonomies";
 import { getAudienceProfile } from "@/lib/audience";
 import type { CreativeDilemma, DilemmaGenerationRequest } from "@/lib/dilemmaGenerationTypes";
 import type { RoundPlan } from "@/lib/roundPlan";
@@ -6,22 +6,49 @@ import type { Choice, FutureTechnology, GeneratedDilemma, LocationType, ProblemA
 
 export const creativeLocationTypes = [...new Set(Object.values(locationTypesByProblemArea).flat())] as LocationType[];
 
+export const creativeSchemaLimits = {
+  title: 96,
+  landingScene: 520,
+  scenePrompt: 640,
+  stake: 360,
+  question: 300,
+  tension: 360,
+  choiceLabel: 96,
+  choiceDescription: 260,
+  choiceConsequence: 360,
+  placeHint: 180,
+} as const;
+
+export const dilemmaDisplayLimits = {
+  title: 58,
+  landingScene: 320,
+  scenePrompt: 360,
+  stake: 190,
+  question: 160,
+  tensionWant: 120,
+  tensionReason: 180,
+  choiceLabel: 46,
+  choiceDescription: 124,
+  choiceConsequence: 192,
+  placeHint: 100,
+} as const;
+
 export const creativeDilemmaSchema = {
   type: "object",
   additionalProperties: false,
   properties: {
-    title: { type: "string", maxLength: 58 },
-    landingScene: { type: "string", maxLength: 320 },
-    scenePrompt: { type: "string", maxLength: 360 },
-    stake: { type: "string", maxLength: 190 },
-    question: { type: "string", maxLength: 160 },
+    title: { type: "string", maxLength: creativeSchemaLimits.title },
+    landingScene: { type: "string", maxLength: creativeSchemaLimits.landingScene },
+    scenePrompt: { type: "string", maxLength: creativeSchemaLimits.scenePrompt },
+    stake: { type: "string", maxLength: creativeSchemaLimits.stake },
+    question: { type: "string", maxLength: creativeSchemaLimits.question },
     coreTension: {
       type: "object",
       additionalProperties: false,
       properties: {
-        want: { type: "string", maxLength: 120 },
-        butAlsoWant: { type: "string", maxLength: 120 },
-        whyCannotHaveBoth: { type: "string", maxLength: 180 },
+        want: { type: "string", maxLength: creativeSchemaLimits.tension },
+        butAlsoWant: { type: "string", maxLength: creativeSchemaLimits.tension },
+        whyCannotHaveBoth: { type: "string", maxLength: creativeSchemaLimits.tension },
       },
       required: ["want", "butAlsoWant", "whyCannotHaveBoth"],
     },
@@ -34,15 +61,15 @@ export const creativeDilemmaSchema = {
         additionalProperties: false,
         properties: {
           id: { type: "string", enum: ["a", "b", "c", "d"] },
-          label: { type: "string", maxLength: 46 },
-          description: { type: "string", maxLength: 124 },
-          consequence: { type: "string", maxLength: 192 },
+          label: { type: "string", maxLength: creativeSchemaLimits.choiceLabel },
+          description: { type: "string", maxLength: creativeSchemaLimits.choiceDescription },
+          consequence: { type: "string", maxLength: creativeSchemaLimits.choiceConsequence },
         },
         required: ["id", "label", "description", "consequence"],
       },
     },
     locationType: { type: "string", enum: creativeLocationTypes },
-    placeHint: { type: "string", maxLength: 100 },
+    placeHint: { type: "string", maxLength: creativeSchemaLimits.placeHint },
   },
   required: ["title", "landingScene", "scenePrompt", "stake", "question", "coreTension", "choices", "locationType", "placeHint"],
 } as const;
@@ -61,7 +88,7 @@ export type CreativeDilemmaRejection =
   | "bad_choices"
   | "bad_choice_ids"
   | "bad_location_taxonomy"
-  | "bad_location_fit"
+  | "bad_place_hint"
   | "implausible_role_authority"
   | "unsafe_content";
 
@@ -71,18 +98,23 @@ export function validateCreativeDilemma(
 ): { creative: CreativeDilemma } | { reason: CreativeDilemmaRejection } {
   if (!isRecord(value)) return { reason: "not_an_object" };
   if (
-    !isText(value.title, 58) || !isText(value.landingScene, 320) || !isText(value.scenePrompt, 360) ||
-    !isText(value.stake, 190) || !isText(value.question, 160)
+    !isText(value.title, creativeSchemaLimits.title) ||
+    !isText(value.landingScene, creativeSchemaLimits.landingScene) ||
+    !isText(value.scenePrompt, creativeSchemaLimits.scenePrompt) ||
+    !isText(value.stake, creativeSchemaLimits.stake) ||
+    !isText(value.question, creativeSchemaLimits.question)
   ) return { reason: "missing_or_long_text" };
 
-  if (!isRecord(value.coreTension) || !isText(value.coreTension.want, 120) ||
-    !isText(value.coreTension.butAlsoWant, 120) || !isText(value.coreTension.whyCannotHaveBoth, 180)) {
+  if (!isRecord(value.coreTension) || !isText(value.coreTension.want, creativeSchemaLimits.tension) ||
+    !isText(value.coreTension.butAlsoWant, creativeSchemaLimits.tension) ||
+    !isText(value.coreTension.whyCannotHaveBoth, creativeSchemaLimits.tension)) {
     return { reason: "bad_core_tension" };
   }
 
   if (!Array.isArray(value.choices) || value.choices.length !== 4 || !value.choices.every((choice) =>
-    isRecord(choice) && isText(choice.id, 1) && isText(choice.label, 46) &&
-    isText(choice.description, 124) && isText(choice.consequence, 192))) {
+    isRecord(choice) && isText(choice.id, 1) && isText(choice.label, creativeSchemaLimits.choiceLabel) &&
+    isText(choice.description, creativeSchemaLimits.choiceDescription) &&
+    isText(choice.consequence, creativeSchemaLimits.choiceConsequence))) {
     return { reason: "bad_choices" };
   }
   const ids = value.choices.map((choice) => (choice as Record<string, unknown>).id);
@@ -93,10 +125,7 @@ export function validateCreativeDilemma(
   if (!isText(value.locationType, 40) || !creativeLocationTypes.includes(value.locationType as LocationType)) {
     return { reason: "bad_location_taxonomy" };
   }
-  const plan = input.generationPlan;
-  if (plan && !plan.problemAreas.some((area) => locationTypesByProblemArea[area].includes(value.locationType as LocationType))) {
-    return { reason: "bad_location_fit" };
-  }
+  if (!isText(value.placeHint, creativeSchemaLimits.placeHint)) return { reason: "bad_place_hint" };
 
   const visible = [value.title, value.landingScene, value.scenePrompt, value.stake, value.question,
     ...value.choices.flatMap((choice) => Object.values(choice as Record<string, unknown>))].join(" ");
@@ -125,17 +154,48 @@ function shuffled<T>(items: T[]): T[] {
   return result;
 }
 
+/** Fit text to a display budget without ever retaining part of a word. */
+export function trimCreativeText(text: string, limit: number, ellipsis = true): string {
+  const normalized = text.trim().replace(/\s+/gu, " ");
+  if (normalized.length <= limit) return normalized;
+  const suffix = ellipsis ? "…" : "";
+  const budget = Math.max(0, limit - suffix.length);
+  const words = normalized.split(" ");
+  const kept: string[] = [];
+  for (const word of words) {
+    const candidate = kept.length ? `${kept.join(" ")} ${word}` : word;
+    if (candidate.length > budget) break;
+    kept.push(word);
+  }
+  return kept.length ? `${kept.join(" ").replace(/[\s,;:.\-–—]+$/u, "")}${suffix}` : suffix;
+}
+
+export function problemAreaForLocation(locationType: LocationType, input: DilemmaGenerationRequest, plan: RoundPlan) {
+  const matching = problemAreas.filter((area) => locationTypesByProblemArea[area].includes(locationType));
+  const used = new Set(input.previousDilemmas.map((item) => item.problemArea));
+  return matching.find((area) => plan.problemAreas.includes(area) && !used.has(area))
+    ?? matching.find((area) => !used.has(area))
+    ?? matching.find((area) => plan.problemAreas.includes(area))
+    ?? matching[0]
+    ?? plan.problemAreas[0];
+}
+
 export function enrichCreativeDilemma(
   creative: CreativeDilemma,
   input: DilemmaGenerationRequest,
   plan: RoundPlan,
   impacts: Record<"a" | "b" | "c" | "d", ValueProfile>,
 ): GeneratedDilemma {
-  const problemArea = plan.problemAreas.find((area) =>
-    locationTypesByProblemArea[area].includes(creative.locationType)) ?? plan.problemAreas[0];
+  const problemArea = problemAreaForLocation(creative.locationType, input, plan);
   const technology = technologyByArea[problemArea];
   const audience = getAudienceProfile(input.role);
-  const choices: Choice[] = creative.choices.map((choice) => ({ ...choice, valueImpacts: impacts[choice.id] }));
+  const choices: Choice[] = creative.choices.map((choice) => ({
+    ...choice,
+    label: trimCreativeText(choice.label, dilemmaDisplayLimits.choiceLabel),
+    description: trimCreativeText(choice.description, dilemmaDisplayLimits.choiceDescription),
+    consequence: trimCreativeText(choice.consequence, dilemmaDisplayLimits.choiceConsequence),
+    valueImpacts: impacts[choice.id],
+  }));
 
   return {
     id: crypto.randomUUID(),
@@ -144,9 +204,9 @@ export function enrichCreativeDilemma(
     targetGroups: audience.targetGroups,
     technologies: [technology],
     severity: plan.severity,
-    title: creative.title,
-    scenePrompt: creative.scenePrompt,
-    question: creative.question,
+    title: trimCreativeText(creative.title, dilemmaDisplayLimits.title),
+    scenePrompt: trimCreativeText(creative.scenePrompt, dilemmaDisplayLimits.scenePrompt),
+    question: trimCreativeText(creative.question, dilemmaDisplayLimits.question),
     choices: shuffled(choices),
     tags: [plan.pressure.family, plan.pressure.id],
     country: plan.location.country,
@@ -156,9 +216,13 @@ export function enrichCreativeDilemma(
     technology,
     role: input.role,
     marker: { lat: plan.location.lat, lng: plan.location.lng },
-    landingScene: creative.landingScene,
-    stake: creative.stake,
-    coreTension: creative.coreTension,
+    landingScene: trimCreativeText(creative.landingScene, dilemmaDisplayLimits.landingScene),
+    stake: trimCreativeText(creative.stake, dilemmaDisplayLimits.stake),
+    coreTension: {
+      want: trimCreativeText(creative.coreTension.want, dilemmaDisplayLimits.tensionWant),
+      butAlsoWant: trimCreativeText(creative.coreTension.butAlsoWant, dilemmaDisplayLimits.tensionWant),
+      whyCannotHaveBoth: trimCreativeText(creative.coreTension.whyCannotHaveBoth, dilemmaDisplayLimits.tensionReason),
+    },
     futurePressureId: plan.pressure.id,
   };
 }

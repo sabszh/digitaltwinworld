@@ -45,4 +45,12 @@ describe("buildDilemmaPrompt", () => {
     expect(prompt).not.toContain("GPS");
     expect(prompt).not.toContain("INTERN KVALITETSKONTROL");
   });
+
+  it("keeps all choices inside the same given situation without restricting nearby locations", () => {
+    const prompt = buildDilemmaPrompt(request("Barn"));
+    expect(prompt).toContain("Alle fire svar skal acceptere den samme situation som given");
+    expect(prompt).toContain("ikke forslag til at ændre situationen, få den vurderet igen eller finde en ny løsning");
+    expect(prompt).toContain("vejledende, ikke en lokationsbegrænsning");
+    expect(prompt).not.toContain("Tilladte locationType");
+  });
 });
