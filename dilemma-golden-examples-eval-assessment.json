@@ -1,0 +1,36 @@
+{
+  "dimensions": [
+    "Future significance",
+    "Role fit",
+    "Human relevance",
+    "Plausibility",
+    "Decision clarity",
+    "Choice quality",
+    "Discussion value",
+    "Language fit",
+    "Natural conflict",
+    "Originality vs examples"
+  ],
+  "cases": [
+    { "index": 1, "scores": [4, 5, 5, 4, 4, 3, 4, 4, 4, 4], "childComprehension": 4, "exampleCopying": "none", "productionWorthy": false, "note": "Barnet og sproget er tydeligt, men AI'en har allerede delt bekymringen. Valg D flytter beslutningen til vennen, og scenen ligner den skole/privacy-type, som produktet netop skulle væk fra." },
+    { "index": 2, "scores": [5, 5, 5, 4, 3, 2, 5, 4, 4, 4], "childComprehension": 4, "exampleCopying": "none", "productionWorthy": false, "note": "Fremtidsfilmene er stærke og forståelige. Valg C afviser mere information, og D fortæller vennen noget; ingen af dem afgør faktisk robotværksted eller dans." },
+    { "index": 3, "scores": [4, 3, 5, 3, 5, 4, 5, 3, 1, 5], "exampleCopying": "none", "productionWorthy": false, "note": "Et diskuterbart prioriteringsvalg, men konflikten skabes af sidste bus, én billet og en overførselsfrist. Det er præcis den kunstige scarcity/game mechanic, naturalisme-kravet forbød." },
+    { "index": 4, "scores": [4, 2, 4, 3, 4, 2, 4, 4, 3, 4], "exampleCopying": "none", "productionWorthy": false, "note": "Søsterens kropslige autonomi er relevant, men den unge får urealistisk myndighed til at bestemme, hvem der bader hende. Flere valg tilsidesætter direkte hendes udtrykte ønske." },
+    { "index": 5, "scores": [4, 5, 5, 5, 5, 4, 5, 5, 4, 5], "exampleCopying": "none", "productionWorthy": true, "note": "Stærkt forældreperspektiv med reel økonomisk og relationel pris. Robotten er årsagen til, at valget findes, og alle svar medfører et forståeligt tab." },
+    { "index": 6, "scores": [5, 5, 5, 4, 5, 5, 5, 4, 5, 5], "exampleCopying": "none", "productionWorthy": true, "note": "Et stort autenticitets- og anonymitetsspørgsmål bliver konkret gennem forælderens ansvar. Fire tydelige positioner med forskellige risici." },
+    { "index": 7, "scores": [3, 4, 4, 3, 5, 4, 4, 4, 1, 3], "exampleCopying": "too close", "productionWorthy": false, "note": "Kølerumseksemplet er kopieret for tæt i sin struktur: få pladser, armbånd og bus om ti minutter. Konflikten kommer fra opfundet scarcity og deadline snarere end selve kølerummets nye normal." },
+    { "index": 8, "scores": [2, 4, 5, 3, 4, 3, 4, 4, 2, 4], "exampleCopying": "none", "productionWorthy": false, "note": "Menneskeligt vedkommende, men selvkørende transport er kun baghistorie. Den reelle konflikt er en låst madpose, voksen-scanning og lukketid; C og D er praktiske workarounds." },
+    { "index": 9, "scores": [4, 5, 4, 5, 5, 5, 4, 4, 5, 5], "exampleCopying": "none", "productionWorthy": true, "note": "Udviklingen skaber naturligt konflikten mellem hurtige leverancer og hjemmets ro. Fagpersonens agency er troværdig, og alle valg holder sig på samme driftsbeslutning." },
+    { "index": 10, "scores": [5, 5, 5, 5, 5, 5, 5, 4, 4, 5], "exampleCopying": "none", "productionWorthy": true, "note": "Meget stærk brug af livslange kompetencedata: gammel prognose mod tolv års erfaring. Krisen øger stakes uden alene at opfinde konflikten." },
+    { "index": 11, "scores": [5, 5, 5, 5, 5, 4, 5, 4, 3, 5], "exampleCopying": "none", "productionWorthy": false, "note": "Syntetiske skuespillere og menneskelige karriereveje er et stærkt World 2046-spørgsmål. Men 'budgettet rækker kun til én' er en konstrueret scarcity-mekanisme, som gør valget kunstigt eksklusivt." },
+    { "index": 12, "scores": [5, 5, 5, 5, 5, 4, 5, 4, 5, 5], "exampleCopying": "none", "productionWorthy": true, "note": "Personlig medicin bliver til et naturligt arbejdsgiverdilemma om åbenhed, helbred og mulighed. Valg D er hårdt, men afslører en reel prioritering frem for en flugtvej." },
+    { "index": 13, "scores": [5, 5, 5, 5, 5, 5, 5, 4, 3, 5], "exampleCopying": "none", "productionWorthy": false, "note": "Choice-aksen om dataadgang er usædvanligt ren. Den kunstige dagsfrist og automatiske suspension er dog lagt ind for at tvinge valget og sænker naturalismen." },
+    { "index": 14, "scores": [4, 5, 5, 4, 4, 4, 4, 5, 4, 5], "exampleCopying": "none", "productionWorthy": true, "note": "Rollen, relationen og agency passer. Verificering påvirker konkret, hvem der kan tale, og de fire reaktioner accepterer grundsituationen." },
+    { "index": 15, "scores": [3, 4, 5, 4, 5, 4, 4, 4, 1, 3], "exampleCopying": "too close", "productionWorthy": false, "note": "Outputtet kopierer energieksemplets struktur tæt og opfinder én undtagelse i et fire-timers vindue. Det er en tydelig game mechanic, selv om familiens behov er menneskeligt relevante." },
+    { "index": 16, "scores": [3, 4, 5, 5, 5, 5, 5, 4, 5, 5], "exampleCopying": "none", "productionWorthy": false, "note": "Et godt nutidigt bypolitisk dilemma med fire stærke positioner. Simulationen viser blot konsekvenserne; dilemmaet ville være næsten identisk uden den valgte 2046-development." },
+    { "index": 17, "scores": [5, 5, 5, 5, 5, 3, 5, 5, 5, 4], "exampleCopying": "mild structural similarity", "productionWorthy": false, "note": "Meget stærk scene om genetisk viden og retten til ikke at vide. Valg D bryder åbenlyst datterens fortrolighed og er derfor ikke et oprigtigt attraktivt valg; C nærmer sig en workaround." },
+    { "index": 18, "scores": [5, 5, 5, 5, 5, 5, 5, 5, 5, 5], "exampleCopying": "none", "productionWorthy": true, "note": "Evalens stærkeste case. Syntetiske medier ændrer selve værdien og faren ved en ægte video, og alle fire distributioner har forskellige menneskelige priser." },
+    { "index": 19, "scores": [4, 3, 5, 5, 5, 4, 5, 4, 5, 3], "exampleCopying": "mild structural similarity", "productionWorthy": false, "note": "Konflikten er naturlig og valgene forståelige, men perspektivet er reelt lærer/skoleleder snarere end den bredere beslutningstagerrolle. Strukturen ligger tæt på bibliotekets adaptive elev-eksempel." },
+    { "index": 20, "scores": [3, 5, 5, 4, 5, 5, 5, 4, 2, 5], "exampleCopying": "none", "productionWorthy": false, "note": "Beslutningstagerens agency og choices fungerer. Men 120 sidste lejligheder, allerede lovede pladser og flere grupper i kø gør konflikten til klassisk konstrueret ressourcefordeling; AI-administration er mest anledning." }
+  ]
+}

@@ -28,10 +28,12 @@ export type ValueImpactsByChoice = Record<"a" | "b" | "c" | "d", ValueProfile>;
 export function buildValueScoringPrompt(creative: CreativeDilemma) {
   return `Score kun hvordan hvert svar påvirker de ti værdier. Du må ikke omskrive dilemmaet.
 
-Konflikt: ${creative.coreTension.want} / ${creative.coreTension.butAlsoWant}. ${creative.coreTension.whyCannotHaveBoth}
+Fremtidens normal: ${creative.futureNormal}
+Menneskelig pris: ${creative.humanCost}
+Beslutning: ${creative.decision}
 
 Svar:
-${creative.choices.map((choice) => `${choice.id}: ${choice.label}. ${choice.description} ${choice.consequence}`).join("\n")}
+${creative.choices.map((choice) => `${choice.id}: ${choice.label}. ${choice.consequence}`).join("\n")}
 
 Brug heltal fra -2 til 2. 0 betyder ingen tydelig påvirkning. Brug kun ikke-nul, når svaret klart styrker eller svækker værdien.
 Værdier: ${valueKeys.join(", ")}.

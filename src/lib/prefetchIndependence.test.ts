@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { emptyValueProfile } from "@/data/taxonomies";
 import type { DilemmaGenerationRequest } from "@/lib/dilemmaGenerationTypes";
 import { buildDilemmaPrompt } from "@/lib/prompts/dilemmaPrompt";
-import { planRound } from "@/lib/roundPlan";
+import { selectDilemmaSeed } from "@/lib/roundPlan";
 import type { CompletedDilemma } from "@/types/world2046";
 
 function history(choice: "a" | "d"): CompletedDilemma {
@@ -35,8 +35,8 @@ describe("next-dilemma prefetch independence", () => {
   it("produces the same round plan and author prompt regardless of the latest choice", () => {
     const choiceA = history("a");
     const choiceD = history("d");
-    const planA = planRound([choiceA], () => 0);
-    const planD = planRound([choiceD], () => 0);
+    const planA = selectDilemmaSeed([choiceA], "Borger", () => 0);
+    const planD = selectDilemmaSeed([choiceD], "Borger", () => 0);
 
     expect(planA).toEqual(planD);
 

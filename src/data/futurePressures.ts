@@ -389,3 +389,4 @@ export const pressureFamilies: PressureFamily[] = [
 ];
 
 export const pressuresById = new Map(futurePressures.map((pressure) => [pressure.id, pressure]));
+/** @deprecated Research/provenance data; production authoring uses futureDevelopments. */

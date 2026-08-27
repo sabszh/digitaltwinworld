@@ -16,6 +16,29 @@ export type UserRole =
   | "Borger"
   | "Beslutningstager";
 
+export type FutureTheme =
+  | "AI og beslutninger"
+  | "Robotter og autonome systemer"
+  | "Sundhed og bioteknologi"
+  | "Data, identitet og privatliv"
+  | "Sandhed og autenticitet"
+  | "Uddannelse"
+  | "Arbejde"
+  | "Klima, energi og ressourcer"
+  | "Offentlige systemer og demokrati"
+  | "Relationer, familie og hverdagsliv";
+
+export type FutureDevelopment = {
+  id: string;
+  development: string;
+  themes: FutureTheme[];
+  suitableRoles?: UserRole[];
+  unsuitableRoles?: UserRole[];
+  contexts?: string[];
+  /** Optional research provenance. Never used as an authoring constraint. */
+  pressureIds?: string[];
+};
+
 export type ProblemArea =
   | "Uddannelse og læring"
   | "Arbejde og arbejdsliv"
@@ -148,8 +171,8 @@ export type GeneratedDilemma = DilemmaTemplate & {
   /** Internal generation metadata — not rendered anywhere in the UI. */
   coreTension?: CoreTension;
   logic?: DilemmaLogic;
-  /** Which documented future pressure this stop was built from, so the journey
-   *  can send the next round somewhere else in the future space. */
+  /** Development id used for journey variation. The legacy field name is kept
+   *  so stored sessions remain compatible. */
   futurePressureId?: string;
   /** The one thing that is ordinary in 2046 and not in 2026. Internal: it is
    *  what the scene has to make felt without explaining it. */
@@ -178,7 +201,7 @@ export type CompletedDilemma = {
     place?: { name: string; latitude: number; longitude: number };
     choices: Array<Pick<Choice, "id" | "label" | "description">>;
   };
-  /** Carried so the next round can pick a different corner of the future space. */
+  /** Development id, stored under the legacy name for session compatibility. */
   futurePressureId?: string;
   /** Retained as internal context for the completed dilemma; never displayed. */
   coreTension?: CoreTension;

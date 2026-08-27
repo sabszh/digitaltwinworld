@@ -1,0 +1,1215 @@
+{
+  "summary": {
+    "calls": 20,
+    "model": "gpt-5.6-terra",
+    "accepted": 20,
+    "rejected": 0,
+    "inputTokens": 27093,
+    "outputTokens": 17279,
+    "averageLatencyMs": 17358
+  },
+  "cases": [
+    {
+      "index": 1,
+      "role": "Barn",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "ai-detects-distress",
+        "development": "AI kan opdage mistrivsel, før mennesker selv fortæller om den",
+        "themes": [
+          "AI og beslutninger",
+          "Sundhed og bioteknologi",
+          "Uddannelse"
+        ],
+        "city": "Aarhus",
+        "country": "Danmark",
+        "sameRoleExampleId": "child-robot-friend-memory",
+        "relatedQuestionExampleId": "youth-predicted-dropout"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1380,
+        "outputTokens": 537,
+        "totalTokens": 1917,
+        "latencyMs": 12821
+      },
+      "raw": {
+        "futureNormal": "I 2046 kan skolens AI lægge mærke til tegn på mistrivsel, som ændret stemme, stille frikvarterer og ord i beskeder. Den sender en besked til en voksen, før barnet selv beder om hjælp.",
+        "humanCost": "Den hurtige hjælp kan gøre, at ingen går alene med noget svært. Men det kan også føles ubehageligt, når voksne opdager følelser, man ikke er klar til at fortælle om.",
+        "decision": "Du vælger, hvad du siger, da din lærer spørger ind til AI’ens bekymring.",
+        "title": "DEN GULE PRIK VED DIT NAVN",
+        "scene": "I 4.B på skolen i Aarhus lyser en lille gul prik ved dit navn på klassens tavle, lige før frikvarteret. Læreren hvisker, at skolens AI har set, at du har siddet alene tre dage og slettet flere beskeder til din bedste ven. Hun spørger, om I skal tale sammen nu. De andre er allerede på vej ud for at spille bold.",
+        "stake": "Du vil gerne slippe for at fortælle noget, før du er klar. Men du savner også din ven og er træt af at have ondt i maven i frikvartererne.",
+        "question": "Hvad siger du til læreren?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "JEG VIL GERNE TALE NU",
+            "consequence": "Du kan få hjælp med det samme, men du mister noget af dit frikvarter og skal fortælle om noget, du helst ville gemme."
+          },
+          {
+            "id": "b",
+            "label": "DER ER IKKE NOGET GALT",
+            "consequence": "Du får lov til at gå ud med de andre, men læreren tror måske, at du klarer det alene, selv om du ikke gør."
+          },
+          {
+            "id": "c",
+            "label": "JEG VIL KUN SIGE LIDT",
+            "consequence": "Du bestemmer selv, hvor meget du fortæller, men læreren kan mangle det vigtigste for at forstå, hvorfor du er ked af det."
+          },
+          {
+            "id": "d",
+            "label": "JEG VIL SNAKKE MED MIN VEN FØRST",
+            "consequence": "Du giver venskabet en chance for at blive bedre direkte, men din ven ved måske ikke, hvad der er sket, og samtalen kan gøre dig mere ked af det."
+          }
+        ],
+        "locationType": "folkeskole",
+        "placeHint": "En folkeskole i Aarhus"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 2,
+      "role": "Barn",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "ai-simulates-life-choices",
+        "development": "AI kan vise sandsynlige følger af forskellige uddannelses-, job- og livsvalg",
+        "themes": [
+          "AI og beslutninger",
+          "Uddannelse",
+          "Arbejde"
+        ],
+        "city": "Hamburg",
+        "country": "Tyskland",
+        "sameRoleExampleId": "child-robot-friend-memory",
+        "relatedQuestionExampleId": "teacher-isolation-signal"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1378,
+        "outputTokens": 629,
+        "totalTokens": 2007,
+        "latencyMs": 11857
+      },
+      "raw": {
+        "futureNormal": "I 2046 kan børn i Hamburg se små fremtidsfilm fra skolens valg-AI. Den viser, hvad der sandsynligvis sker, hvis de vælger forskellige fritidsaktiviteter, fag og job senere i livet.",
+        "humanCost": "Filmene kan hjælpe børn med at vælge, men de kan også få et muligt liv til at føles som den eneste rigtige vej.",
+        "decision": "Du vælger, om du vil følge AI'ens forslag til din næste fritidsaktivitet.",
+        "title": "DEN FILM, DER VIL VÆLGE FOR DIG",
+        "scene": "Efter skole sidder du med din mor ved køkkenbordet i Hamburg. På din skolebrille spiller valg-AI'en fire korte film om dig som voksen. I den klareste film bygger du vindmøller ved havnen og ser glad ud. AI'en siger, at det er mest sandsynligt, hvis du går til robotværkstedet i stedet for at blive ved med dit dansehold. Men på danseholdet er din bedste ven, Emil, og I skal optræde sammen om tre uger. Din mor spørger, hvad du vil tilmelde dig i morgen.",
+        "stake": "Du vil gerne vælge noget, der kan blive godt for dig senere. Du vil også selv bestemme og ikke miste noget vigtigt med Emil nu.",
+        "question": "Hvad siger du til din mor?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "JEG VIL GÅ TIL ROBOTVÆRKSTED",
+            "consequence": "Du følger den fremtid, AI'en tror mest på, men Emil skal måske stå alene til optræden."
+          },
+          {
+            "id": "b",
+            "label": "JEG BLIVER PÅ DANSEHOLDET",
+            "consequence": "Du bliver hos Emil og vælger det, du holder af nu, men du kan blive ved med at tænke på filmen, du sagde nej til."
+          },
+          {
+            "id": "c",
+            "label": "JEG VIL VÆLGE UDEN AT SE FLERE FILM",
+            "consequence": "Du beskytter dit eget valg mod AI'ens billeder, men du mister den hjælp, som måske kunne have vist noget, du ville elske."
+          },
+          {
+            "id": "d",
+            "label": "JEG VIL SIGE TIL EMIL, HVAD AI'EN VISTE",
+            "consequence": "Du deler det svære med din ven, men Emil kan føle, at din mulige fremtid betyder mere end jeres optræden."
+          }
+        ],
+        "locationType": "hjemmet",
+        "placeHint": "Hamburg, Tyskland"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 3,
+      "role": "Ung",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "ai-prioritises-resources",
+        "development": "AI kan prioritere knappe ressourcer løbende, når mange har brug for dem samtidig",
+        "themes": [
+          "AI og beslutninger",
+          "Offentlige systemer og demokrati"
+        ],
+        "city": "Lyon",
+        "country": "Frankrig",
+        "sameRoleExampleId": "youth-ai-clone-message",
+        "relatedQuestionExampleId": "teacher-adaptive-path"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1322,
+        "outputTokens": 1618,
+        "totalTokens": 2940,
+        "latencyMs": 33056
+      },
+      "raw": {
+        "futureNormal": "Når oversvømmelser rammer Lyon, fordeler byens AI-ledelse løbende pladser i evakueringskøretøjer efter vandstand, helbredsdata, afstand og sandsynligheden for at kunne klare sig selv.",
+        "humanCost": "Færre mennesker bliver efterladt ved tilfældigheder, men i et kritisk øjeblik kan en persons registrerede data veje tungere end de løfter, frygt og relationer, der ikke kan måles.",
+        "decision": "Du skal beslutte, hvem der skal bruge den eneste plads, AI'en har tildelt dig i den næste evakueringsbus.",
+        "title": "DIN PLADS VED RHÔNE",
+        "scene": "Et voldsomt skybrud har fået Rhône til at gå over sine mobile diger. Du står på Quai Claude Bernard med vand om anklerne, mens den sidste selvkørende bus før ruten lukkes, nærmer sig. Din mobil viser en grøn billet: AI'en har prioriteret dig på grund af din astma og den lange vej til nærmeste tørre zone. Ved siden af dig hyperventilerer din klassekammerat Inès. Lidt længere henne holder en ældre mand fast i sin sammenklappelige rollator. En nattevagt fra et hotel beder stille om hjælp; hans profil er markeret lavt, fordi systemet mangler nyere helbreds- og bopælsdata på ham. Du kan overføre din billet én gang, før bussen åbner døren.",
+        "stake": "Du kan beskytte dig selv mod en situation, hvor din vejrtrækning kan blive dårligere. Men hvis du beholder pladsen, accepterer du også, at systemets beregning afgør mere end det, du ser lige foran dig.",
+        "question": "Hvem skal bruge din plads?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "TAG PLADSEN SELV",
+            "consequence": "Du følger den prioritering, der skal beskytte din astma, men ser de andres behov blive stående uden for den grønne billet."
+          },
+          {
+            "id": "b",
+            "label": "GIV PLADSEN TIL INÈS",
+            "consequence": "Du hjælper din ven gennem hendes panik, men vælger en akut frygt over de fysiske risici, systemet har beregnet for dig."
+          },
+          {
+            "id": "c",
+            "label": "GIV PLADSEN TIL MANDEN MED ROLLATOREN",
+            "consequence": "Du giver pladsen til den, der vil have sværest ved at komme væk til fods, men efterlader Inès og dig selv med en mere usikker vej gennem vandet."
+          },
+          {
+            "id": "d",
+            "label": "GIV PLADSEN TIL NATTEVAGTEN",
+            "consequence": "Du retter op på, at manglende data har skubbet ham ned i køen, men giver afkald på din egen dokumenterede risiko for en person, du næsten ikke kender."
+          }
+        ],
+        "locationType": "vej",
+        "placeHint": "Quai Claude Bernard ved Rhône, Lyon, Frankrig"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 4,
+      "role": "Ung",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "robots-personal-care",
+        "development": "Robotter kan hjælpe mennesker med bad, påklædning og andre intime hverdagsopgaver",
+        "themes": [
+          "Robotter og autonome systemer",
+          "Sundhed og bioteknologi"
+        ],
+        "city": "Bologna",
+        "country": "Italien",
+        "sameRoleExampleId": "youth-ai-clone-message",
+        "relatedQuestionExampleId": "parent-robot-care"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1315,
+        "outputTokens": 555,
+        "totalTokens": 1870,
+        "latencyMs": 11340
+      },
+      "raw": {
+        "futureNormal": "I 2046 bruger mange familier i Bologna hjemmehjælpsrobotter til bad, påklædning og anden kropsnær støtte, også når et familiemedlem midlertidigt har brug for hjælp.",
+        "humanCost": "Robotten kan gøre hjælpen mindre pinlig og give din familie tid, men den kan også overtage de små øjeblikke, hvor mennesker mærker hinandens sårbarhed.",
+        "decision": "Du vælger, hvem der skal hjælpe din storesøster med hendes første bad efter operationen.",
+        "title": "MIN SØSTER VIL IKKE HAVE MIG IND",
+        "scene": "Din storesøster er kommet hjem til jeres lejlighed nær Porta San Donato efter en operation i knæet. Hun kan ikke stå sikkert i bruseren endnu. Da du tilbyder at hjælpe, bliver hun rød i hovedet og peger på familiens omsorgsrobot. Jeres mor siger lavt, at robotten kan klare det hele, men at din søster måske har brug for at vide, at familien ikke trækker sig, bare fordi det er akavet.",
+        "stake": "Din søster skal kunne føle sig tryg og have kontrol over sin egen krop. Samtidig kan dit valg afgøre, om hun oplever familiens hjælp som nærvær eller som et pres, hun skal udholde.",
+        "question": "Hvem skal hjælpe hende i bad i aften?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "LAD ROBOTTEN GØRE DET ALENE",
+            "consequence": "Din søster får den afstand og ro, hun beder om, men hun kan stå mere alene med en skræmmende ny afhængighed."
+          },
+          {
+            "id": "b",
+            "label": "HJÆLP HENDE SELV",
+            "consequence": "Hun får hjælp fra en, der elsker hende, men du overskrider den grænse, hun lige har forsøgt at sætte."
+          },
+          {
+            "id": "c",
+            "label": "VÆR I BADEVÆRELSET SAMMEN MED ROBOTTEN",
+            "consequence": "Du kan gribe ind og vise, at du bliver, men din søster mister noget af det privatliv, robotten skulle give hende."
+          },
+          {
+            "id": "d",
+            "label": "LAD JERES MOR HJÆLPE UDEN ROBOTTEN",
+            "consequence": "Din søster får menneskelig omsorg fra en voksen, hun kender, men kan føle, at familien har besluttet over hendes hoved, at robotten ikke er god nok."
+          }
+        ],
+        "locationType": "hjemmet",
+        "placeHint": "En lejlighed nær Porta San Donato i Bologna"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 5,
+      "role": "Forælder",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "robots-watch-children",
+        "development": "Robotter kan passe børn sikkert i korte perioder og kontakte voksne ved behov",
+        "themes": [
+          "Robotter og autonome systemer",
+          "Relationer, familie og hverdagsliv"
+        ],
+        "city": "Osaka",
+        "country": "Japan",
+        "sameRoleExampleId": "parent-genetic-risk",
+        "relatedQuestionExampleId": "employee-dangerous-robot"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1341,
+        "outputTokens": 590,
+        "totalTokens": 1931,
+        "latencyMs": 12435
+      },
+      "raw": {
+        "futureNormal": "I Osaka er certificerede børnerobotter blevet almindelige i hjem med skæve arbejdstider. De kan lave mad, følge børn til aktiviteter og tilkalde en voksen, hvis noget virker galt.",
+        "humanCost": "Robotten kan give et barn tryg praktisk omsorg, men den kan også gøre det lettere for voksne at lade arbejdstid og ansvar fylde de timer, hvor barnet har brug for dem personligt.",
+        "decision": "Du skal vælge, om din datter skal være alene med familiens børnerobot hver eftermiddag, mens du tager flere vagter.",
+        "title": "HVEM VENTER PÅ HENDE EFTER SKOLE?",
+        "scene": "Din tiårige datter, Mio, kommer hjem før dig til jeres lejlighed i Osaka. Jeres børnerobot kan møde hende ved døren, varme hendes snack, hjælpe med lektier og ringe til dig, hvis hun bliver ked af det. Din chef har tilbudt dig faste sene vagter, som vil betale den gæld, familien fik efter din partners lange sygdom. Mio siger, at robotten er sød, men spørger også, om du stadig vil være hjemme til at høre om hendes dag.",
+        "stake": "Du kan skabe økonomisk ro for familien eller beskytte den daglige tid, hvor Mio mærker, at hun ikke bare bliver passet, men bliver ventet på.",
+        "question": "Tager du de faste sene vagter?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "TAG VAGTERNE HELE UGEN",
+            "consequence": "Gælden kan blive betalt hurtigt, og robotten holder Mio sikkert med selskab, men hun lærer, at hendes hverdage først begynder rigtigt, når du allerede er træt."
+          },
+          {
+            "id": "b",
+            "label": "SIG NEJ TIL VAGTERNE",
+            "consequence": "Du er hjemme, når Mio kommer ind ad døren, men familien beholder gælden og den uro, der følger med hver regning."
+          },
+          {
+            "id": "c",
+            "label": "TAG KUN VAGTER PÅ DE DAGE, HUN HAR AKTIVITETER",
+            "consequence": "Du får noget af den ekstra indkomst, mens Mio har mindre stille tid alene, men robotten bliver stadig den voksne, hun kommer hjem til flere dage om ugen."
+          },
+          {
+            "id": "d",
+            "label": "TAG VAGTERNE, MEN LAD MIO VÆRE HOS DIN MOR EFTER SKOLE",
+            "consequence": "Mio får et menneske omkring sig, og økonomien forbedres, men din mor mister sin ro som pensionist, og Mio kan føle, at hun bliver sendt væk fra sit eget hjem."
+          }
+        ],
+        "locationType": "hjemmet",
+        "placeHint": "En lejlighed i Osaka, Japan"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 6,
+      "role": "Forælder",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "prove-human-online",
+        "development": "Mennesker kan bevise digitalt, at de er virkelige mennesker uden at vise deres fulde navn",
+        "themes": [
+          "Data, identitet og privatliv",
+          "Sandhed og autenticitet"
+        ],
+        "city": "Nairobi",
+        "country": "Kenya",
+        "sameRoleExampleId": "parent-seasonal-home",
+        "relatedQuestionExampleId": "employer-agent-negotiation"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1329,
+        "outputTokens": 1357,
+        "totalTokens": 2686,
+        "latencyMs": 27945
+      },
+      "raw": {
+        "futureNormal": "I 2046 kan borgere i Nairobi bruge et digitalt menneskebevis: Det bekræfter, at en afsender er et rigtigt menneske med ret til at bruge en tjeneste, uden at afsløre fuldt navn, adresse eller familieforhold.",
+        "humanCost": "Anonyme, troværdige beretninger gør det lettere at sige fra uden frygt. Men når navnet mangler, kan den anklagede have sværere ved at forstå, svare på eller forsvare sig mod beskyldningen.",
+        "decision": "Du skal vælge, hvordan I vil fortælle om det, din datter oplevede på vej hjem fra skole.",
+        "title": "ET ÆGTE VIDNE UDEN NAVN",
+        "scene": "Din 13-årige datter kommer hjem fra sin grundskole i Nairobi og fortæller, at en ældre dreng ved matatu-stoppet flere gange har krævet penge af yngre elever. I dag gav hendes ven sin frokostpenge væk. Skolen og transportmyndigheden tager nu imod varsler gennem et system, hvor elever kan bevise, at de er virkelige mennesker og går på en relevant rute, uden at deres navn vises. Din datter vil bruge det. Hun er bange for, at drengen eller hans venner finder hende, hvis hun står frem.",
+        "stake": "I kan gøre det sværere at ignorere afpresningen, men jeres valg afgør både, hvor udsat din datter bliver, og hvor retfærdigt den anklagede mødes.",
+        "question": "Hvordan indgiver I beretningen?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "SEND HENDES BERETNING MED ANONYMT MENNESKEBEVIS",
+            "consequence": "Myndighederne får en troværdig elevberetning uden hendes navn, men den mistænkte kan blive ramt af en undersøgelse uden at kende sin anklager eller kunne tage direkte til genmæle."
+          },
+          {
+            "id": "b",
+            "label": "LAD HENDE STÅ FREM MED NAVN",
+            "consequence": "Hendes ord kan få større vægt og gøre sagen mere tydelig, men hun risikerer at blive genkendt ved stoppet og blive gjort til mål for vrede eller hævn."
+          },
+          {
+            "id": "c",
+            "label": "INDGIV VARSLET I DIT EGET NAVN",
+            "consequence": "Du tager den synlige risiko som voksen og skærmer hende delvist, men hendes oplevelse bliver en forælders andenhåndsberetning, som lettere kan afvises."
+          },
+          {
+            "id": "d",
+            "label": "LAD VÆRE MED AT INDBERETTE DET",
+            "consequence": "Du beskytter hende mod den umiddelbare opmærksomhed, men hendes ven og andre yngre elever kan fortsat blive presset til at betale på samme rute."
+          }
+        ],
+        "locationType": "folkeskole",
+        "placeHint": "Et matatu-stoppested nær en grundskole i Nairobi, Kenya"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 7,
+      "role": "Lærer / pædagog",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "public-cooling-rooms",
+        "development": "Offentlige kølerum kan være en almindelig del af bylivet i varme perioder",
+        "themes": [
+          "Klima, energi og ressourcer",
+          "Offentlige systemer og demokrati"
+        ],
+        "city": "Cape Town",
+        "country": "Sydafrika",
+        "sameRoleExampleId": "teacher-isolation-signal",
+        "relatedQuestionExampleId": "decisionmaker-heat-priority"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1394,
+        "outputTokens": 606,
+        "totalTokens": 2000,
+        "latencyMs": 13528
+      },
+      "raw": {
+        "futureNormal": "I Cape Town åbner kommunen offentlige kølerum i varmeperioder, og skoler bruger dem som faste tilflugtssteder, når klasselokalerne bliver farlige varme.",
+        "humanCost": "Kølerummet kan beskytte børn mod hede, men pladserne er få, og den voksne må afgøre, hvem der skal forlade fællesskabet først.",
+        "decision": "Du vælger, hvilke elever fra din fritidsgruppe der får de sidste pladser i det kommunale kølerum.",
+        "title": "DE SIDSTE ARMBÅND TIL KØLERUMMET",
+        "scene": "En eftermiddag i januar viser skolens varmemålere 39 grader i jeres bygning. Kommunens kølerum i den tidligere sportshal har sendt 12 adgangsarmbånd til din fritidsgruppe på 19 børn. Bussen kører om ti minutter. Flere børn er varme og trætte, men Sipho har hovedpine og virker fjern, mens Leila insisterer på, at hendes lillebror er bange for at blive alene tilbage med de ældre børn. To børn siger, at de hellere vil blive, fordi deres venner ikke har fået et armbånd.",
+        "stake": "Hvis du fordeler pladserne efter akut fysisk behov, kan nogle børn opleve, at deres frygt og ensomhed tæller mindre. Hvis du holder gruppen samlet, kan du udsætte sårbare børn for mere varme.",
+        "question": "Hvem giver du de 12 armbånd til?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "VÆLG DEM MED TYDELIGST FYSISKE TEGN",
+            "consequence": "Du prioriterer børn som Sipho, men børn med mindre synlige behov kan føle, at de skal blive syge, før en voksen tror på dem."
+          },
+          {
+            "id": "b",
+            "label": "LAD BØRNENE TRÆKKE LOD",
+            "consequence": "Reglen virker lige for alle, men den gør beskyttelse mod varme til et spørgsmål om held, også for dem der allerede kæmper mest."
+          },
+          {
+            "id": "c",
+            "label": "SEND SØSKENDE OG NÆRE VENNER SAMMEN",
+            "consequence": "Du beskytter børnenes tryghed i et uvant offentligt rum, men nogle med størst fysisk behov bliver tilbage, fordi deres trygge person ikke fik plads."
+          },
+          {
+            "id": "d",
+            "label": "TAG DE 12 YNGSTE MED",
+            "consequence": "Du følger en enkel og synlig aldersgrænse, men lægger ansvaret for at klare heden på de ældre børn, selv når de ikke reelt kan passe på sig selv."
+          }
+        ],
+        "locationType": "fritidsklub",
+        "placeHint": "En skolefritidsordning nær en kommunal sportshal i Cape Town"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 8,
+      "role": "Lærer / pædagog",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "driverless-transport-normal",
+        "development": "Det meste hverdags- og varetransport kan køre uden en menneskelig chauffør",
+        "themes": [
+          "Robotter og autonome systemer",
+          "Klima, energi og ressourcer"
+        ],
+        "city": "Mexico City",
+        "country": "Mexico",
+        "sameRoleExampleId": "teacher-adaptive-path",
+        "relatedQuestionExampleId": "citizen-climate-twin"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1342,
+        "outputTokens": 1267,
+        "totalTokens": 2609,
+        "latencyMs": 26113
+      },
+      "raw": {
+        "futureNormal": "Førerfri varetransport bringer dagligvarer til afhentningspunkter, fordi små leveringskøretøjer kører uden chauffør og kun må udlevere til en registreret voksen.",
+        "humanCost": "Familier får billige og præcise leveringer, men den menneskelige chauffør, der før kunne se en presset situation og aflevere en pose til et barn eller en nabo, er væk.",
+        "decision": "Du skal beslutte, om du vil udlevere en families madpose til en elev, selv om afhentningsreglen kræver en voksen.",
+        "title": "POSEN VED SKOLEPORTEN",
+        "scene": "På din folkeskole i Iztapalapa i Mexico City bliver forældres vareleveringer ofte lagt i et aflåst skab ved porten. I dag står 10-årige Renata med koden til sin families pose: bønner, tortillas og hendes lillebrors modermælkserstatning. Hendes mor har fået en ekstra vagt på et pakkecenter, efter at førerløse varebiler overtog hendes tidligere arbejde som chauffør, og kan først komme efter skabet lukker. Systemet vil kun åbne med en voksens ansigtsskanning. Renata siger, at der ikke er mad hjemme til aftenen.",
+        "stake": "Du kan følge en regel, der skal beskytte børn mod at bære voksnes ansvar, eller bøje den for en familie, som ellers går sulten i seng.",
+        "question": "Hvad gør du med Renatas families madpose?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "UDLEVÉR POSEN TIL RENATA",
+            "consequence": "Familien får mad i aften, men Renata bliver den, der må løse en voksens forsørgelsesproblem og bære posen alene gennem kvarteret."
+          },
+          {
+            "id": "b",
+            "label": "VENT PÅ HENDES MOR",
+            "consequence": "Du holder fast i grænsen mellem barn og voksent ansvar, men familien mister maden, og Renata oplever skolen som endnu en lukket dør."
+          },
+          {
+            "id": "c",
+            "label": "TAG RENATA MED TIL ET MÅLTID PÅ SKOLEN",
+            "consequence": "Hun får mad og bliver ikke sendt hjem med ansvaret, men hendes lillebror og mor står stadig uden forsyninger, og hun bliver synligt behandlet som et barn i nød."
+          },
+          {
+            "id": "d",
+            "label": "UDLEVÉR POSEN TIL EN NABO, SOM RENATA PEGER PÅ",
+            "consequence": "Maden kan komme tættere på hjemmet uden at Renata bærer den, men du lægger familiens private situation og tillid i hænderne på en person, du ikke selv kender."
+          }
+        ],
+        "locationType": "folkeskole",
+        "placeHint": "Iztapalapa, Mexico City, Mexico"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 9,
+      "role": "Fagperson",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "delivery-robots-everywhere",
+        "development": "Små autonome robotter kan levere varer gennem byer og boligområder døgnet rundt",
+        "themes": [
+          "Robotter og autonome systemer",
+          "Relationer, familie og hverdagsliv"
+        ],
+        "city": "Austin",
+        "country": "USA",
+        "sameRoleExampleId": "professional-early-diagnosis",
+        "relatedQuestionExampleId": "public-neighbour-energy"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1351,
+        "outputTokens": 634,
+        "totalTokens": 1985,
+        "latencyMs": 13084
+      },
+      "raw": {
+        "futureNormal": "I 2046 kører små autonome leveringsrobotter døgnet rundt på fortove og i boligområder i Austin. De kan prioritere hastende varer, men deres ruter bygger på adgang til fælles arealer tæt på hjemmene.",
+        "humanCost": "Den samme adgang, der gør medicin og nødvendigheder hurtige at få frem, kan gøre beboeres nætter mere overvågede, støjende og svære at kontrollere.",
+        "decision": "Som driftsansvarlig for et boligområdes leveringszone skal du vælge, om robotterne fortsat må bruge en smal gangsti ved rækkehusene om natten.",
+        "title": "DEN KORTeste VEJ GÅR FORBI SOVEVÆRELSERNE",
+        "scene": "En hedebølge har sendt mange ældre og småbørnsfamilier indendørs i Austin. Om natten leverer robotterne kølevæsker, medicin og dagligvarer fra et nærliggende depot. Den hurtigste rute går ad en smal gangsti forbi seks rækkehuse. Beboerne klager over summen fra hjulene, lysglimtene fra robotterne og kameraerne, der aktiveres ved hver dør. Hvis stien lukkes om natten, skal robotterne køre en længere rute langs den varme hovedvej, og nogle leverancer vil komme flere timer senere.",
+        "stake": "Du kan beskytte beboernes ro og oplevelse af privatliv eller bevare den hurtige natlevering til mennesker, der kan have svært ved at klare sig uden den.",
+        "question": "Hvad gør du med natadgangen til gangstien?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "HOLD STIEN ÅBEN HELE NATTEN",
+            "consequence": "Hastende leverancer kommer hurtigt frem, men de nærmeste beboere må leve med natlig trafik og registrering lige uden for deres hjem."
+          },
+          {
+            "id": "b",
+            "label": "LUK STIEN FRA KL. 22 TIL 06",
+            "consequence": "Beboerne får ro om natten, men kunder med akut behov må vente længere eller betale for en dyrere alternativ levering."
+          },
+          {
+            "id": "c",
+            "label": "LAD KUN MEDICINROBOTTER BRUGE STIEN OM NATTEN",
+            "consequence": "De mest kritiske pakker bevarer den korte vej, men familier, der mangler vand, køling eller babymad, mister den samme hurtige adgang."
+          },
+          {
+            "id": "d",
+            "label": "HOLD STIEN ÅBEN KUN FOR HUSSTANDE, DER AKTIVT HAR BEDT OM NATLEVERING",
+            "consequence": "Nogle får hurtig hjælp med beboernes accept, men fællesstien bliver en fordel for dem, der kan overskue og har adgang til at tilmelde sig."
+          }
+        ],
+        "locationType": "boligområde",
+        "placeHint": "Et rækkehuskvarter i Austin, USA"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 10,
+      "role": "Fagperson",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "lifelong-learning-record",
+        "development": "Lærings- og kompetencedata kan følge mennesker fra skole gennem hele arbejdslivet",
+        "themes": [
+          "Data, identitet og privatliv",
+          "Uddannelse",
+          "Arbejde"
+        ],
+        "city": "Singapore",
+        "country": "Singapore",
+        "sameRoleExampleId": "professional-early-diagnosis",
+        "relatedQuestionExampleId": "employer-burnout-warning"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1349,
+        "outputTokens": 726,
+        "totalTokens": 2075,
+        "latencyMs": 13910
+      },
+      "raw": {
+        "futureNormal": "I 2046 følger verificerede lærings- og kompetencedata singaporeanere fra skoleårene gennem hele arbejdslivet. Arbejdsgivere bruger dem til at fordele ansvar, efteruddannelse og adgang til sikkerhedskritiske opgaver.",
+        "humanCost": "Data kan gøre det lettere at opdage oversete evner og tilbyde den rette støtte, men et gammelt læringsmønster kan også blive en varig forklaring på, hvad et menneske angiveligt ikke kan.",
+        "decision": "Du skal afgøre, om en medarbejders gamle kompetenceprofil skal påvirke, hvem der får ansvaret for en akut sikkerhedsopgave.",
+        "title": "DEN GAMLE FEJL FØLGER MED PÅ VAGT",
+        "scene": "Du er fagansvarlig på et kontrolrum ved Singapores havn. En fejl i et autonomt lastsystem har lukket en kaj, og du skal udpege én person til at lede den manuelle omlægning, før forsyninger til hospitaler bliver forsinket. Din kollega Farah har mest erfaring og melder sig straks. Hendes livslange kompetenceprofil viser dog et mønster fra ungdomsuddannelsen: under tidspres overså hun gentagne gange afvigelser i komplekse procedurer. De seneste tolv år har hun arbejdet uden alvorlige fejl. En yngre kollega har en stærkere profil, men har aldrig stået med ansvaret i en reel krise.",
+        "stake": "Du kan bruge data til at mindske risikoen ved kajen, men også lade et gammelt mønster veje tungere end Farahs dokumenterede arbejdsliv og hendes tillid i teamet.",
+        "question": "Hvem giver du ansvaret for den manuelle omlægning?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "GIV FARAH ANSVARET",
+            "consequence": "Du anerkender hendes erfaring og viser, at mennesker kan vokse ud af deres gamle data, men udsætter drift og sikkerhed for den risiko, profilen advarer om."
+          },
+          {
+            "id": "b",
+            "label": "GIV DEN YNGRE KOLLEGA ANSVARET",
+            "consequence": "Du følger det stærkeste datagrundlag og giver en ny medarbejder en chance, men Farah oplever, at fejl fra skoletiden stadig kan lukke døre for hende."
+          },
+          {
+            "id": "c",
+            "label": "BEHOLD SELV ANSVARET",
+            "consequence": "Du undgår at lade profilen afgøre mellem to kolleger, men fratager dem begge et vigtigt fagligt skridt og binder dig selv i en opgave, hvor du kender anlægget dårligere."
+          },
+          {
+            "id": "d",
+            "label": "UDPEG FARAH, MEN LAD DEN YNGRE KOLLEGA HAVE DEN AFGØRENDE GODKENDELSE",
+            "consequence": "Du deler risikoen mellem erfaring og data, men gør Farahs autoritet betinget af en yngre kollegas kontrol og kan skabe tvivl midt i en presset indsats."
+          }
+        ],
+        "locationType": "havn",
+        "placeHint": "Kontrolrummet ved en containerkaj i Singapore"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 11,
+      "role": "Arbejdsgiver",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "synthetic-actors",
+        "development": "Film, reklamer og undervisning kan bruge syntetiske personer, som aldrig har levet",
+        "themes": [
+          "Sandhed og autenticitet",
+          "Arbejde"
+        ],
+        "city": "Wellington",
+        "country": "New Zealand",
+        "sameRoleExampleId": "employer-ai-liability",
+        "relatedQuestionExampleId": "employee-continuous-measurement"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1362,
+        "outputTokens": 624,
+        "totalTokens": 1986,
+        "latencyMs": 12734
+      },
+      "raw": {
+        "futureNormal": "Produktionsselskaber kan licensere syntetiske personer med ansigter, stemmer og livshistorier, der aldrig har tilhørt et menneske.",
+        "humanCost": "Ingen skuespiller behøver at stå foran kameraet, men de første jobs, erfaringer og tilfældige gennembrud for lokale talenter bliver færre.",
+        "decision": "Som arbejdsgiver vælger du, om kampagnen skal besættes med en syntetisk hovedperson eller et menneske fra Wellington.",
+        "title": "ANSIGTET, DER ALDRIG KAN BLIVE TRÆT",
+        "scene": "Dit bureau i Wellington har vundet en stor kampagne for færgerne over Cookstrædet. Kunden foretrækker en syntetisk kvinde, som kan tale alle sprog, optage stormscener uden risiko og bruges i reklamer i ti år. Din castingansvarlige har samtidig fundet Maia, en lokal skuespiller, hvis første store kontrakt kunne holde hende i branchen efter to år med små undervisningsjobs. Budgettet rækker kun til én hovedperson.",
+        "stake": "Du kan give kunden det fejlfri og genbrugelige ansigt, de betaler for, eller bruge kampagnen til at holde en virkelig persons karriere og de lokale optagedage i live.",
+        "question": "Hvem giver du hovedrollen?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "VÆLG DEN SYNTHETISKE HOVEDPERSON",
+            "consequence": "Kunden får en fleksibel stjerne uden forsinkelser eller sikkerhedsrisiko, men Maia mister sin mulighed, og bureauet køber færre dage med menneskelig performance."
+          },
+          {
+            "id": "b",
+            "label": "VÆLG MAIA TIL HELE KAMPAGNEN",
+            "consequence": "En lokal skuespiller får et gennembrud og et hold får arbejde omkring hende, men du beder kunden acceptere færre sprogversioner, dyrere optagelser og et ansigt, de ikke kan eje for altid."
+          },
+          {
+            "id": "c",
+            "label": "LAD MAIA VÆRE ANSIGTET I WELLINGTON OG BRUG DEN SYNTHETISKE PERSON GLOBALT",
+            "consequence": "Maia får synlighed hjemme, men hendes arbejde bliver en lokal undtagelse, mens den syntetiske person får den internationale rækkevidde og den varige værdi."
+          },
+          {
+            "id": "d",
+            "label": "VÆLG DEN SYNTHETISKE PERSON, MEN ANSÆT MAIA SOM BEVÆGELSES- OG STEMMEINSTRUKTØR",
+            "consequence": "Maia får betalt arbejde og sætter et menneskeligt præg på figuren, men publikum vil aldrig vide, at noget af personen kommer fra hende, og hun får ikke rollen i sit eget navn."
+          }
+        ],
+        "locationType": "kontor",
+        "placeHint": "Et reklamebureau ved Wellingtons havnefront"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 12,
+      "role": "Arbejdsgiver",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "personalised-medicine",
+        "development": "Medicin kan tilpasses den enkelte persons biologi og ændres løbende",
+        "themes": [
+          "Sundhed og bioteknologi"
+        ],
+        "city": "Helsinki",
+        "country": "Finland",
+        "sameRoleExampleId": "employer-agent-negotiation",
+        "relatedQuestionExampleId": "youth-body-sensor-team"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1331,
+        "outputTokens": 681,
+        "totalTokens": 2012,
+        "latencyMs": 12290
+      },
+      "raw": {
+        "futureNormal": "Personligt tilpasset medicin justeres løbende efter blodprøver, søvn, hormoner og immunrespons, så behandlingen kan følge et menneskes krop fra uge til uge.",
+        "humanCost": "Den kan gøre flere i stand til at arbejde uden smerter eller tilbagefald, men den gør også kroppens skiftende grænser synlige for dem, der fordeler ansvar og muligheder.",
+        "decision": "Du skal afgøre, om en projektleder skal beholde ansvaret for en afgørende kundelancering, efter hendes medicinplan pludselig er ændret.",
+        "title": "DEN UGE HUN IKKE MÅ PRESSES",
+        "scene": "På dit designbureau i Helsinki skal I lancere en offentlig transportløsning for byen om ti dage. Din projektleder, Aino, har ledet arbejdet i et år. Hendes løbende tilpassede behandling mod en autoimmun sygdom er netop ændret: Den vil sandsynligvis holde hendes hænder smertefrie på sigt, men de næste seks dage kan hun få koncentrationssvigt og uforudsigelig udmattelse. Aino siger, at hun stadig vil stå for lanceringen. Hun har delt behandlingsprognosen med dig, fordi hun vil være ærlig. To medarbejdere er klar til at overtage, men de kender ikke alle hendes valg og relationer til kunden.",
+        "stake": "Hvis du lader Aino fortsætte, viser du tillid til hendes egen vurdering, men en fejl kan koste holdet kontrakten. Hvis du flytter ansvaret, kan du beskytte projektet og hendes helbred, men gøre hendes frivillige åbenhed til en grund til at miste indflydelse.",
+        "question": "Hvem får ansvaret for lanceringen?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "LAD AINO LEDE LANCERINGEN",
+            "consequence": "Du respekterer hendes beslutning om sin egen krop og sit arbejde, men resten af holdet må bære risikoen, hvis behandlingen rammer hende midt i lanceringen."
+          },
+          {
+            "id": "b",
+            "label": "GIV ANSVARET TIL EN ANDEN",
+            "consequence": "Du skærmer både kunde og projekt mod en kendt usikkerhed, men Aino kan opleve, at hendes helbredsoplysninger nu begrænser hendes karriere."
+          },
+          {
+            "id": "c",
+            "label": "DEL ANSVARET MELLEM AINO OG HENDES NÆSTKOMMANDERENDE",
+            "consequence": "Du skaber en sikkerhed under lanceringen, men gør Ain­os lederskab betinget af en overvågning, som de andre projektledere ikke lever med."
+          },
+          {
+            "id": "d",
+            "label": "LAD AINO LEDE, MEN FORTÆL KUNDEN OM BEHANDLINGSRISIKOEN",
+            "consequence": "Du gør forventningerne åbne og kan beskytte tilliden, men udleverer Ain­os helbredsforhold til en kunde, der fremover kan tvivle på hende."
+          }
+        ],
+        "locationType": "kontor",
+        "placeHint": "Et designbureau i Helsinki"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 13,
+      "role": "Medarbejder",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "personal-data-agents",
+        "development": "Personlige data-agenter kan give og fjerne adgang til oplysninger på et menneskes vegne",
+        "themes": [
+          "Data, identitet og privatliv",
+          "AI og beslutninger"
+        ],
+        "city": "Dubai",
+        "country": "Forenede Arabiske Emirater",
+        "sameRoleExampleId": "employee-dangerous-robot",
+        "relatedQuestionExampleId": "employer-agent-negotiation"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1361,
+        "outputTokens": 1604,
+        "totalTokens": 2965,
+        "latencyMs": 29699
+      },
+      "raw": {
+        "futureNormal": "Personlige data-agenter styrer løbende, hvem der må se deres ejers oplysninger, og kan give eller fjerne adgang midt i en sag.",
+        "humanCost": "Det er lettere at beskytte sit privatliv, men når data kan afgøre skyld og arbejde, kan en lukket grænse også blive læst som mistanke eller svigt.",
+        "decision": "Du skal beslutte, hvilke af dine personlige oplysninger din data-agent må dele med virksomhedens undersøgelse.",
+        "title": "DIN AGENT KAN RENSE DIT NAVN",
+        "scene": "På et lager i Jebel Ali i Dubai er en container med ulovligt mærkede batterier registreret med dit medarbejder-ID. Du var ikke ved rampen den aften, men du byttede vagt med en kollega, som stadig forsøger at få fornyet sin opholdstilladelse. Din data-agent kan give undersøgelsen adgang til din præcise færden, dine private beskeder og dine arbejdslogfiler – eller fjerne virksomhedens adgang helt. Hvis sagen ikke afklares inden dagens udgang, bliver I begge taget af vagtplanen.",
+        "stake": "Du kan beskytte dit privatliv, din kollegas fremtid eller din egen troværdighed, men ikke uden at nogen bærer risikoen.",
+        "question": "Hvilken adgang giver du undersøgelsen?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "GIV FULD ADGANG I ET DØGN",
+            "consequence": "Din tidslinje kan vise, at du ikke var ved containeren, men chefen får også indblik i private beskeder og steder, du aldrig havde tænkt at dele på arbejdet."
+          },
+          {
+            "id": "b",
+            "label": "DEL KUN ARBEJDSLOGFILERNE",
+            "consequence": "Du holder dit privatliv lukket, men logfilerne viser ikke selve vagtbyttet, så mistanken kan blive hængende over jer begge."
+          },
+          {
+            "id": "c",
+            "label": "DEL BESKEDERNE OM VAGTBYTTET",
+            "consequence": "Du dokumenterer, hvorfor dit ID blev brugt, men din kollega bliver direkte knyttet til den aften, der kan afgøre hans ophold og job."
+          },
+          {
+            "id": "d",
+            "label": "FJERN VIRKSOMHEDENS ADGANG HELT",
+            "consequence": "Du fastholder, at din agent ikke er et redskab for arbejdsgiveren, men du risikerer suspension uden mulighed for at forklare dig med data."
+          }
+        ],
+        "locationType": "lager",
+        "placeHint": "Jebel Ali, Dubai, Forenede Arabiske Emirater"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 14,
+      "role": "Medarbejder",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "verified-conversations",
+        "development": "Digitale samtaler kan løbende verificere, hvem der faktisk deltager",
+        "themes": [
+          "Sandhed og autenticitet",
+          "Data, identitet og privatliv"
+        ],
+        "city": "Kigali",
+        "country": "Rwanda",
+        "sameRoleExampleId": "employee-dangerous-robot",
+        "relatedQuestionExampleId": "youth-body-sensor-team"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1330,
+        "outputTokens": 560,
+        "totalTokens": 1890,
+        "latencyMs": 11481
+      },
+      "raw": {
+        "futureNormal": "Digitale samtaler kan løbende verificere, hvem der faktisk deltager, så møder, opkald og beskeder får samme vægt som fysisk fremmøde.",
+        "humanCost": "Systemet beskytter mod falske profiler og skjult manipulation, men gør det sværere at tale på vegne af andre eller holde sin deltagelse privat.",
+        "decision": "Medarbejderen vælger, om de vil bekræfte deres identitet i et følsomt videomøde om en kollegas afskedigelse.",
+        "title": "DU SKAL VISE, AT DET ER DIG",
+        "scene": "På dit kontor i Kigali indkalder ledelsen til et videomøde om budgetnedskæringer. En kollega, Aline, er på barsel og har bedt dig læse hendes korte forsvar op: Hun frygter, at hendes stilling forsvinder, mens hun er væk. Mødesystemet kræver løbende ansigts- og stemmeverifikation. Det markerer straks, at ordene ikke er dine, og ledelsen kan se, at du taler på en andens vegne.",
+        "stake": "Du kan give Aline en stemme i en beslutning, der rammer hende direkte, men du risikerer selv at blive opfattet som illoyal eller uærlig. Hvis du følger systemets krav, står hun uden for samtalen om sit eget arbejde.",
+        "question": "Hvad gør du?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "LÆS ALINES FORSVAR OP ALLIGEVEL",
+            "consequence": "Du gør hendes sag hørbar, men din verificerede profil registrerer, at du bevidst talte på vegne af en fraværende kollega."
+          },
+          {
+            "id": "b",
+            "label": "SIG, AT DU KUN KAN TALE FOR DIG SELV",
+            "consequence": "Du beskytter din egen position og følger mødernes normer, men Aline mister sit eneste planlagte indlæg."
+          },
+          {
+            "id": "c",
+            "label": "FORTÆL ÅBENT, AT ALINE HAR BEDT DIG TALE",
+            "consequence": "Du undgår at skjule noget, men ledelsen kan afvise hendes ord, fordi de ikke kommer fra hendes verificerede deltagelse."
+          },
+          {
+            "id": "d",
+            "label": "FORLAD MØDET I PROTEST",
+            "consequence": "Du nægter at legitimere en proces, der udelukker Aline, men opgiver muligheden for at påvirke beslutningen indefra."
+          }
+        ],
+        "locationType": "kontor",
+        "placeHint": "Et kontor i Kigali, Rwanda"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 15,
+      "role": "For alle",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "grid-responsive-homes",
+        "development": "Hjem kan ændre energiforbrug automatisk efter belastningen på elnettet",
+        "themes": [
+          "Klima, energi og ressourcer",
+          "Relationer, familie og hverdagsliv"
+        ],
+        "city": "Tallinn",
+        "country": "Estland",
+        "sameRoleExampleId": "public-neighbour-energy",
+        "relatedQuestionExampleId": "child-robot-friend-memory"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1319,
+        "outputTokens": 1579,
+        "totalTokens": 2898,
+        "latencyMs": 30832
+      },
+      "raw": {
+        "futureNormal": "I Tallinn justerer boliger automatisk varme, opladning og apparater, når elnettet er presset. Beboeren kan kun vælge få undtagelser, fordi hver undtagelse lægger ekstra belastning på det lokale net.",
+        "humanCost": "Automatikken hjælper med at undgå større udfald, men den gør almindelige behov som varme, mad og bevægelsesfrihed til valg, der kan gå ud over andre.",
+        "decision": "Du skal vælge, om dit hjem skal følge sparetilstanden helt eller hvilken enkelt funktion der skal prioriteres.",
+        "title": "ET VARMT RUM ELLER EN VEJ UD",
+        "scene": "En isstorm har lagt sig over Tallinn, og elnettet i jeres kvarter er presset mellem klokken 18 og 22. Hjemmets energisystem sænker automatisk temperaturen, begrænser komfuret og udsætter opladning. På skærmen står der, at I kan vælge én undtagelse. Din far er på besøg og skal have sin elektriske kørestol opladet til en vigtig genoptræning tidligt næste morgen. Samtidig ligger din datter med feber i det værelse, som systemet vil gøre koldest.",
+        "stake": "Hvis I bruger mere strøm nu, får jeres familie en nødvendig lettelse, men I bidrager til belastningen i et kvarter, hvor andre hjem også automatisk mister varme og strøm til hverdagsting.",
+        "question": "Hvad vælger du, at hjemmet skal prioritere?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "FØLG SPARETILSTANDEN HELT",
+            "consequence": "I lægger ikke ekstra pres på nettet, men din fars kørestol bliver ikke fuldt opladet, og din datter må sove i et koldere rum."
+          },
+          {
+            "id": "b",
+            "label": "SLÅ SPARETILSTANDEN FRA I HELE HJEMMET",
+            "consequence": "I beholder varme, madlavning og opladning som normalt, men jeres hjem bruger mest strøm netop i de timer, hvor kvarteret skal holde sammen på kapaciteten."
+          },
+          {
+            "id": "c",
+            "label": "PRIORITÉR KØRESTOLENS OPLADNING",
+            "consequence": "Din far kan selv komme til genoptræning næste morgen, men din datters værelse bliver koldt, og resten af hjemmet må undvære de andre funktioner."
+          },
+          {
+            "id": "d",
+            "label": "PRIORITÉR VARME I DIN DATTERS VÆRELSE",
+            "consequence": "Din datter kan sove varmt med feber, men din far risikerer at misse genoptræningen, fordi han ikke kan komme sikkert frem i sin kørestol."
+          }
+        ],
+        "locationType": "hjemmet",
+        "placeHint": "En lejlighed i Tallinn, Estland"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 16,
+      "role": "For alle",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "policy-simulations",
+        "development": "Mennesker kan se lokale simuleringer af politiske beslutninger, før de bliver vedtaget",
+        "themes": [
+          "Offentlige systemer og demokrati",
+          "AI og beslutninger"
+        ],
+        "city": "Stockholm",
+        "country": "Sverige",
+        "sameRoleExampleId": "public-neighbour-energy",
+        "relatedQuestionExampleId": "decisionmaker-automated-decisions"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1389,
+        "outputTokens": 1030,
+        "totalTokens": 2419,
+        "latencyMs": 22273
+      },
+      "raw": {
+        "futureNormal": "Før lokale afstemninger kan Stockholms borgere åbne en simulation af deres eget kvarter og se sandsynlige følger gade for gade: rejsetider, støj, uheld og hvem der mister adgang.",
+        "humanCost": "Simulationerne gør konsekvenserne svære at ignorere, men de gør også naboers sårbarhed til noget, man kan veje op mod sin egen hverdag.",
+        "decision": "Du skal stemme om, hvordan en trafikeret strækning ved Medborgarplatsen skal bruges, når den ene kørebane fjernes.",
+        "title": "DIN ROLIGE GADE BLIVER EN ANDENS OMVEJ",
+        "scene": "Stockholm skal fjerne en kørebane ved Medborgarplatsen for at mindske varme og partikler. I den lokale beslutningssimulation ser du, at en grøn cykel- og opholdsstrækning vil gøre din egen gård mærkbart roligere. Men modellen viser også, at varebiler til et nærliggende plejehjem får længere rute, og at den hurtigste alternative vej lægger mere støj foran en kommunal boligblok. Du kan se udviklingen time for time, også på den morgen hvor en beboer i boligblokken normalt sover efter nattevagt.",
+        "stake": "Du kan vælge en løsning, der giver renere og tryggere byrum tæt på dig, eller begrænse den belastning, som flyttes over på mennesker, der ikke selv har valgt den.",
+        "question": "Hvilken brug af den frigivne kørebane stemmer du for?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "GRØN CYKEL- OG OPHOLDSSTRÆKNING",
+            "consequence": "Dit område får mindre trafik, køligere sommerdage og en sikker cykelrute, men plejehjemmets leverancer og gennemkørende biler flyttes til andre beboeres gader."
+          },
+          {
+            "id": "b",
+            "label": "BUSSPOR HELE DØGNET",
+            "consequence": "Flere kan komme hurtigt frem uden bil, og omvejene bliver mindre, men din egen gade får fortsat støj og ingen ny plads til ophold eller træer."
+          },
+          {
+            "id": "c",
+            "label": "LEVERINGS- OG HANDICAPSPOR",
+            "consequence": "Plejehjemmet og lokale forretninger bevarer nem adgang, men den største del af trafikken og luftforureningen bliver liggende i kvarteret."
+          },
+          {
+            "id": "d",
+            "label": "BILFRI STRÆKNING MED FASTE LEVERINGSTIDER",
+            "consequence": "Gaden bliver mest rolig og sikker for gående, men leverancer samles på få tidspunkter, og ansatte samt beboere med begrænset mobilitet må indrette deres dage efter dem."
+          }
+        ],
+        "locationType": "bymidte",
+        "placeHint": "Medborgarplatsen, Stockholm, Sverige"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 17,
+      "role": "Borger",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "genetic-risk-decades",
+        "development": "Genetiske risikoprofiler kan sige noget om sygdom flere årtier frem",
+        "themes": [
+          "Sundhed og bioteknologi",
+          "Data, identitet og privatliv"
+        ],
+        "city": "Gdansk",
+        "country": "Polen",
+        "sameRoleExampleId": "citizen-climate-twin",
+        "relatedQuestionExampleId": "professional-early-diagnosis"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1344,
+        "outputTokens": 682,
+        "totalTokens": 2026,
+        "latencyMs": 12517
+      },
+      "raw": {
+        "futureNormal": "I 2046 kan borgere i Polen få genetiske risikoprofiler, der estimerer sandsynligheden for bestemte sygdomme årtier før de første symptomer.",
+        "humanCost": "Tidlig viden kan gøre det muligt at planlægge behandling, økonomi og familieliv, men den kan også ændre, hvordan man ser på et raskt menneske og de valg, det menneske får lov at træffe frit.",
+        "decision": "Du skal beslutte, om du vil fortælle din voksne datter, hvad din fælles genetiske profil sandsynligvis betyder for hende.",
+        "title": "DEN FREMTID, HUN IKKE HAR BEDT OM",
+        "scene": "På en sundhedsklinik i Gdansk har du fået din opdaterede risikoprofil. Den viser en høj sandsynlighed for, at du udvikler en arvelig hjertesygdom omkring pensionsalderen. Klinikken forklarer, at din 27-årige datter sandsynligvis har arvet samme variant. Hun har fravalgt adgang til familiens genetiske data, fordi hun netop søger lån med sin partner til at åbne en lille restaurant i Wrzeszcz. Hvis hun kender risikoen, kan hun begynde forebyggelse og indrette sit liv efter den. Men hun vil også få en oplysning, hun udtrykkeligt har sagt, at hun ikke vil have.",
+        "stake": "Du kan give din datter mulighed for at handle mange år før sygdommen, eller respektere hendes ret til ikke at lade en mulig fremtid styre et raskt liv.",
+        "question": "Fortæller du hende om fundet?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "FORTÆL HENDE ALT NU",
+            "consequence": "Hun får mulighed for forebyggelse og langsigtet planlægning, men hendes restaurantdrøm og selvbillede kan straks blive præget af en sygdom, der måske først kommer om årtier."
+          },
+          {
+            "id": "b",
+            "label": "RESPEKTÉR HENDES FRAVALG",
+            "consequence": "Hun beholder retten til ikke at vide og kan træffe sine valg uden risikoen over sig, men mister måske årtiers mulighed for at forebygge."
+          },
+          {
+            "id": "c",
+            "label": "FORTÆL KUN, AT DER ER EN FAMILIERISIKO",
+            "consequence": "Du åbner døren til handling uden at lægge hele prognosen på hende, men efterlader hende med en urolig advarsel og uden den klarhed, hun kunne bruge."
+          },
+          {
+            "id": "d",
+            "label": "DEL FUNDET MED HENDES PARTNER I STEDET",
+            "consequence": "Partneren kan tage hensyn til risikoen i fælles økonomiske og familiemæssige valg, men du bryder din datters fortrolighed og lader en anden bære viden om hendes krop."
+          }
+        ],
+        "locationType": "sundhedsklinik",
+        "placeHint": "Gdansk, Polen"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 18,
+      "role": "Borger",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "synthetic-media-indistinguishable",
+        "development": "Syntetisk video og lyd kan være næsten umulig for mennesker at skelne fra optagelser",
+        "themes": [
+          "Sandhed og autenticitet",
+          "AI og beslutninger"
+        ],
+        "city": "São Paulo",
+        "country": "Brasilien",
+        "sameRoleExampleId": "citizen-climate-twin",
+        "relatedQuestionExampleId": "decisionmaker-anonymous-credibility"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1374,
+        "outputTokens": 619,
+        "totalTokens": 1993,
+        "latencyMs": 12112
+      },
+      "raw": {
+        "futureNormal": "I 2046 kan syntetiske videoer og stemmer efterligne rigtige mennesker så præcist, at øjne og ører sjældent kan afsløre forskellen.",
+        "humanCost": "Det beskytter ingen længere blot at have en optagelse som bevis. I konflikter kan selv ægte minder, stemmer og billeder gøres mistænkelige.",
+        "decision": "Du vælger, om du vil dele en video, der kan få din bror frikendt eller knuse hans mulighed for at få et roligt liv bagefter.",
+        "title": "VIDEOEN FRA METROEN",
+        "scene": "Din lillebror er blevet anholdt efter uro på en metrostation i São Paulo. Politiet har en video, der tilsyneladende viser ham kaste en flaske mod en betjent. På din mors gamle telefon finder du en anden video fra samme minut: Den viser ham hjælpe en ældre mand væk fra trængslen. Familien ved, at videoen er ægte, men alle kan nu påstå, at den er skabt. En lokal nyhedskanal tilbyder at vise den i aften, hvis du giver den til dem. Din bror siger, at han ikke vil være ansigtet på endnu en viral kampagne, uanset om den forsvarer ham.",
+        "stake": "Du kan gøre videoen til et offentligt forsvar for din bror, men samtidig gøre hans ansigt, stemme og hverdag til råstof for nye falske klip. Holder du den tilbage, kan hans sag blive sværere at tro på.",
+        "question": "Giver du videoen til nyhedskanalen?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "GIV DEN TIL KANALEN UDEN FORBEHOLD",
+            "consequence": "Flere ser et muligt modbevis med det samme, men din bror bliver offentligt genkendelig og kan blive mål for falske videoer og chikane."
+          },
+          {
+            "id": "b",
+            "label": "GIV DEN KUN TIL HANS FORSVARER",
+            "consequence": "Videoen kan bruges i sagen med mindre offentlig eksponering, men den får ikke den folkelige opmærksomhed, som måske kunne lægge pres på politiet."
+          },
+          {
+            "id": "c",
+            "label": "DEL DEN SELV MED FAMILIE OG NABOER",
+            "consequence": "Du bevarer kontrollen over, hvem der først ser den, men den kan hurtigt miste sammenhæng, blive kopieret og blive opfattet som familiens egen manipulation."
+          },
+          {
+            "id": "d",
+            "label": "HOLD VIDEOEN HELT TILBAGE",
+            "consequence": "Du respekterer din brors ønske om ikke at blive en offentlig figur, men I opgiver det stærkeste billede af, hvor han var under uroen."
+          }
+        ],
+        "locationType": "togstation",
+        "placeHint": "En metrostation i São Paulo, Brasilien"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 19,
+      "role": "Beslutningstager",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "adaptive-lessons",
+        "development": "Undervisning kan ændre tempo, forklaring og opgave automatisk fra elev til elev",
+        "themes": [
+          "Uddannelse",
+          "AI og beslutninger"
+        ],
+        "city": "Melbourne",
+        "country": "Australien",
+        "sameRoleExampleId": "decisionmaker-anonymous-credibility",
+        "relatedQuestionExampleId": "teacher-isolation-signal"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1379,
+        "outputTokens": 591,
+        "totalTokens": 1970,
+        "latencyMs": 11265
+      },
+      "raw": {
+        "futureNormal": "Undervisningssystemer tilpasser i realtid tempo, forklaringer og opgaver til hver elevs forståelse og arbejdsform.",
+        "humanCost": "Flere kan følge med fagligt, men elever kan også blive fastholdt i usynlige spor, som former deres muligheder og deres billede af egne evner.",
+        "decision": "Du skal beslutte, om en elev skal blive i sit personlige læringsforløb eller igen arbejde på samme opgave som klassen.",
+        "title": "DEN OPGAVE, HAN ALDRIG FÅR AT SE",
+        "scene": "På en folkeskole i Melbourne følger 13-årige Noah matematik gennem skolens adaptive undervisning. Systemet har i måneder givet ham kortere opgaver, flere visuelle forklaringer og færre åbne problemer end resten af klassen. Han får bedre resultater og virker mindre presset. I dag spørger han, hvorfor hans ven ved nabobordet arbejder med en svær brokonstruktionsopgave, som han selv aldrig har fået tilbudt. Som skoleleder kan du se, at systemet vurderer, at Noah vil miste motivationen, hvis han får den nu.",
+        "stake": "Du kan beskytte Noahs nyfundne faglige ro eller give ham adgang til den fælles udfordring, selv om han risikerer igen at føle sig som den, der ikke kan følge med.",
+        "question": "Hvad beslutter du for Noah i denne time?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "LAD HAM BLIVE I SIT PERSONLIGE FORLØB",
+            "consequence": "Noah beholder et tempo, hvor han lykkes, men han må acceptere, at systemet vælger nogle af klassens muligheder fra for ham."
+          },
+          {
+            "id": "b",
+            "label": "GIV HAM SAMME OPGAVE SOM KLASSEN",
+            "consequence": "Noah får adgang til den samme faglige verden som vennerne, men kan stå offentligt med en opgave, han endnu ikke kan løse alene."
+          },
+          {
+            "id": "c",
+            "label": "LAD HAM VÆLGE MELLEM DE TO OPGAVER",
+            "consequence": "Noah får indflydelse på sin vej, men ansvaret for at vælge mellem tryghed og risiko lægges på en elev, der netop har fået at vide, at han er bagud."
+          },
+          {
+            "id": "d",
+            "label": "SÆT HAM SAMMEN MED VENNERNE OM OPGAVEN",
+            "consequence": "Noah kan deltage i den fælles udfordring med støtte, men vennerne kan komme til at se ham som den, der skal hjælpes, frem for som en ligeværdig makker."
+          }
+        ],
+        "locationType": "folkeskole",
+        "placeHint": "Melbourne, Australien"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "index": 20,
+      "role": "Beslutningstager",
+      "model": "gpt-5.6-terra",
+      "seed": {
+        "developmentId": "ai-administration",
+        "development": "AI kan udføre store dele af administrativt arbejde fra planlægning til dokumentation",
+        "themes": [
+          "Arbejde",
+          "AI og beslutninger"
+        ],
+        "city": "Jakarta",
+        "country": "Indonesien",
+        "sameRoleExampleId": "decisionmaker-anonymous-credibility",
+        "relatedQuestionExampleId": "teacher-ai-group-member"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1403,
+        "outputTokens": 790,
+        "totalTokens": 2193,
+        "latencyMs": 15871
+      },
+      "raw": {
+        "futureNormal": "I 2046 lader Jakartas forvaltning AI udarbejde planer, afgørelser, budgetter og sagsnotater på få timer. Menneskelige beslutningstagere godkender ofte tusindvis af sager med én underskrift.",
+        "humanCost": "Byen kan reagere hurtigt på oversvømmelser og flytninger, men borgere, hvis liv ikke passer i registre og standardkategorier, risikerer at blive behandlet som fejl i stedet for som naboer.",
+        "decision": "Du skal vælge, hvilken gruppe der får de sidste permanente boliger i et nyt, højere boligområde.",
+        "title": "DE SIDSTE LEJLIGHEDER HAR ALLEREDE ET NAVN",
+        "scene": "Efter endnu en sæson med saltvand i Nordjakarta har AI-forvaltningen færdiggjort en flytteplan for 3.000 familier på én nat. Der er 120 lejligheder tilbage. Systemet har reserveret dem til familier med registreret adresse, skolebørn og dokumenteret arbejde i området. Uden for mødelokalet venter fiskere, hjemmebaserede arbejdere og lejere, som har boet ved kanalen i årevis, men mangler de dokumenter, AI'en kræver. Hvis du ændrer fordelingen, mister nogle af de registrerede familier den bolig, de allerede har fået besked om.",
+        "stake": "Du kan belønne dem, der har fulgt den formelle vej, eller give plads til mennesker, som er mest udsatte, men næsten usynlige i byens data.",
+        "question": "Hvem skal have de 120 sidste lejligheder?",
+        "choices": [
+          {
+            "id": "a",
+            "label": "HOLD FAST I AI'ENS RÆKKEFØLGE",
+            "consequence": "Planen forbliver forudsigelig, og familier med dokumenter mister ikke deres løfte, men langvarige beboere uden papirer bliver henvist til midlertidige centre langt fra deres arbejde."
+          },
+          {
+            "id": "b",
+            "label": "GIV LEJLIGHEDERNE TIL DE MEST OVERSVØMMELSESTRUDEDE HUSSTANDE",
+            "consequence": "De mennesker, der lever farligst, kommer først i sikkerhed, men registrerede familier må se deres tildeling forsvinde, selv om de har planlagt skole og arbejde efter den."
+          },
+          {
+            "id": "c",
+            "label": "PRIORITÉR FAMILIER MED BØRN I LOKALE SKOLER",
+            "consequence": "Flest børn kan blive i deres kendte hverdag, men ældre, enlige og barnløse arbejdere får signalet, at deres tilknytning til kvarteret tæller mindre."
+          },
+          {
+            "id": "d",
+            "label": "RESERVÉR HALVDELEN TIL UREGISTREREDE NABOER, SOM LOKALE LEDERE KENDER",
+            "consequence": "Mennesker uden digitale spor får en reel vej ind, men lokale ledere får stor magt over, hvem der anses for at høre til, og nogle dokumenterede familier bliver forbigået."
+          }
+        ],
+        "locationType": "kommune",
+        "placeHint": "Nordjakarta, Indonesien"
+      },
+      "validation": {
+        "accepted": true
+      }
+    }
+  ]
+}

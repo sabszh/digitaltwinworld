@@ -1,3 +1,4 @@
+/** @deprecated Legacy validator retained only for historical diagnostics. */
 import { dilemmaTemplates } from "@/data/dilemmaTemplates";
 import { futurePressures, pressuresById } from "@/data/futurePressures";
 import { locationTypesByProblemArea, problemAreas } from "@/data/taxonomies";
@@ -488,11 +489,16 @@ export function validateAiDilemmaDetailed(
     return { reason: "generic_future" };
   }
   if (!isString(value.futurePressureId) || !pressuresById.has(value.futurePressureId)) return { reason: "bad_future_pressure" };
+  const legacyPlan = input.generationPlan as unknown as {
+    pressure?: { id: string };
+    problemAreas?: ProblemArea[];
+    severity?: "low" | "medium";
+  } | undefined;
   if (
-    input.generationPlan &&
-    (value.futurePressureId !== input.generationPlan.pressure.id ||
-      !input.generationPlan.problemAreas.includes(value.problemArea as ProblemArea) ||
-      value.severity !== input.generationPlan.severity)
+    legacyPlan?.pressure && legacyPlan.problemAreas &&
+    (value.futurePressureId !== legacyPlan.pressure.id ||
+      !legacyPlan.problemAreas.includes(value.problemArea as ProblemArea) ||
+      value.severity !== legacyPlan.severity)
   ) {
     return { reason: "wrong_generation_plan" };
   }
