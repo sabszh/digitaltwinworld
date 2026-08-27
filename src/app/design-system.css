@@ -23,6 +23,48 @@
   background: var(--ds-accent-hover);
 }
 
+/* The launch action belongs to the itinerary, not a separate slab inside it. */
+:is(main[data-phase="intro"], .intro-scope) .hero-flight-search.hero-flight-search {
+  min-width: 9.5rem;
+  min-height: 2.8rem;
+  margin-right: 0.45rem;
+  margin-left: -0.2rem;
+  padding: 0.68rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+}
+
+/* A soft local halo keeps the editorial title legible over both land and sea
+   without dimming the whole globe. */
+:is(main[data-phase="intro"], .intro-scope) .horizon-title {
+  position: relative;
+  isolation: isolate;
+}
+
+:is(main[data-phase="intro"], .intro-scope) .horizon-title::before {
+  position: absolute;
+  inset: 6% -8% -2%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(2, 15, 31, 0.32) 0%, rgba(2, 15, 31, 0.14) 48%, transparent 72%);
+  filter: blur(22px);
+  content: "";
+}
+
+:is(main[data-phase="intro"], .intro-scope) .hero-flight-search-arrow {
+  width: 1.65rem;
+  height: 1.65rem;
+  margin-left: 0.05rem;
+  padding: 0.32rem;
+}
+
+@media (max-width: 767px) {
+  :is(main[data-phase="intro"], .intro-scope) .hero-flight-search.hero-flight-search {
+    margin: 0.1rem 0 0;
+  }
+}
+
 .surface-control {
   border-color: var(--ds-border);
   background: #ffffff;
@@ -165,6 +207,30 @@
   border: 1px solid var(--ds-border);
   border-radius: 10px;
   background: var(--ds-surface-soft);
+}
+
+/* One material for the travelling interface. The globe/map stays vivid beneath
+   it; all primary information surfaces become the same quiet glass layer. */
+.sky-scope .journey-card,
+:is(main[data-phase="intro"], .intro-scope) .hero-flight-fields {
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.84), rgba(232, 244, 250, 0.7)),
+    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.5), transparent 46%);
+  box-shadow:
+    0 28px 76px rgba(4, 20, 42, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px) saturate(1.12);
+  -webkit-backdrop-filter: blur(24px) saturate(1.12);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .sky-scope .journey-card,
+  :is(main[data-phase="intro"], .intro-scope) .hero-flight-fields {
+    background: rgba(250, 253, 255, 0.96);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 
 .consequence-card.journey-card h2 {

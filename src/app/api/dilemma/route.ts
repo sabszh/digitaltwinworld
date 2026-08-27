@@ -1,26 +1,21 @@
 import { userRoles } from "@/data/taxonomies";
 import type { AiDilemma, DilemmaGenerationRequest } from "@/lib/dilemmaGenerationTypes";
-import { generateDilemma } from "@/lib/randomizer";
 import { locationTypes, responseSchema, technologies, validateAiDilemmaDetailed } from "@/lib/dilemmaStructuredOutput";
 import { locatePlace } from "@/lib/geocode";
 import { haversineKm } from "@/lib/aporee";
 import { buildDilemmaPrompt } from "@/lib/prompts/dilemmaPrompt";
 import { planRound } from "@/lib/roundPlan";
+import { getAudienceProfile } from "@/lib/audience";
 import { requestJson } from "@/lib/openaiJson";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
-const fallback = (input: DilemmaGenerationRequest, reason: string) =>
-  NextResponse.json({
-    source: "fallback",
-    reason,
-    dilemma: generateDilemma(input),
-  });
+const generationError = (reason: string) => NextResponse.json({ error: reason }, { status: 502 });
 
-/** How long a single generation may take before a second attempt would risk the
- *  client's 20 s abort (see UX_TIMING.dilemmaFetchTimeoutMs). */
-const RETRY_BUDGET_MS = 9000;
+/** Keep a small margin before the browser ends its 30-second request. */
+const GENERATION_TIMEOUT_MS = 40_000;
+const RETRY_BUDGET_MS = 9_000;
 
 type Attempt =
   | { transport: string }
@@ -33,6 +28,7 @@ async function requestDilemma(input: DilemmaGenerationRequest, apiKey: string): 
     schema: responseSchema,
     prompt: buildDilemmaPrompt(input, { technologies, locationTypes }),
     language: input.language,
+    timeoutMs: GENERATION_TIMEOUT_MS,
   });
   if ("error" in outcome) return { transport: outcome.error };
 
@@ -58,11 +54,12 @@ export async function POST(request: Request) {
       body.previousDilemmas,
       undefined,
       [body.answers?.hope, body.answers?.fear].filter(Boolean).join(" "),
+      getAudienceProfile(body.role).preferredProblemAreas,
     ),
   };
 
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return fallback(input, "missing_openai_api_key");
+  if (!apiKey) return generationError("missing_openai_api_key");
 
   try {
     // The content gates reject roughly a third of first attempts — most often
@@ -75,7 +72,7 @@ export async function POST(request: Request) {
     for (let attempt = 0; attempt < 2; attempt += 1) {
       const startedAt = Date.now();
       const outcome = await requestDilemma(input, apiKey);
-      if ("transport" in outcome) return fallback(input, outcome.transport);
+      if ("transport" in outcome) return generationError(outcome.transport);
       if ("dilemma" in outcome.result) {
         dilemma = outcome.result.dilemma;
         break;
@@ -95,7 +92,7 @@ export async function POST(request: Request) {
       if (Date.now() - startedAt > RETRY_BUDGET_MS) break;
     }
 
-    if (!dilemma) return fallback(input, `rejected_${lastReason}`);
+    if (!dilemma) return generationError(`rejected_${lastReason}`);
 
     // The model's marker is a guess at the city, not at the building it just
     // named. Put the camera on the real place when we can find it.
@@ -124,6 +121,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ source: "openai", dilemma });
   } catch {
-    return fallback(input, "openai_exception");
+    return generationError("openai_exception");
   }
 }

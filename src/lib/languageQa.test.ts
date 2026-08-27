@@ -23,4 +23,11 @@ describe("findAudienceLanguageIssues", () => {
   it("leaves non-school audiences alone", () => {
     expect(findAudienceLanguageIssues("Beslutningstager", "AI og infrastruktur")).toEqual([]);
   });
+
+  it("rejects system language for children but not ordinary words around it", () => {
+    expect(findAudienceLanguageIssues("Barn", "Reservedelen kan kun bruges ét sted")).toContain("reservedel");
+    expect(findAudienceLanguageIssues("Barn", "Strømmen fordeles ved spidsbelastning")).toContain("spidsbelastning");
+    expect(findAudienceLanguageIssues("Barn", "Min data-agent åbner min wallet")).toEqual(expect.arrayContaining(["data-agent", "wallet"]));
+    expect(findAudienceLanguageIssues("Ung", "Jeg køber en reservedel til min cykel")).toEqual([]);
+  });
 });

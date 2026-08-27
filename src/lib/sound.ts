@@ -230,6 +230,30 @@ class WorldSoundEngine {
     });
   }
 
+  /** A small, audible confirmation that the opening world is now live. This is
+   * triggered by the visitor's first gesture, which is the earliest point at
+   * which browsers permit sound. */
+  playIntroWelcome() {
+    const context = this.context;
+    if (!context || !this.sfx) return;
+
+    const sfx = this.sfx;
+    const now = context.currentTime;
+    [220, 329.6].forEach((frequency, index) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.value = frequency;
+      gain.gain.setValueAtTime(0.0001, now + index * 0.14);
+      gain.gain.exponentialRampToValueAtTime(0.045 / (index + 1), now + 0.12 + index * 0.14);
+      gain.gain.setTargetAtTime(0.0001, now + 0.42 + index * 0.14, 0.35);
+      oscillator.connect(gain);
+      gain.connect(sfx);
+      oscillator.start(now + index * 0.14);
+      oscillator.stop(now + 1.5);
+    });
+  }
+
   startScanLoop() {
     const context = this.context;
     if (!context || !this.ambience || this.scanNodes.length > 0) return;

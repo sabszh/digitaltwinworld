@@ -1768,124 +1768,6 @@ main[data-phase="persona"] .bp-stub-code {
     0 12px 46px rgba(0, 0, 0, 0.72);
 }
 
-.persona-loading-stage {
-  display: grid;
-  min-height: min(34rem, calc(100dvh - 5rem));
-  width: min(62rem, calc(100vw - 2rem));
-  place-items: center;
-  padding: 2rem;
-}
-
-.persona-loading-stage .loader,
-.persona-loading-stage .loader-wrapper::before {
-  display: none !important;
-}
-
-.time-flow-board {
-  width: 100%;
-  overflow: hidden;
-  border: 1px solid rgba(196, 226, 242, 0.18);
-  border-radius: 8px;
-  background:
-    linear-gradient(180deg, rgba(19, 27, 31, 0.94), rgba(5, 10, 14, 0.96)),
-    repeating-linear-gradient(0deg, transparent 0 28px, rgba(255, 255, 255, 0.05) 28px 29px);
-  box-shadow:
-    0 34px 90px rgba(0, 0, 0, 0.48),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  color: #e8edf0;
-}
-
-.time-flow-board-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  padding: 1rem 1.1rem;
-  border-bottom: 1px solid rgba(196, 226, 242, 0.14);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-  font-family: var(--font-mono), ui-monospace, monospace;
-}
-
-.time-flow-board-head div {
-  display: flex;
-  align-items: baseline;
-  gap: 0.7rem;
-}
-
-.time-flow-board-head span {
-  color: rgba(232, 237, 240, 0.72);
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
-}
-
-.time-flow-board-head strong {
-  color: #f8fbff;
-  font-size: clamp(1.1rem, 2.4vw, 1.8rem);
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-}
-
-.time-flow-board-head time {
-  color: #f4f0ca;
-  font-size: clamp(1rem, 2vw, 1.45rem);
-  letter-spacing: 0.08em;
-}
-
-.time-flow-board-cols,
-.time-flow-board-row {
-  display: grid;
-  grid-template-columns: 7rem minmax(11rem, 1fr) 5.5rem 5rem 8rem;
-  gap: 0.9rem;
-  align-items: center;
-}
-
-.time-flow-board-cols {
-  padding: 0.55rem 1.1rem;
-  border-bottom: 1px solid rgba(196, 226, 242, 0.1);
-  color: rgba(232, 237, 240, 0.54);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 0.62rem;
-  text-transform: uppercase;
-}
-
-.time-flow-board-row {
-  min-height: 2.2rem;
-  padding: 0.35rem 1.1rem;
-  border-bottom: 1px solid rgba(196, 226, 242, 0.08);
-  background:
-    repeating-linear-gradient(90deg, rgba(82, 100, 126, 0.16) 0 8px, rgba(30, 39, 52, 0.16) 8px 16px),
-    rgba(8, 13, 18, 0.52);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: clamp(0.8rem, 1.5vw, 1.04rem);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.time-flow-board-row span,
-.time-flow-board-row strong,
-.time-flow-board-row em {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.time-flow-board-row strong {
-  color: #f2edc9;
-  font-weight: 700;
-}
-
-.time-flow-board-row em {
-  color: #c8e5f7;
-  font-style: normal;
-}
-
-.time-flow-board-status {
-  display: grid;
-  place-items: center;
-  padding: 1rem;
-}
-
 .loader {
   position: absolute;
   inset: 0;
@@ -3382,7 +3264,7 @@ main[data-phase="persona"] .ticket-label {
 
 main[data-phase="persona"] .bp-fields {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 main[data-phase="persona"] .ticket-field {
@@ -3432,115 +3314,6 @@ main[data-phase="persona"] .ticket-field strong {
     grid-template-columns: 1fr;
   }
 
-}
-
-main[data-phase="persona"] .persona-loading-stage {
-  width: min(62rem, calc(100vw - 2rem));
-}
-
-main[data-phase="persona"] .time-flow-board {
-  width: 100%;
-  overflow: hidden;
-  border: 1px solid rgba(196, 226, 242, 0.18);
-  border-radius: 8px;
-  background:
-    linear-gradient(180deg, rgba(19, 27, 31, 0.94), rgba(5, 10, 14, 0.96)),
-    repeating-linear-gradient(0deg, transparent 0 28px, rgba(255, 255, 255, 0.05) 28px 29px);
-  box-shadow:
-    0 34px 90px rgba(0, 0, 0, 0.48),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  color: #e8edf0;
-}
-
-main[data-phase="persona"] .time-flow-board-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  padding: 1rem 1.1rem;
-  border-bottom: 1px solid rgba(196, 226, 242, 0.14);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-  font-family: var(--font-mono), ui-monospace, monospace;
-}
-
-main[data-phase="persona"] .time-flow-board-head div {
-  display: flex;
-  align-items: baseline;
-  gap: 0.7rem;
-}
-
-main[data-phase="persona"] .time-flow-board-head span {
-  color: rgba(232, 237, 240, 0.72);
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
-}
-
-main[data-phase="persona"] .time-flow-board-head strong {
-  color: #f8fbff;
-  font-size: clamp(1.1rem, 2.4vw, 1.8rem);
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-}
-
-main[data-phase="persona"] .time-flow-board-head time {
-  color: #f4f0ca;
-  font-size: clamp(1rem, 2vw, 1.45rem);
-  letter-spacing: 0.08em;
-}
-
-main[data-phase="persona"] .time-flow-board-cols,
-main[data-phase="persona"] .time-flow-board-row {
-  display: grid;
-  grid-template-columns: 7rem minmax(11rem, 1fr) 5.5rem 5rem 8rem;
-  gap: 0.9rem;
-  align-items: center;
-}
-
-main[data-phase="persona"] .time-flow-board-cols {
-  padding: 0.55rem 1.1rem;
-  border-bottom: 1px solid rgba(196, 226, 242, 0.1);
-  color: rgba(232, 237, 240, 0.54);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 0.62rem;
-  text-transform: uppercase;
-}
-
-main[data-phase="persona"] .time-flow-board-row {
-  min-height: 2.2rem;
-  padding: 0.35rem 1.1rem;
-  border-bottom: 1px solid rgba(196, 226, 242, 0.08);
-  background:
-    repeating-linear-gradient(90deg, rgba(82, 100, 126, 0.16) 0 8px, rgba(30, 39, 52, 0.16) 8px 16px),
-    rgba(8, 13, 18, 0.52);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: clamp(0.8rem, 1.5vw, 1.04rem);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-main[data-phase="persona"] .time-flow-board-row span,
-main[data-phase="persona"] .time-flow-board-row strong,
-main[data-phase="persona"] .time-flow-board-row em {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-main[data-phase="persona"] .time-flow-board-row strong {
-  color: #f2edc9;
-  font-weight: 700;
-}
-
-main[data-phase="persona"] .time-flow-board-row em {
-  color: #c8e5f7;
-  font-style: normal;
-}
-
-main[data-phase="persona"] .time-flow-board-status {
-  display: grid;
-  place-items: center;
-  padding: 1rem;
 }
 
 /* Empty cinematic transition between the intro and boarding pass. */
@@ -3667,20 +3440,6 @@ main[data-phase="persona"] .boarding-pass > * {
 
 .consequence-card .consequence-primary {
   margin-left: auto;
-}
-
-@media (max-width: 767px) {
-  main[data-phase="persona"] .time-flow-board-cols,
-  main[data-phase="persona"] .time-flow-board-row {
-    grid-template-columns: 5.5rem minmax(7rem, 1fr) 4.2rem;
-  }
-
-  main[data-phase="persona"] .time-flow-board-cols span:nth-child(4),
-  main[data-phase="persona"] .time-flow-board-cols span:nth-child(5),
-  main[data-phase="persona"] .time-flow-board-row span:nth-child(4),
-  main[data-phase="persona"] .time-flow-board-row em {
-    display: none;
-  }
 }
 
 /* Last-pass ticket refinements: these sit after all component layers. */

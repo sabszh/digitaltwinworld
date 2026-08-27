@@ -8,7 +8,7 @@ export const UX_TIMING = {
   /** The final step onto 2046, once the destination is actually ready. */
   yearCounterLandMs: 900,
   minimumTravelLoadingMs: 6400,
-  dilemmaFetchTimeoutMs: 20000,
+  dilemmaFetchTimeoutMs: 45000,
   destinationRevealHoldMs: 3000,
   arrivalCtaDelayMs: 3000,
 } as const;

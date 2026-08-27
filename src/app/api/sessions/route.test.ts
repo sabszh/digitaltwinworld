@@ -1,9 +1,23 @@
-import { readFile, unlink } from "node:fs/promises";
+import { readFile, rm } from "node:fs/promises";
+import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { POST } from "./route";
 
-const testPath = "/tmp/world2046-vitest-consent.jsonl";
-const completedDilemma = { dilemmaId: "test-dilemma", city: "Aarhus", country: "Danmark", question: "How should I choose?", selectedChoiceId: "a", selectedChoiceLabel: "A choice", valueImpacts: {} };
+const testDirectory = "/tmp/world2046-vitest-consent";
+const completedDilemma = {
+  dilemmaId: "test-dilemma",
+  city: "Aarhus",
+  country: "Danmark",
+  question: "How should I choose?",
+  presented: {
+    title: "A real choice",
+    scene: "A concrete scene in 2046.",
+    choices: ["a", "b", "c", "d"].map((id) => ({ id, label: `Choice ${id}` })),
+  },
+  selectedChoiceId: "a",
+  selectedChoiceLabel: "A choice",
+  valueImpacts: {},
+};
 const session = {
   sessionId: "world2046-test-session",
   createdAt: "2026-08-14T10:00:00.000Z",
@@ -15,27 +29,27 @@ const session = {
   generatedSummary: "Test",
 };
 
-async function removeTestFile() {
-  await unlink(testPath).catch(() => undefined);
+async function removeTestDirectory() {
+  await rm(testDirectory, { recursive: true, force: true });
 }
 
 describe("consented session storage", () => {
   beforeEach(async () => {
-    process.env.SESSION_DATA_PATH = testPath;
-    await removeTestFile();
+    process.env.SESSION_DATA_PATH = testDirectory;
+    await removeTestDirectory();
   });
 
   afterEach(async () => {
     delete process.env.SESSION_DATA_PATH;
-    await removeTestFile();
+    await removeTestDirectory();
   });
 
   it("writes an accepted session once across retries", async () => {
     const request = () => new Request("http://localhost/api/sessions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ session }) });
     expect((await POST(request())).status).toBe(200);
     expect((await POST(request())).status).toBe(200);
-    const lines = (await readFile(testPath, "utf8")).trim().split("\n");
-    expect(lines).toHaveLength(1);
+    const record = JSON.parse(await readFile(path.join(testDirectory, `${session.sessionId}.json`), "utf8")) as { session: { sessionId: string } };
+    expect(record.session.sessionId).toBe(session.sessionId);
   });
 
   it("rejects incomplete sessions", async () => {

@@ -40,13 +40,17 @@ export function ChoiceButton({ choice, index, onChoose }: { choice: Choice; inde
 export function CustomAnswerInput({ language, onSubmit }: { language: Language; onSubmit: (text: string, viaVoice: boolean) => void }) {
   const text = uiText[language];
   const [value, setValue] = useState("");
+  const [interim, setInterim] = useState("");
   const [usedVoice, setUsedVoice] = useState(false);
 
   return (
     <div className="custom-answer-card p-3.5">
       <textarea
-        value={value}
-        onChange={(event) => setValue(event.target.value)}
+        value={interim ? `${value}${value ? " " : ""}${interim}` : value}
+        onChange={(event) => {
+          setInterim("");
+          setValue(event.target.value);
+        }}
         rows={1}
         onFocus={() => worldSound.playTextFocus()}
         placeholder={text.dilemmaCustomPlaceholder}
@@ -57,8 +61,10 @@ export function CustomAnswerInput({ language, onSubmit }: { language: Language; 
           language={language}
           onTranscript={(transcript) => {
             setUsedVoice(true);
+            setInterim("");
             setValue((current) => (current ? `${current} ${transcript}` : transcript));
           }}
+          onInterim={setInterim}
         />
         {value.trim() && (
           <button

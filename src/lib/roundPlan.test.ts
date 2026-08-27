@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { pressuresById } from "@/data/futurePressures";
-import { journeyStages, planRound } from "@/lib/roundPlan";
+import { planRound } from "@/lib/roundPlan";
 import type { CompletedDilemma, ValueProfile } from "@/types/world2046";
 
 const zeroes: ValueProfile = {
@@ -18,6 +18,11 @@ function completed(futurePressureId: string): CompletedDilemma {
     locationType: "hjemmet",
     technology: "sundhedsdata",
     question: "Hvordan afgør vi, hvem der ...",
+    presented: {
+      title: "Et valg i hjemmet",
+      scene: "En konkret situation i 2046.",
+      choices: ["a", "b", "c", "d"].map((id) => ({ id, label: `Valg ${id}` })),
+    },
     futurePressureId,
     selectedChoiceId: "a",
     selectedChoiceLabel: "Noget",
@@ -26,13 +31,6 @@ function completed(futurePressureId: string): CompletedDilemma {
 }
 
 describe("planRound", () => {
-  it("walks the five stages in order", () => {
-    for (let round = 0; round < 5; round += 1) {
-      const previous = Array.from({ length: round }, () => completed("drought"));
-      expect(planRound(previous, () => 0).stage.id).toBe(journeyStages[round].id);
-    }
-  });
-
   it("never spends two stops on the same pressure family", () => {
     // `pick: () => 0` always takes the first open family, so a repeat would show
     // up immediately if used families were not being excluded.
@@ -51,7 +49,6 @@ describe("planRound", () => {
       const plan = planRound([]);
       expect(pressuresById.has(plan.pressure.id)).toBe(true);
       expect(plan.pressure.responses).toContain(plan.response);
-      expect(journeyStages[0].relations).toContain(plan.relation);
       expect(plan.problemAreas.every((area) => plan.pressure.problemAreas.includes(area))).toBe(true);
     }
   });
@@ -86,9 +83,8 @@ describe("planRound", () => {
     expect(planRound([], () => 0, "Jeg tænker på indvandring").pressure.family).toBe("mennesker og bevægelse");
   });
 
-  it("varies severity across the journey rather than sitting on medium", () => {
-    const severities = journeyStages.map((stage) => stage.severity);
-    expect(new Set(severities).size).toBeGreaterThan(1);
-    expect(new Set(journeyStages.map((stage) => stage.stakeMode)).size).toBeGreaterThan(1);
+  it("keeps the opening everyday-light and lets later stops carry more weight", () => {
+    expect(planRound([]).severity).toBe("low");
+    expect(planRound([completed("drought")]).severity).toBe("medium");
   });
 });

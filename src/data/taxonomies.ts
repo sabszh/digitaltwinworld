@@ -3,6 +3,7 @@ import type { LocationType, ProblemArea, UserRole, ValueProfile } from "@/types/
 export const SESSION_DILEMMA_COUNT = 5;
 
 export const userRoles: UserRole[] = [
+  "Barn",
   "Ung",
   "Forælder",
   "Lærer / pædagog",

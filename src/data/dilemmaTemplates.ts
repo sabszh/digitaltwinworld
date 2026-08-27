@@ -337,7 +337,7 @@ const seeds: TemplateSeed[] = [
     problemArea: "Klima, energi og resiliens",
     title: "Datacenter-varme",
     technology: "datacenter-varme",
-    scenePrompt: "Byen kan koble sit varmesystem til et stort AI-datacenter og få stabil varme ud af konstant beregning. Men varmen kommer med et nyt ressourceaftryk og et afhængighedsforhold.",
+    scenePrompt: "Et stort datacenter bruger strøm døgnet rundt. Varmen fra computerne kan varme byens hjem op, men centret bruger også meget strøm og vand.",
     question: "Skal byen sige ja?",
     choices: [
       choice("a", "Kun med hårde ressourcekrav", "Vand, strøm og nødscenarier skal være tydeligt reguleret fra start.", { safety: 1, sustainability: 2, localControl: 1 }),
@@ -363,8 +363,8 @@ const seeds: TemplateSeed[] = [
     problemArea: "Klima, energi og resiliens",
     title: "Energifordeling",
     technology: "energi-AI",
-    scenePrompt: "Ved spidsbelastning kan energi-AI nu fordele strøm helt ned på kvartersniveau. Dermed bliver retfærdighed ikke bare et politisk slogan, men et driftsspørgsmål i realtid.",
-    question: "Hvad er mest retfærdigt?",
+    scenePrompt: "Når mange bruger strøm på samme tid, kan en computer skrue lidt ned for strømmen i nogle kvarterer, så hele byen undgår et strømsvigt. Men nogen mærker det først hjemme hos sig selv.",
+    question: "Hvad gør du, når strømmen skal fordeles?",
     choices: [
       choice("a", "Kritiske behov først", "Omsorg, sundhed og basale hjemfunktioner går foran marked og bekvemmelighed.", { safety: 2, equality: 1, efficiency: 1 }),
       choice("b", "Lad dynamiske priser styre det", "Priser bruges til at få systemet til at balancere sig selv hurtigt.", { efficiency: 2, innovation: 1, freedom: -1 }),

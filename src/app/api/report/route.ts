@@ -1,5 +1,4 @@
-import { addProfiles, buildFallbackReport, impactsForPlacement } from "@/lib/profileScoring";
-import type { AxisPlacement } from "@/lib/profileScoring";
+import { addProfiles, impactsForMatchedChoice } from "@/lib/profileScoring";
 import { requestJson } from "@/lib/openaiJson";
 import { buildValuePrompt, valueResponseSchema, writtenAnswers } from "@/lib/prompts/valuePrompt";
 import { emptyValueProfile, valueLabelsByLanguage } from "@/data/taxonomies";
@@ -19,15 +18,7 @@ type ReportRequest = {
 const isRecord = (value: unknown): value is Record<string, unknown> => Boolean(value && typeof value === "object" && !Array.isArray(value));
 const isString = (value: unknown): value is string => typeof value === "string";
 
-const fallback = (input: ReportRequest, reason: string) =>
-  NextResponse.json({
-    source: "fallback",
-    reason,
-    report: buildFallbackReport(input.completedDilemmas, input.valueProfile, input.language),
-    // Always echoed, so the client has one rule: trust the profile the report
-    // came back with. On this path it is whatever scoring managed to produce.
-    valueProfile: input.valueProfile,
-  });
+const reportError = (reason: string) => NextResponse.json({ error: reason }, { status: 502 });
 
 function collectUserTexts(completed: CompletedDilemma[]) {
   return completed.flatMap((item) => [item.customAnswer, item.reflection].filter(isString).map((value) => value.trim()));
@@ -64,21 +55,21 @@ function validateReport(value: unknown, userTexts: string[]): FutureProfileRepor
 /**
  * Score the answers the traveller wrote themselves.
  *
- * Picked options already carry impacts authored at generation time, so only the
- * written ones are sent. Any failure returns the profile untouched, which now
- * means written answers contribute nothing rather than a fabricated stamp.
+ * Picked options already carry impacts authored at generation time. A written
+ * answer is matched to an authored action, never placed on an invented value
+ * axis. Any failure leaves the profile untouched.
  */
 async function scoreWrittenAnswers(input: ReportRequest, apiKey: string): Promise<ValueProfile> {
   const items = writtenAnswers(input.completedDilemmas);
   if (items.length === 0) return input.valueProfile;
 
-  const outcome = await requestJson<{ placements?: unknown }>({
+  const outcome = await requestJson<{ matches?: unknown }>({
     apiKey,
-    schemaName: "world2046_value_placement",
+    schemaName: "world2046_choice_match",
     schema: valueResponseSchema,
     prompt: buildValuePrompt(items, input.language),
     language: input.language,
-    systemNote: "Place answers on the given axis only. Do not describe the person.",
+    systemNote: "Match answers to authored actions only. Do not describe the person or infer values.",
     temperature: 0.2,
   });
   if ("error" in outcome) {
@@ -86,22 +77,22 @@ async function scoreWrittenAnswers(input: ReportRequest, apiKey: string): Promis
     return input.valueProfile;
   }
 
-  const raw = outcome.data?.placements;
+  const raw = outcome.data?.matches;
   if (!Array.isArray(raw)) return input.valueProfile;
 
   const byId = new Map(items.map((item) => [item.dilemmaId, item]));
   let profile = input.valueProfile;
   const seen = new Set<string>();
   for (const entry of raw) {
-    if (!isRecord(entry) || !isString(entry.dilemmaId) || !isString(entry.position)) continue;
-    // One placement per dilemma: a model that repeats an id would otherwise
+    if (!isRecord(entry) || !isString(entry.dilemmaId) || !isString(entry.choiceId)) continue;
+    // One match per dilemma: a model that repeats an id would otherwise
     // score the same answer twice and double its weight in the profile.
     if (seen.has(entry.dilemmaId)) continue;
     const item = byId.get(entry.dilemmaId);
     if (!item) continue;
     seen.add(entry.dilemmaId);
-    const position = (entry.position === "off-axis" ? "off-axis" : Number(entry.position)) as AxisPlacement["position"];
-    profile = addProfiles(profile, impactsForPlacement(position, item.coreTension));
+    const choiceId = ["a", "b", "c", "d", "unscored"].includes(entry.choiceId) ? entry.choiceId as "a" | "b" | "c" | "d" | "unscored" : "unscored";
+    profile = addProfiles(profile, impactsForMatchedChoice(choiceId, item.scoringChoices));
   }
   return profile;
 }
@@ -192,7 +183,7 @@ export async function POST(request: Request) {
   };
 
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return fallback(input, "missing_openai_api_key");
+  if (!apiKey) return reportError("missing_openai_api_key");
 
   const userTexts = collectUserTexts(input.completedDilemmas);
 
@@ -211,13 +202,13 @@ export async function POST(request: Request) {
       language: scored.language,
       temperature: 0.85,
     });
-    if ("error" in outcome) return fallback(scored, outcome.error);
+    if ("error" in outcome) return reportError(outcome.error);
 
     const report = validateReport(outcome.data, userTexts);
-    if (!report) return fallback(scored, "invalid_ai_report");
+    if (!report) return reportError("invalid_ai_report");
 
     return NextResponse.json({ source: "openai", report, valueProfile });
   } catch {
-    return fallback(input, "openai_exception");
+    return reportError("openai_exception");
   }
 }

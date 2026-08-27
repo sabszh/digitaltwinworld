@@ -13,61 +13,37 @@ npm run dev
 
 ## Samtykke og lokale sessionsdata
 
-Når en besøgende aktivt giver samtykke efter rapporten, gemmes rejsen som standard i `.data/consented-sessions.jsonl`. Sæt `SESSION_DATA_PATH` i `.env.local`, hvis udstillingscomputeren skal bruge en anden permanent placering. Afviste sessions skrives ikke til disk.
+Når en besøgende aktivt giver samtykke efter rapporten, gemmes rejsen som standard i `.data/sessions/`. Hver deltager får sin egen fil: `world2046-<session-id>.json`. Sæt `SESSION_DATA_PATH` i `.env.local`, hvis udstillingscomputeren skal bruge en anden mappe. Afviste sessions skrives ikke til disk.
 
-## Satellitkort
+Hver fil indeholder en komplet, samtykket rejse med samtykke- og tidsmarkering, passagerens valgte rolle/alder/svar, værdiprofilen og fem dilemma-poster. En dilemma-post gemmer både det valgte svar og et deltager-vendt snapshot af det, der blev vist: titel, scene, hvad der stod på spil, ankomsttekst, sted/koordinater og alle fire svarmuligheder. De skjulte værdiscores for de fire muligheder gemmes ikke i dette snapshot.
 
-Prototypen bruger satellit-closeups med denne fallback-rækkefølge:
+## Kort
 
-1. Mapbox Satellite
-2. Google Satellite
-3. ArcGIS World Imagery
-
-Hvis du vil bruge Mapbox Satellite, så opret en Mapbox public access token og læg den i `.env.local`:
+Prototypen bruger Mapbox til globussen. Læg en public access token i `.env.local`:
 
 ```bash
 NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=din_mapbox_token
 ```
 
-Hvis du vil bruge Google Satellite i stedet, så opret en Google Maps Platform API key med Maps Static API aktiveret:
+## Termoprinter
+
+World 2046 tegner det færdige værdikort som et 384 px sort/hvidt billede, passende til 57/58 mm-papir på 384-dot-printere som 5801/5802. Opret først en lokal macOS CUPS-kø med producentens driver og sæt dens kønavn i `.env.local`:
 
 ```bash
-NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=din_google_maps_key
+THERMAL_PRINTER_NAME=GEZHI_micro_printer
 ```
 
-Når Mapbox-token findes, bruger `SatelliteCloseup` automatisk Mapbox Static Images API med `mapbox/satellite-v9`. Uden Mapbox-token prøver den Google Static API. Uden begge falder den tilbage til ArcGIS tiles.
+Appen sender billedet til CUPS med 58 mm-mediet. Det lader den installerede driver håndtere Bluetooth-forbindelsen og gør dansk/engelsk, Gejst-logoet og typografien ensartet.
 
 ## Hvad prototypen gør
 
 - Intro med 3D-globus og dansk tone of voice.
-- Rollevalg: ung, forælder, lærer/pædagog, arbejdsgiver, medarbejder, borger eller beslutningstager.
+- Rollevalg: barn, ung, forælder, lærer/pædagog, fagperson eller for alle.
 - Fem dilemmaer pr. session, med første scenarie fast i Danmark.
 - Valg og egne løsninger gemmes i lokal Zustand session state.
 - Slutrapport opsummerer værdiprofil, AI-holdning, styringsstil og løste dilemmaer.
 - Dev/debug-panel viser session JSON, valgte områder, lande og aggregerede værdier.
 
-## Randomisering
+## Generering
 
-Randomiseringen ligger i `src/lib/randomizer.ts` og bruger lokale templates fra `src/data/dilemmaTemplates.ts` samt lokationer fra `src/data/locations.ts`.
-
-Regler i første version:
-
-- Første dilemma er i Danmark og bruger et let uddannelsesscenarie.
-- Efter første dilemma vælges globalt.
-- Samme problemområde gentages ikke direkte.
-- Samme land gentages ikke direkte.
-- Kun `low` og `medium` severity bruges.
-- Templates er knyttet til gyldige lokationstyper, problemområder og teknologier.
-
-Antallet af dilemmaer styres via `SESSION_DILEMMA_COUNT` i `src/data/taxonomies.ts`.
-
-## Fremtidig AI-generering
-
-`src/lib/aiDilemmaGenerator.ts` indeholder input/output-typer, guardrails og en mock-funktion. Den returnerer pt. lokale templates, men kan senere erstattes af en API-route, der kalder OpenAI og validerer output mod de samme regler:
-
-- egnet til målgruppen
-- ikke voldeligt, traumatiserende eller katastrofisk
-- realistisk muligt i 2046
-- tilknyttet ét af de syv problemområder
-- 3-4 balancerede svarmuligheder
-- indirekte værdimåling uden ét rigtigt svar
+Dilemmaer og slutrapport genereres og valideres på serveren. Hvis genereringen fejler, viser oplevelsen en fejl og lader brugeren prøve igen; den erstatter ikke indholdet med lokale skabeloner.

@@ -13,8 +13,7 @@ import type {
   UserRole,
   ValueProfile,
 } from "@/types/world2046";
-import { generateDilemma } from "./randomizer";
-import { addProfiles, buildFallbackReport, generateSummary, normalizeImpacts } from "./profileScoring";
+import { addProfiles, generateSummary, normalizeImpacts } from "./profileScoring";
 import { UX_TIMING } from "./uxTiming";
 import type { Language } from "./i18n";
 
@@ -30,6 +29,8 @@ type SessionStore = {
   valueProfile: ValueProfile;
   futureReport?: FutureProfileReport;
   reportLoading: boolean;
+  journeyError?: string;
+  reportError?: string;
   consentStatus: "idle" | "saving" | "saved" | "error" | "declined";
   sessionId: string;
   createdAt: string;
@@ -79,12 +80,11 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       return;
     }
     const preferredSeverity = completedDilemmas.length === 0 ? "low" : "medium";
-    const fallbackDilemma = () => generateDilemma({ role, previousDilemmas: completedDilemmas, preferredSeverity, language });
     const travelStartedAt = Date.now();
 
-    set({ activeDilemma: undefined, phase: "traveling" });
+    set({ activeDilemma: undefined, journeyError: undefined, phase: "traveling" });
 
-    let nextDilemma: GeneratedDilemma;
+    let nextDilemma: GeneratedDilemma | undefined;
     try {
       const controller = new AbortController();
       const timeout = window.setTimeout(() => controller.abort(), UX_TIMING.dilemmaFetchTimeoutMs);
@@ -94,11 +94,14 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
         body: JSON.stringify({ role, answers: personaAnswers, previousDilemmas: completedDilemmas, preferredSeverity, language }),
         signal: controller.signal,
       }).finally(() => window.clearTimeout(timeout));
-      if (!response.ok) throw new Error("Failed to generate dilemma");
+      if (!response.ok) throw new Error((await response.json() as { error?: string }).error ?? "Failed to generate dilemma");
       const data = (await response.json()) as { dilemma?: GeneratedDilemma };
-      nextDilemma = data.dilemma ?? fallbackDilemma();
-    } catch {
-      nextDilemma = fallbackDilemma();
+      if (!data.dilemma) throw new Error("Missing generated dilemma");
+      nextDilemma = data.dilemma;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to generate dilemma";
+      if (get().sessionId === sessionId) set({ journeyError: message });
+      return;
     }
 
     const elapsed = Date.now() - travelStartedAt;
@@ -129,7 +132,25 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       locationType: activeDilemma.locationType,
       technology: activeDilemma.technology,
       question: activeDilemma.question,
+      presented: {
+        title: activeDilemma.title,
+        scene: activeDilemma.scenePrompt,
+        stake: activeDilemma.stake,
+        landingScene: activeDilemma.landingScene,
+        landingDetail: activeDilemma.landingDetail,
+        place: activeDilemma.exactPlace
+          ? {
+              name: activeDilemma.exactPlace.name,
+              latitude: activeDilemma.marker.lat,
+              longitude: activeDilemma.marker.lng,
+            }
+          : undefined,
+        // Do not include hidden value impacts in the participant-facing record.
+        // The row preserves exactly what was available to choose from instead.
+        choices: activeDilemma.choices.map(({ id, label, description }) => ({ id, label, description })),
+      },
       coreTension: activeDilemma.coreTension,
+      scoringChoices: customAnswer ? activeDilemma.choices : undefined,
       futurePressureId: activeDilemma.futurePressureId,
       selectedChoiceId: choice.id,
       selectedChoiceLabel: customAnswer ? (get().language === "da" ? "Egen løsning" : "Own response") : choice.label,
@@ -185,9 +206,8 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   },
   finishJourney: async () => {
     const { personaAnswers, completedDilemmas, valueProfile, sessionId, language } = get();
-    set({ reportLoading: true });
-    const fallback = () => buildFallbackReport(completedDilemmas, valueProfile, language);
-    let report: FutureProfileReport;
+    set({ reportLoading: true, reportError: undefined });
+    let report: FutureProfileReport | undefined;
     let scoredProfile = valueProfile;
     try {
       const response = await fetch("/api/report", {
@@ -195,18 +215,21 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ answers: personaAnswers, completedDilemmas, valueProfile, language }),
       });
-      if (!response.ok) throw new Error("Failed to build report");
+      if (!response.ok) throw new Error((await response.json() as { error?: string }).error ?? "Failed to build report");
       const data = (await response.json()) as { report?: FutureProfileReport; valueProfile?: ValueProfile };
-      report = data.report ?? fallback();
+      if (!data.report) throw new Error("Missing generated report");
+      report = data.report;
       // The written answers are scored server-side and folded in there, so the
       // returned profile supersedes the one accumulated during the journey.
       // Nothing renders the profile before this point.
       if (data.valueProfile) scoredProfile = data.valueProfile;
-    } catch {
-      report = fallback();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to build report";
+      if (get().sessionId === sessionId) set({ reportError: message, reportLoading: false });
+      return;
     }
     if (get().sessionId !== sessionId) return;
-    set({ futureReport: report, reportLoading: false, valueProfile: scoredProfile });
+    set({ futureReport: report, reportError: undefined, reportLoading: false, valueProfile: scoredProfile });
   },
   reviewConsent: () => set({ phase: "consent", consentStatus: "idle" }),
   saveConsentedSession: async () => {
@@ -238,6 +261,8 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       valueProfile: emptyValueProfile,
       futureReport: undefined,
       reportLoading: false,
+      journeyError: undefined,
+      reportError: undefined,
       consentStatus: "idle",
       sessionId: createSessionId(),
       createdAt: new Date().toISOString(),

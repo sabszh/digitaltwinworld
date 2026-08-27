@@ -79,11 +79,10 @@ export const journeyStages: JourneyStage[] = [
 
 export type RoundPlan = {
   round: number;
-  stage: JourneyStage;
   pressure: FuturePressure;
   /** The normalised societal response this dilemma takes place inside. */
   response: string;
-  relation: string;
+  severity: "low" | "medium";
   /** Areas that both fit this pressure and have not already been visited. */
   problemAreas: ProblemArea[];
 };
@@ -189,31 +188,53 @@ function familyFromCue(text: string, open: PressureFamily[], pick: Picker): Pres
  * and the closing report would then hand back what was typed at check-in rather
  * than what the five choices revealed.
  */
-export function planRound(previous: CompletedDilemma[], pick: Picker = randomPick, openingCue?: string): RoundPlan {
+export function planRound(
+  previous: CompletedDilemma[],
+  pick: Picker = randomPick,
+  openingCue?: string,
+  preferredProblemAreas?: ProblemArea[],
+): RoundPlan {
   const round = previous.length;
-  const stage = journeyStages[Math.min(round, journeyStages.length - 1)];
 
   const usedFamilies = usedPressureFamilies(previous);
   const usedIds = new Set(previous.map((item) => item.futurePressureId).filter(Boolean));
   const usedAreas = new Set(previous.map((item) => item.problemArea));
-  const fitsUnusedArea = (pressure: FuturePressure) => pressure.problemAreas.some((area) => !usedAreas.has(area));
+  const preferred = preferredProblemAreas?.length ? new Set(preferredProblemAreas) : undefined;
+  const fitsAudience = (pressure: FuturePressure) => !preferred || pressure.problemAreas.some((area) => preferred.has(area));
+  const fitsUnusedArea = (pressure: FuturePressure) => pressure.problemAreas.some(
+    (area) => !usedAreas.has(area) && (!preferred || preferred.has(area)),
+  );
   const openFamilies = pressureFamilies.filter(
     (family) => !usedFamilies.has(family) && futurePressures.some((pressure) => pressure.family === family && fitsUnusedArea(pressure)),
   );
-  const families = openFamilies.length ? openFamilies : pressureFamilies;
+  const audienceFamilies = pressureFamilies.filter(
+    (family) => futurePressures.some((pressure) => pressure.family === family && fitsAudience(pressure)),
+  );
+  const families = openFamilies.length ? openFamilies : audienceFamilies.length ? audienceFamilies : pressureFamilies;
   const cued = round === 0 && openingCue?.trim() ? familyFromCue(openingCue, families, pick) : undefined;
   const family = cued ?? families[pick(families.length)];
 
   const candidates = futurePressures.filter(
-    (item) => item.family === family && !usedIds.has(item.id) && fitsUnusedArea(item),
+    (item) => item.family === family && !usedIds.has(item.id) && fitsUnusedArea(item) && fitsAudience(item),
   );
-  const compatible = futurePressures.filter((item) => item.family === family && fitsUnusedArea(item));
-  const pool = candidates.length ? candidates : compatible.length ? compatible : futurePressures.filter((item) => item.family === family);
+  const compatible = futurePressures.filter((item) => item.family === family && fitsUnusedArea(item) && fitsAudience(item));
+  const audienceCompatible = futurePressures.filter((item) => item.family === family && fitsAudience(item));
+  const pool = candidates.length
+    ? candidates
+    : compatible.length
+      ? compatible
+      : audienceCompatible.length
+        ? audienceCompatible
+        : futurePressures.filter((item) => item.family === family);
   const pressure = pool[pick(pool.length)];
   const response = pressure.responses[pick(pressure.responses.length)];
-  const relation = stage.relations[pick(stage.relations.length)];
-  const unusedProblemAreas = pressure.problemAreas.filter((area) => !usedAreas.has(area));
-  const problemAreas = unusedProblemAreas.length ? unusedProblemAreas : pressure.problemAreas;
+  const audienceProblemAreas = pressure.problemAreas.filter((area) => !preferred || preferred.has(area));
+  const unusedProblemAreas = audienceProblemAreas.filter((area) => !usedAreas.has(area));
+  const problemAreas = unusedProblemAreas.length
+    ? unusedProblemAreas
+    : audienceProblemAreas.length
+      ? audienceProblemAreas
+      : pressure.problemAreas;
 
-  return { round, stage, pressure, response, relation, problemAreas };
+  return { round, pressure, response, severity: round === 0 ? "low" : "medium", problemAreas };
 }

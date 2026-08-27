@@ -28,6 +28,28 @@ const schoolBlockedTerms = [
   "computerhjælp-hjælp",
 ] as const;
 
+// A seven-year-old should not have to decode the machinery behind a service
+// before they can feel the choice. These words are not forbidden Danish; they
+// are a signal that the generator has made the system, rather than the child,
+// the protagonist of the scene.
+const childBlockedTerms = [
+  "reservedel",
+  "spidsbelastning",
+  "kvartersniveau",
+  "driftsspørgsmål",
+  "driftsplan",
+  "modelkørsel",
+  "forsyningskæde",
+  "ressourcefordeling",
+  "allokere",
+  "kapacitet",
+  "konstant beregning",
+  "data-agent",
+  "id-tegnebog",
+  "wallet",
+  "ungebyråd",
+] as const;
+
 function normalize(text: string) {
   return text.toLocaleLowerCase("da-DK");
 }
@@ -63,6 +85,7 @@ export function collectVisibleDilemmaText(dilemma: GeneratedDilemma) {
   return [
     dilemma.title,
     dilemma.scenePrompt,
+    dilemma.stake,
     dilemma.question,
     dilemma.landingScene,
     dilemma.landingDetail,
@@ -74,10 +97,13 @@ export function collectVisibleDilemmaText(dilemma: GeneratedDilemma) {
 
 export function findAudienceLanguageIssues(role: UserRole, text: string) {
   const audience = getAudienceProfile(role);
-  if (audience.id !== "school") return [];
+  if (audience.id !== "child" && audience.id !== "youth") return [];
 
   const normalized = normalize(text);
-  return schoolBlockedTerms.filter((term) => matchesTerm(normalized, term));
+  const terms = audience.id === "child"
+    ? [...schoolBlockedTerms, ...childBlockedTerms]
+    : schoolBlockedTerms;
+  return terms.filter((term) => matchesTerm(normalized, term));
 }
 
 export function hasAudienceLanguageIssues(dilemma: GeneratedDilemma) {

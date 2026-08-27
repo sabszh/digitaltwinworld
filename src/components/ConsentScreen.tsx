@@ -36,8 +36,8 @@ export function ConsentScreen({ language, status, onAccept, onDecline, onBack }:
             <h2 className="font-semibold text-[var(--text)]">{da ? "Det her gemmer vi" : "This is what we keep"}</h2>
             <p className="mt-1 text-sm leading-6 text-[var(--muted)]">
               {da
-                ? "Din rolle, dine valg, din rapport og det, du selv skrev undervejs. Ikke navn, e-mail eller stemme."
-                : "Your role, choices, report and anything you wrote along the way. Not your name, email or voice."}
+                ? "Din rolle, dine valg, din rapport og det, du selv skrev undervejs."
+                : "Your role, choices, report and anything you wrote along the way."}
             </p>
           </div>
 

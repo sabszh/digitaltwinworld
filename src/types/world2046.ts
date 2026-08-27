@@ -3,6 +3,7 @@ import type { Language } from "@/lib/i18n";
 export type AppPhase = "intro" | "persona" | "traveling" | "landing" | "dilemma" | "consequence" | "report" | "consent" | "goodbye";
 
 export type UserRole =
+  | "Barn"
   | "Ung"
   | "Forælder"
   | "Lærer / pædagog"
@@ -62,21 +63,18 @@ export type Choice = {
   label: string;
   description?: string;
   consequence?: string;
-  /** Where this option sits on the dilemma's single decision axis, 1–4.
-   *  Internal: it forces the four options onto one axis at generation time and
-   *  is never shown to the player. Optional so the hand-written templates,
-   *  which predate it, still type-check. */
-  axisPosition?: number;
+  /** Scored after the concrete action has been written. Only a handful of
+   * values should normally move; all remaining keys are deliberately zero. */
   valueImpacts: Partial<ValueProfile>;
 };
 
-/** The two legitimate values a dilemma is pulled between. Internal metadata:
- *  it exists to make the generator commit to a real trade-off before it writes
- *  the options, and to let validation check the options actually differ. */
+/** The human conflict inside a concrete moment. It gives the generator a way
+ * to explain why reasonable people cannot simply choose everything at once,
+ * without exposing the value model that scores their choice. */
 export type CoreTension = {
-  valueA: keyof ValueProfile;
-  valueB: keyof ValueProfile;
-  summary: string;
+  want: string;
+  butAlsoWant: string;
+  whyCannotHaveBoth: string;
 };
 
 /** Internal coherence worksheet produced before the audience-facing copy. */
@@ -89,6 +87,8 @@ export type DilemmaLogic = {
   trigger: string;
   /** The exact decision the traveller can make now. */
   decision: string;
+  /** Why the four actions compete in this moment rather than being combined. */
+  choiceConstraint: string;
 };
 
 export type LocationNode = {
@@ -147,7 +147,6 @@ export type GeneratedDilemma = DilemmaTemplate & {
   stake?: string;
   /** Internal generation metadata — not rendered anywhere in the UI. */
   coreTension?: CoreTension;
-  decisionAxis?: string;
   logic?: DilemmaLogic;
   /** Which documented future pressure this stop was built from, so the journey
    *  can send the next round somewhere else in the future space. */
@@ -155,9 +154,6 @@ export type GeneratedDilemma = DilemmaTemplate & {
   /** The one thing that is ordinary in 2046 and not in 2026. Internal: it is
    *  what the scene has to make felt without explaining it. */
   normalized2046?: string;
-  /** Where the player stands in the situation — passenger, neighbour, patient.
-   *  Kept so a journey can avoid making them the administrator five times. */
-  userRelation?: string;
 };
 
 export type CompletedDilemma = {
@@ -170,11 +166,26 @@ export type CompletedDilemma = {
   locationType: LocationType;
   technology: FutureTechnology;
   question: string;
+  /** A faithful snapshot of the participant-facing dilemma. This keeps the
+   * collected choice interpretable later: a selected answer without the scene
+   * and the competing actions is not useful research data. */
+  presented: {
+    title: string;
+    scene: string;
+    stake?: string;
+    landingScene?: string;
+    landingDetail?: string;
+    place?: { name: string; latitude: number; longitude: number };
+    choices: Array<Pick<Choice, "id" | "label" | "description">>;
+  };
   /** Carried so the next round can pick a different corner of the future space. */
   futurePressureId?: string;
-  /** Carried so the next round knows which values this journey has already
-   *  argued about, and can be sent somewhere new. Internal, never displayed. */
+  /** Retained as internal context for the completed dilemma; never displayed. */
   coreTension?: CoreTension;
+  /** The four authored actions are retained only when the traveller writes an
+   * alternative. Their text can then be matched to an existing action without
+   * inventing an axis or a new fixed value stamp. */
+  scoringChoices?: Choice[];
   selectedChoiceId: string;
   selectedChoiceLabel: string;
   customAnswer?: string;
@@ -188,6 +199,9 @@ export type PersonaAnswers = {
   role: UserRole;
   hope: string;
   fear: string;
+  /** Optional boarding-pass detail. It is a visual time-travel gimmick only and
+   * never influences dilemma generation or the value profile. */
+  age?: number;
   hopeViaVoice?: boolean;
   fearViaVoice?: boolean;
 };
@@ -198,7 +212,7 @@ export type FutureProfileReport = {
   quotes: { quote: string; context: string }[];
   patterns: string[];
   reflectionNote: string;
-  source: "openai" | "fallback";
+  source: "openai";
 };
 
 export type SessionResult = {
@@ -217,8 +231,8 @@ export type SessionResult = {
 };
 
 export type ConsentedSessionRecord = {
-  schemaVersion: 1;
-  consentPolicyVersion: "2026-08-14";
+  schemaVersion: 2;
+  consentPolicyVersion: "2026-08-25";
   acceptedAt: string;
   session: SessionResult;
 };

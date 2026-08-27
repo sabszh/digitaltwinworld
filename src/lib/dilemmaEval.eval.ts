@@ -5,6 +5,8 @@ import { buildDilemmaPrompt } from "@/lib/prompts/dilemmaPrompt";
 import type { AiDilemma, DilemmaGenerationRequest } from "@/lib/dilemmaGenerationTypes";
 import type { CompletedDilemma, GeneratedDilemma, UserRole, ValueProfile } from "@/types/world2046";
 import { planRound } from "@/lib/roundPlan";
+import { getAudienceProfile } from "@/lib/audience";
+import { requestJson } from "@/lib/openaiJson";
 
 /**
  * Batch generator for reviewing dilemma quality by hand.
@@ -35,6 +37,11 @@ function loadEnvLocal() {
 
 const JOURNEYS: Array<{ role: UserRole; hope: string; fear: string }> = [
   {
+    role: "Barn",
+    hope: "at der er plads til at lege og være sammen",
+    fear: "at computere bestemmer for meget",
+  },
+  {
     role: "Ung",
     hope: "at der stadig er tid til at kede sig",
     fear: "at man aldrig får fred for at blive målt",
@@ -54,37 +61,24 @@ const JOURNEYS: Array<{ role: UserRole; hope: string; fear: string }> = [
     hope: "at der er plads til de elever, der ikke passer ind",
     fear: "at faglighed bliver noget, man køber sig til",
   },
+  {
+    role: "For alle",
+    hope: "at teknologi gør hverdagen lettere for flere",
+    fear: "at nogen bliver glemt, når alt bliver digitalt",
+  },
 ];
 
-const model = process.env.OPENAI_MODEL ?? "gpt-5.6-luna";
-
-async function generateOne(input: DilemmaGenerationRequest): Promise<{ dilemma?: GeneratedDilemma; reason?: string }> {
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model,
-      ...(/^gpt-(4|3)/.test(model) ? { temperature: 0.95 } : { reasoning_effort: "low" }),
-      messages: [
-        {
-          role: "system",
-          content: `Return only valid JSON matching the schema. Write all audience-facing text in ${input.language === "da" ? "Danish" : "English"}. No markdown.`,
-        },
-        { role: "user", content: buildDilemmaPrompt(input, { technologies, locationTypes }) },
-      ],
-      response_format: {
-        type: "json_schema",
-        json_schema: { name: "world2046_dilemma", strict: true, schema: responseSchema },
-      },
-    }),
+async function generateOne(input: DilemmaGenerationRequest): Promise<{ dilemma?: GeneratedDilemma; reason?: string; detail?: string }> {
+  const outcome = await requestJson<AiDilemma>({
+    apiKey: process.env.OPENAI_API_KEY ?? "",
+    schemaName: "world2046_dilemma_eval",
+    schema: responseSchema,
+    prompt: buildDilemmaPrompt(input, { technologies, locationTypes }),
+    language: input.language,
+    timeoutMs: 27_000,
   });
-
-  if (!response.ok) return { reason: `openai_${response.status}` };
-  const data = await response.json();
-  const parsed = JSON.parse(data.choices[0].message.content) as AiDilemma;
+  if ("error" in outcome) return { reason: outcome.error };
+  const parsed = outcome.data;
   const result = validateAiDilemmaDetailed(parsed, input);
   if ("dilemma" in result) return { dilemma: result.dilemma };
   // Print what was thrown away: a rejection is only worth having if it is
@@ -93,16 +87,25 @@ async function generateOne(input: DilemmaGenerationRequest): Promise<{ dilemma?:
     `REJECTED ${result.reason}\n  normalized2046: ${parsed.normalized2046}\n  question: ${parsed.question}\n` +
       (parsed.choices ?? []).map((choice) => `  - ${choice.label} | ${choice.description}`).join("\n"),
   );
-  return { reason: result.reason };
+  return {
+    reason: result.reason,
+    detail: [
+      `område/sted: ${String(parsed.problemArea)} / ${String(parsed.locationType)}`,
+      `spørgsmål: ${String(parsed.question)}`,
+      ...(Array.isArray(parsed.choices)
+        ? parsed.choices.map((choice) => `${String(choice?.id)}: ${String(choice?.label)}`)
+        : ["choices mangler eller er ikke en liste"]),
+    ].join(" · "),
+  };
 }
 
 function render(dilemma: GeneratedDilemma, round: number) {
   return [
     `#### Stop ${round}: ${dilemma.city}, ${dilemma.country} — ${dilemma.exactPlace?.name ?? "?"}`,
-    `- **pres:** ${dilemma.futurePressureId} · **relation:** ${dilemma.userRelation} · **severity:** ${dilemma.severity} · **område:** ${dilemma.problemArea}`,
+    `- **pres:** ${dilemma.futurePressureId} · **severity:** ${dilemma.severity} · **område:** ${dilemma.problemArea}`,
     `- **2046-virkelighed:** ${dilemma.normalized2046}`,
-    `- **spænding:** ${dilemma.coreTension?.valueA} ↔ ${dilemma.coreTension?.valueB}`,
-    `- **akse:** ${dilemma.decisionAxis}`,
+    `- **konflikt:** ${dilemma.coreTension?.want} · men også ${dilemma.coreTension?.butAlsoWant}`,
+    `- **kan ikke få begge:** ${dilemma.coreTension?.whyCannotHaveBoth}`,
     ``,
     `**${dilemma.title}**`,
     ``,
@@ -112,9 +115,7 @@ function render(dilemma: GeneratedDilemma, round: number) {
     ``,
     `**${dilemma.question}**`,
     ``,
-    ...dilemma.choices.map(
-      (choice, index) => `${index + 1}. [pos ${choice.axisPosition}] **${choice.label}** — ${choice.description}`,
-    ),
+    ...dilemma.choices.map((choice, index) => `${index + 1}. **${choice.label}** — ${choice.description}`),
     ``,
   ].join("\n");
 }
@@ -129,11 +130,18 @@ describe("dilemma generator evaluation", () => {
         return;
       }
 
-      const lines: string[] = ["# Dilemma-evaluering", ""];
-      const rejected: string[] = [];
-
-      for (const journey of JOURNEYS) {
-        lines.push(`## Rejse: ${journey.role}`, "");
+      const requestedRoles = new Set(
+        (process.env.DILEMMA_EVAL_ROLES ?? "")
+          .split(",")
+          .map((role) => role.trim())
+          .filter(Boolean),
+      );
+      const journeysToRun = requestedRoles.size
+        ? JOURNEYS.filter((journey) => requestedRoles.has(journey.role))
+        : JOURNEYS;
+      const journeys = await Promise.all(journeysToRun.map(async (journey) => {
+        const lines: string[] = [`## Rejse: ${journey.role}`, ""];
+        const rejected: string[] = [];
         const previous: CompletedDilemma[] = [];
 
         for (let round = 0; round < 5; round += 1) {
@@ -143,16 +151,16 @@ describe("dilemma generator evaluation", () => {
             previousDilemmas: previous,
             preferredSeverity: round === 0 ? "low" : "medium",
             language: "da",
-            generationPlan: planRound(previous),
+            generationPlan: planRound(previous, undefined, undefined, getAudienceProfile(journey.role).preferredProblemAreas),
           };
 
           // Same one-retry policy as the API route, so the numbers here are the
           // numbers a player would actually see.
-          let { dilemma, reason } = await generateOne(input);
-          if (!dilemma) ({ dilemma, reason } = await generateOne(input));
+          let { dilemma, reason, detail } = await generateOne(input);
+          if (!dilemma) ({ dilemma, reason, detail } = await generateOne(input));
           if (!dilemma) {
             rejected.push(`${journey.role} runde ${round + 1}: ${reason}`);
-            lines.push(`#### Stop ${round + 1}: AFVIST (${reason})`, "");
+            lines.push(`#### Stop ${round + 1}: AFVIST (${reason})`, detail ?? "", "");
             continue;
           }
 
@@ -167,6 +175,17 @@ describe("dilemma generator evaluation", () => {
             locationType: dilemma.locationType,
             technology: dilemma.technology,
             question: dilemma.question,
+            presented: {
+              title: dilemma.title,
+              scene: dilemma.scenePrompt,
+              stake: dilemma.stake,
+              landingScene: dilemma.landingScene,
+              landingDetail: dilemma.landingDetail,
+              place: dilemma.exactPlace
+                ? { name: dilemma.exactPlace.name, latitude: dilemma.marker.lat, longitude: dilemma.marker.lng }
+                : undefined,
+              choices: dilemma.choices.map(({ id, label, description }) => ({ id, label, description })),
+            },
             futurePressureId: dilemma.futurePressureId,
             coreTension: dilemma.coreTension,
             selectedChoiceId: dilemma.choices[0].id,
@@ -174,8 +193,11 @@ describe("dilemma generator evaluation", () => {
             valueImpacts: zeroes,
           });
         }
-      }
+        return { lines, rejected };
+      }));
 
+      const lines = ["# Dilemma-evaluering", "", ...journeys.flatMap((journey) => journey.lines)];
+      const rejected = journeys.flatMap((journey) => journey.rejected);
       lines.push("## Afvisninger", "", rejected.length ? rejected.map((item) => `- ${item}`).join("\n") : "Ingen.");
       writeFileSync("dilemma-eval.md", lines.join("\n"));
       expect(lines.length).toBeGreaterThan(5);

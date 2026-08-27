@@ -1,7 +1,6 @@
 import { dilemmaTemplates } from "@/data/dilemmaTemplates";
 import { futurePressures, pressuresById } from "@/data/futurePressures";
 import { locationTypesByProblemArea, problemAreas } from "@/data/taxonomies";
-import { tailorDilemmaCopyForAudience } from "@/lib/audience";
 import type { AiDilemma, DilemmaGenerationRequest } from "@/lib/dilemmaGenerationTypes";
 import { hasAudienceLanguageIssues } from "@/lib/languageQa";
 import { valueKeys } from "@/lib/prompts/dilemmaPrompt";
@@ -32,20 +31,18 @@ export const responseSchema = {
     scenePrompt: { type: "string", maxLength: 360 },
     question: { type: "string", maxLength: 160 },
     stake: { type: "string", maxLength: 230 },
-    // Internal: making the model name the trade-off and the axis *before* it
-    // writes the options is what stops the four options drifting onto
-    // different questions. Never rendered.
+    // Internal, never rendered: the conflict as people experience it, not the
+    // value dimensions used later to score a selected action.
     coreTension: {
       type: "object",
       additionalProperties: false,
       properties: {
-        valueA: { type: "string", enum: valueKeys },
-        valueB: { type: "string", enum: valueKeys },
-        summary: { type: "string", maxLength: 160 },
+        want: { type: "string", maxLength: 120 },
+        butAlsoWant: { type: "string", maxLength: 120 },
+        whyCannotHaveBoth: { type: "string", maxLength: 180 },
       },
-      required: ["valueA", "valueB", "summary"],
+      required: ["want", "butAlsoWant", "whyCannotHaveBoth"],
     },
-    decisionAxis: { type: "string", maxLength: 140 },
     logic: {
       type: "object",
       additionalProperties: false,
@@ -54,16 +51,13 @@ export const responseSchema = {
         benefit: { type: "string", maxLength: 180 },
         trigger: { type: "string", maxLength: 180 },
         decision: { type: "string", maxLength: 180 },
+        choiceConstraint: { type: "string", maxLength: 180 },
       },
-      required: ["rule", "benefit", "trigger", "decision"],
+      required: ["rule", "benefit", "trigger", "decision", "choiceConstraint"],
     },
-    // Internal, and required for a reason: making the model commit in writing to
-    // which documented pressure it built from, what is ordinary in 2046, and
-    // where the player stands is what keeps the round's assigned frame from
-    // quietly evaporating between the prompt and the output.
+    // Internal checks that keep the future setting tied to a real pressure.
     futurePressureId: { type: "string", enum: futurePressures.map((pressure) => pressure.id) },
     normalized2046: { type: "string", maxLength: 180 },
-    userRelation: { type: "string", maxLength: 120 },
     choices: {
       type: "array",
       minItems: 4,
@@ -76,7 +70,6 @@ export const responseSchema = {
           label: { type: "string", maxLength: 72 },
           description: { type: "string", maxLength: 168 },
           consequence: { type: "string", maxLength: 240 },
-          axisPosition: { type: "integer", minimum: 1, maximum: 4 },
           valueImpacts: {
             type: "object",
             additionalProperties: false,
@@ -84,7 +77,7 @@ export const responseSchema = {
             required: valueKeys,
           },
         },
-        required: ["id", "label", "description", "consequence", "axisPosition", "valueImpacts"],
+        required: ["id", "label", "description", "consequence", "valueImpacts"],
       },
     },
     tags: { type: "array", items: { type: "string" } },
@@ -126,11 +119,9 @@ export const responseSchema = {
     "question",
     "stake",
     "coreTension",
-    "decisionAxis",
     "logic",
     "futurePressureId",
     "normalized2046",
-    "userRelation",
     "choices",
     "tags",
     "country",
@@ -149,24 +140,31 @@ export const isRecord = (value: unknown): value is Record<string, unknown> =>
 
 export const isString = (value: unknown): value is string => typeof value === "string" && value.trim().length > 0;
 const isNumber = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value);
+const TRADEOFF_CONNECTOR = /\b(men|selv om|til gengæld|på bekostning af|but|even though|although|at the cost of)\b/iu;
 
-function isChoice(value: unknown): value is Choice {
+function choiceProblem(value: unknown): string | null {
   if (
     !isRecord(value) || !isString(value.id) || !isString(value.label) ||
-    !isString(value.description) || !isString(value.consequence) ||
-    !isNumber(value.axisPosition) || !isRecord(value.valueImpacts)
+    !isString(value.description) || !isString(value.consequence) || !isRecord(value.valueImpacts)
   ) {
-    return false;
+    return "shape";
   }
+  if (!TRADEOFF_CONNECTOR.test(value.description)) return "missing_tradeoff";
 
   const impacts = value.valueImpacts;
-  // Every key must be present: a missing one is silently scored as 0 downstream,
-  // which is indistinguishable from a deliberate 0 and quietly skews the profile.
-  if (!valueKeys.every((key) => isNumber(impacts[key]))) return false;
-
-  return Object.entries(impacts).every(
+  if (!Object.entries(impacts).every(
     ([key, impact]) => valueKeys.includes(key as keyof ValueProfile) && isNumber(impact) && impact >= -2 && impact <= 2,
-  );
+  )) return "invalid_impacts";
+
+  const relevantValues = valueKeys.filter((key) => impacts[key] !== 0).length;
+  // The prompt asks for 3–5 relevant values. The number is hidden metadata,
+  // however, so do not throw away an otherwise valid, player-facing dilemma
+  // just because the model marked fewer or more secondary effects.
+  return relevantValues >= 1 ? null : "relevant_values";
+}
+
+function isChoice(value: unknown): value is Choice {
+  return choiceProblem(value) === null;
 }
 
 /** Lowercase, strip punctuation, collapse space — enough to catch labels that
@@ -187,6 +185,7 @@ const GENERIC_FUTURE =
  *  forbids by example, and the model still writes it with synonyms. */
 const TITLE_NAMES_TENSION = /^\s*(valget|balancen?|afvejningen|kampen|striden|dilemmaet|the\s+balance|the\s+choice)\s+(mellem|between)\b/iu;
 const BIASED_QUESTION = /\b(uden at|samtidig med at|på en ansvarlig måde|på den rigtige måde|without|while ensuring|responsibly)\b/iu;
+const CHILD_FALSE_AUTHORITY = /\b(ungebyråd|byråd|kommunalbestyrelse|afstemning|sætte (dit|jeres) kryds|godkende (planen|adgangen|fordelingen|ordningen)|medicinråd|medicinsk(?:e)? råd|vælge (?:hans|hendes|andres) behandling|give andre medicin)\b/iu;
 
 /** Word overlap, so "Del data bredt" and "Del data meget bredt" are caught as
  *  the same position rather than two. Deliberately crude: the real work of
@@ -201,8 +200,8 @@ function tooSimilar(a: string, b: string): boolean {
 
 function findLogicProblem(value: Record<string, unknown>): string | null {
   if (!isRecord(value.logic)) return "missing";
-  const { rule, benefit, trigger, decision } = value.logic;
-  if (![rule, benefit, trigger, decision].every(isString)) return "incomplete";
+  const { rule, benefit, trigger, decision, choiceConstraint } = value.logic;
+  if (![rule, benefit, trigger, decision, choiceConstraint].every(isString)) return "incomplete";
   return null;
 }
 
@@ -210,8 +209,8 @@ function findLogicProblem(value: Record<string, unknown>): string | null {
  * Deterministic quality gate for the four options.
  *
  * These are the checks that can be made without a second model call. They are
- * about *structure* — one axis, four distinct positions, a trade-off that
- * actually moves — not about tone, which the prompt has to carry.
+ * about four distinct, non-identical actions with separate hidden scoring;
+ * judging whether the costs are genuinely felt remains the prompt's job.
  */
 function findChoiceSetProblem(
   choices: Choice[],
@@ -220,12 +219,6 @@ function findChoiceSetProblem(
   const ids = choices.map((choice) => choice.id);
   if (new Set(ids).size !== 4 || !["a", "b", "c", "d"].every((id) => ids.includes(id))) return "ids";
 
-  // Each option must sit at its own position on the axis, or the four are not
-  // four positions on one axis — they are four unrelated opinions.
-  const positions = choices.map((choice) => choice.axisPosition);
-  if (!positions.every((position) => typeof position === "number" && Number.isInteger(position))) return "axis_positions_missing";
-  if (new Set(positions).size !== 4 || positions.some((position) => position! < 1 || position! > 4)) return "axis_positions_not_1_to_4";
-
   for (let i = 0; i < choices.length; i += 1) {
     for (let j = i + 1; j < choices.length; j += 1) {
       if (tooSimilar(choices[i].label, choices[j].label)) return "duplicate_labels";
@@ -233,15 +226,12 @@ function findChoiceSetProblem(
   }
 
   if (!isRecord(coreTension)) return "no_core_tension";
-  const { valueA, valueB } = coreTension;
-  if (!isString(valueA) || !isString(valueB) || valueA === valueB) return "same_or_missing_values";
-  if (!valueKeys.includes(valueA as keyof ValueProfile) || !valueKeys.includes(valueB as keyof ValueProfile)) return "unknown_value_key";
+  const { want, butAlsoWant, whyCannotHaveBoth } = coreTension;
+  if (!isString(want) || !isString(butAlsoWant) || !isString(whyCannotHaveBoth)) return "incomplete_human_conflict";
+  if (normalizeLabel(want) === normalizeLabel(butAlsoWant)) return "collapsed_human_conflict";
 
-  // The whole point of the axis: if every option scores the same on the value
-  // being traded away, the player's choice cannot move their profile and the
-  // trade-off was never real.
-  const along = choices.map((choice) => choice.valueImpacts[valueA as keyof ValueProfile] ?? 0);
-  if (new Set(along).size < 2) return "axis_does_not_move";
+  const distinctScorings = new Set(choices.map((choice) => JSON.stringify(choice.valueImpacts)));
+  if (distinctScorings.size < 3) return "duplicate_value_impacts";
 
   return null;
 }
@@ -265,13 +255,8 @@ export function trimToWord(text: string, limit: number): string {
 }
 
 /**
- * Present the options in a random order.
- *
- * The model writes them as axisPosition 1→4, which means the card showed a tidy
- * slider every time: pick the first option and you are the privacy person, pick
- * the last and you are the efficiency person. Shuffling breaks that read without
- * touching the scoring — axisPosition and valueImpacts travel with the option,
- * and nothing downstream depends on array order.
+ * Present the competing actions in a random order. Their hidden impacts remain
+ * attached to the action, but no ordering suggests a value scale to the player.
  */
 function shuffleChoices(choices: Choice[]): Choice[] {
   const shuffled = [...choices];
@@ -331,9 +316,7 @@ function toGeneratedDilemma(value: AiDilemma, input: DilemmaGenerationRequest): 
     stake: isString(value.stake) ? trimToWord(value.stake, 190) : undefined,
     futurePressureId: isString(value.futurePressureId) ? value.futurePressureId : undefined,
     normalized2046: isString(value.normalized2046) ? value.normalized2046 : undefined,
-    userRelation: isString(value.userRelation) ? value.userRelation : undefined,
     coreTension: value.coreTension,
-    decisionAxis: value.decisionAxis,
     logic: value.logic,
   };
 }
@@ -343,8 +326,9 @@ function toGeneratedDilemma(value: AiDilemma, input: DilemmaGenerationRequest): 
  *  rather than showing up only as blander dilemmas. */
 export type DilemmaRejection =
   | "not_an_object" | "missing_text" | "bad_taxonomy" | "bad_place" | "geography_rule"
-  | "bad_marker" | "bad_arrays" | "empty_arrays" | "bad_choices"
+  | "bad_marker" | "bad_arrays" | "empty_arrays" | "bad_choices" | `bad_choices:${string}`
   | "audience_language" | "title_names_tension" | "biased_question" | "bad_location_fit"
+  | "implausible_role" | "visible_text_too_long"
   | "generic_future" | "bad_future_pressure" | "wrong_generation_plan" | "problem_area_reused"
   | `incoherent_logic:${string}` | `unusable_choice_set:${string}`;
 
@@ -355,11 +339,15 @@ export function validateAiDilemmaDetailed(
   if (!isRecord(value)) return { reason: "not_an_object" };
   if (
     !isString(value.id) || !isString(value.title) || !isString(value.scenePrompt) ||
-    !isString(value.landingScene) || !isString(value.stake) || !isString(value.question) ||
-    !isString(value.decisionAxis) || !isString(value.userRelation)
+    !isString(value.landingScene) || !isString(value.stake) || !isString(value.question)
   ) return { reason: "missing_text" };
   if (TITLE_NAMES_TENSION.test(value.title)) return { reason: "title_names_tension" };
-  if (BIASED_QUESTION.test(`${value.question} ${value.decisionAxis}`)) return { reason: "biased_question" };
+  if (BIASED_QUESTION.test(value.question)) return { reason: "biased_question" };
+  if (value.stake.length > 170) return { reason: "visible_text_too_long" };
+  if (
+    input.role === "Barn" &&
+    CHILD_FALSE_AUTHORITY.test([value.title, value.landingScene, value.scenePrompt, value.question].join(" "))
+  ) return { reason: "implausible_role" };
   if (!problemAreas.includes(value.problemArea as ProblemArea)) return { reason: "bad_taxonomy" };
   if (!locationTypes.includes(value.locationType as LocationType)) return { reason: "bad_taxonomy" };
   if (!technologies.includes(value.technology as FutureTechnology)) return { reason: "bad_taxonomy" };
@@ -382,7 +370,11 @@ export function validateAiDilemmaDetailed(
     return { reason: "bad_arrays" };
   }
   if (value.validLocationTypes.length === 0 || value.targetGroups.length === 0 || value.technologies.length === 0) return { reason: "empty_arrays" };
-  if (!Array.isArray(value.choices) || value.choices.length !== 4 || !value.choices.every(isChoice)) return { reason: "bad_choices" };
+  if (!Array.isArray(value.choices) || value.choices.length !== 4 || !value.choices.every(isChoice)) {
+    const choiceReason = Array.isArray(value.choices) ? value.choices.map(choiceProblem).find(Boolean) : "not_array";
+    console.warn(`[dilemma] invalid choices: ${choiceReason ?? "wrong_count"}`);
+    return { reason: `bad_choices:${choiceReason ?? "wrong_count"}` as DilemmaRejection };
+  }
   if (!isString(value.normalized2046) || value.normalized2046.trim().length < 25 || GENERIC_FUTURE.test(value.normalized2046)) {
     return { reason: "generic_future" };
   }
@@ -391,20 +383,19 @@ export function validateAiDilemmaDetailed(
     input.generationPlan &&
     (value.futurePressureId !== input.generationPlan.pressure.id ||
       !input.generationPlan.problemAreas.includes(value.problemArea as ProblemArea) ||
-      value.severity !== input.generationPlan.stage.severity)
+      value.severity !== input.generationPlan.severity)
   ) {
     return { reason: "wrong_generation_plan" };
   }
   const logicProblem = findLogicProblem(value);
   if (logicProblem) return { reason: `incoherent_logic:${logicProblem}` as DilemmaRejection };
-  const choiceProblem = findChoiceSetProblem(value.choices as Choice[], value.coreTension);
-  if (choiceProblem) return { reason: `unusable_choice_set:${choiceProblem}` as DilemmaRejection };
+  const choiceSetProblem = findChoiceSetProblem(value.choices as Choice[], value.coreTension);
+  if (choiceSetProblem) return { reason: `unusable_choice_set:${choiceSetProblem}` as DilemmaRejection };
 
   const structured = toGeneratedDilemma(value as AiDilemma, input);
-  const tailored = input.language === "da" ? tailorDilemmaCopyForAudience(structured) : structured;
-  if (input.language === "da" && hasAudienceLanguageIssues(tailored)) return { reason: "audience_language" };
+  if (input.language === "da" && hasAudienceLanguageIssues(structured)) return { reason: "audience_language" };
 
-  return { dilemma: tailored };
+  return { dilemma: structured };
 }
 
 export function validateAiDilemma(value: unknown, input: DilemmaGenerationRequest): GeneratedDilemma | undefined {

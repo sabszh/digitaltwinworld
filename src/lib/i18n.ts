@@ -4,6 +4,7 @@ export type Language = "da" | "en";
 
 export const roleLabels: Record<Language, Record<UserRole, string>> = {
   da: {
+    Barn: "Barn",
     Ung: "Ung",
     Forælder: "Forælder",
     "Lærer / pædagog": "Lærer / pædagog",
@@ -15,6 +16,7 @@ export const roleLabels: Record<Language, Record<UserRole, string>> = {
     Beslutningstager: "Beslutningstager",
   },
   en: {
+    Barn: "Child",
     Ung: "Young person",
     Forælder: "Parent",
     "Lærer / pædagog": "Teacher / educator",

@@ -109,11 +109,15 @@ export function TravelTransition({
   dilemma,
   language,
   isFirstTrip,
+  error,
+  onRetry,
   onArrive,
 }: {
   dilemma?: GeneratedDilemma;
   language: Language;
   isFirstTrip: boolean;
+  error?: string;
+  onRetry: () => void;
   onArrive: () => void;
 }) {
   const text = uiText[language];
@@ -126,6 +130,18 @@ export function TravelTransition({
     worldSound.playArrivalStamp();
     onArrive();
   }, [landed, onArrive]);
+
+  if (error) {
+    return (
+      <div className="fixed inset-0 z-20 grid place-items-center px-6">
+        <div className="journey-card w-full max-w-md p-7 text-center">
+          <p className="text-lg font-semibold text-[var(--text)]">{language === "da" ? "Vi kunne ikke finde næste stop." : "We could not find the next stop."}</p>
+          <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{language === "da" ? "Prøv igen om et øjeblik." : "Please try again in a moment."}</p>
+          <button type="button" onClick={onRetry} className="journey-button journey-button--primary mt-6">{language === "da" ? "Prøv igen" : "Try again"}</button>
+        </div>
+      </div>
+    );
+  }
 
   if (!dilemma || !landed) {
     const steps = isFirstTrip

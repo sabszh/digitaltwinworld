@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { simplifyTextForAudience } from "@/lib/audience";
 import type { Language } from "@/lib/i18n";
 import { uiText } from "@/lib/i18n";
 import { worldSound } from "@/lib/sound";
@@ -25,14 +24,13 @@ export function ConsequenceCard({
 }) {
   const text = uiText[language];
   const place = dilemma?.exactPlace?.name ?? dilemma?.locationType ?? "stedet";
-  const technology = dilemma ? simplifyTextForAudience(dilemma.role, dilemma.technology) : "teknologien";
 
   const consequenceText = customAnswer
-    ? simplifyTextForAudience(dilemma?.role ?? "For alle", language === "da" ? `Din løsning flytter ansvaret på ${place}. Nogen får mere indflydelse; andre skal nu leve med en ny usikkerhed.` : `Your solution shifts responsibility at ${place}. Someone gains more influence; someone else now lives with a new uncertainty.`)
+    ? language === "da" ? `Dit valg ændrer, hvem der får indflydelse på ${place}, og hvem der må leve med usikkerheden.` : `Your choice changes who has influence at ${place}, and who must live with the uncertainty.`
     : choice?.consequence
-      ? simplifyTextForAudience(dilemma?.role ?? "For alle", choice.consequence.split(".")[0] + ".")
+      ? choice.consequence.split(".")[0] + "."
     : choice
-      ? simplifyTextForAudience(dilemma?.role ?? "For alle", `${choice.label} ændrer balancen mellem mennesker og ${technology}.`)
+      ? language === "da" ? `${choice.label} ændrer, hvem der får sin vilje lige nu.` : `${choice.label} changes who gets their way right now.`
       : language === "da" ? "Dit valg ændrer, hvem der bærer ansvaret." : "Your choice changes who carries the responsibility.";
 
   return (

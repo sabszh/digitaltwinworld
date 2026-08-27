@@ -2,6 +2,7 @@
 
 import { Mic, Square } from "lucide-react";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 import { useSpeechRecognition } from "@/lib/useSpeechRecognition";
 import { worldSound } from "@/lib/sound";
 import type { Language } from "@/lib/i18n";
@@ -10,14 +11,20 @@ import { uiText } from "@/lib/i18n";
 export function VoiceInput({
   language,
   onTranscript,
+  onInterim,
   disabled,
 }: {
   language: Language;
   onTranscript: (text: string) => void;
+  onInterim?: (text: string) => void;
   disabled?: boolean;
 }) {
   const text = uiText[language];
   const recognition = useSpeechRecognition(language === "da" ? "da-DK" : "en-US");
+
+  useEffect(() => {
+    onInterim?.(recognition.interim);
+  }, [onInterim, recognition.interim]);
 
   if (!recognition.supported) return null;
 
@@ -59,9 +66,6 @@ export function VoiceInput({
         )}
         {recognition.listening ? <Square className="h-4 w-4" aria-hidden="true" /> : <Mic className="h-4 w-4" aria-hidden="true" />}
       </button>
-      {recognition.listening && recognition.interim && (
-        <p className="text-xs italic text-[var(--faint)]">{recognition.interim}</p>
-      )}
       {recognition.error === "denied" && <p className="text-xs text-[var(--faint)]">{text.voiceDenied}</p>}
     </div>
   );

@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { AiLoader } from "@/components/ui/ai-loader";
 import { VoiceInput } from "@/components/VoiceInput";
 import type { Language } from "@/lib/i18n";
 import { roleLabels, uiText } from "@/lib/i18n";
@@ -13,72 +12,9 @@ import type { PersonaAnswers, UserRole } from "@/types/world2046";
 // "Arbejdsgiver" and "Medarbejder" used to sit here as separate options, but
 // both resolved to the same professional audience profile — an identical
 // journey under two names. One "Fagperson" row keeps that entry point honest.
-const visibleRoles: UserRole[] = ["Ung", "Forælder", "Lærer / pædagog", "Fagperson", "For alle"];
+const visibleRoles: UserRole[] = ["Barn", "Ung", "Forælder", "Lærer / pædagog", "Fagperson", "For alle"];
 
-type FieldKey = "role" | "hope" | "fear";
-
-const timeBoardRows = [
-  { id: "route", flight: "WLD-01", to: "RUTE FUNDET", time: "NU", gate: "W1", status: "KLAR" },
-  { id: "place", flight: "WLD-01", to: "STED FASTLAGT", time: "NU", gate: "W1", status: "KLAR" },
-  { id: "ready", flight: "WLD-01", to: "REJSEN KLARGØRES", time: "NU", gate: "W1", status: "KLAR" },
-];
-
-const splitFlapChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:/→∙";
-
-function shuffleText(value: string, tick: number, rowIndex: number) {
-  return value
-    .split("")
-    .map((char, charIndex) => {
-      if (char === " ") return " ";
-      const settled = (tick + rowIndex * 2 + charIndex) % 12 > 2;
-      if (settled) return char;
-      const index = (tick * 7 + rowIndex * 11 + charIndex * 5) % splitFlapChars.length;
-      return splitFlapChars[index];
-    })
-    .join("");
-}
-
-function TimeFlowDepartureBoard({ language, loadingText }: { language: Language; loadingText: string }) {
-  const [tick, setTick] = useState(0);
-
-  useEffect(() => {
-    const interval = window.setInterval(() => setTick((current) => current + 1), 130);
-    return () => window.clearInterval(interval);
-  }, []);
-
-  return (
-    <div className="time-flow-board" aria-label={loadingText}>
-      <div className="time-flow-board-head">
-        <div>
-          <span>{language === "da" ? "Afgang" : "Departures"}</span>
-          <strong>{language === "da" ? "Tidsrejser" : "Time departures"}</strong>
-        </div>
-        <time>{language === "da" ? "NU" : "NOW"}</time>
-      </div>
-      <div className="time-flow-board-cols" aria-hidden="true">
-        <span>Flight</span>
-        <span>To</span>
-        <span>Time</span>
-        <span>Gate</span>
-        <span>Status</span>
-      </div>
-      <div className="time-flow-board-rows">
-        {timeBoardRows.map((row, index) => (
-          <div className="time-flow-board-row" key={row.id}>
-            <span>{shuffleText(row.flight, tick, index)}</span>
-            <strong>{shuffleText(row.to, tick + 3, index)}</strong>
-            <span>{shuffleText(row.time, tick + 6, index)}</span>
-            <span>{shuffleText(row.gate, tick + 9, index)}</span>
-            <em>{shuffleText(row.status, tick + 12, index)}</em>
-          </div>
-        ))}
-      </div>
-      <div className="time-flow-board-status">
-        <AiLoader text={loadingText} className="loader-wrapper--persona" />
-      </div>
-    </div>
-  );
-}
+type FieldKey = "age" | "role" | "hope" | "fear";
 
 // Bars are derived from the serial, so the code belongs to this ticket instead of
 // being a fixed texture. Real barcodes have irregular bar and gap widths — the old
@@ -116,11 +52,13 @@ function TicketField({
   label,
   value,
   active,
+  activeHint,
   onClick,
 }: {
   label: string;
   value?: string;
   active: boolean;
+  activeHint: string;
   onClick: () => void;
 }) {
   return (
@@ -128,11 +66,10 @@ function TicketField({
       <span className="ticket-field-body">
         <span className="ticket-field-copy">
           <span className="ticket-label">{label}</span>
-          {/* The slot stays blank until answered, like a boarding pass waiting to
-              be filled in. The non-breaking space holds the line's height so the
-              ticket does not jump when an answer lands. */}
+          {/* An active empty field points to its open input below; inactive fields
+              keep a blank line so the ticket never jumps when an answer lands. */}
           <strong className="block truncate text-[13px] font-semibold text-[var(--text)]">
-            {value || " "}
+            {value || (active ? activeHint : " ")}
           </strong>
         </span>
         {value ? <span className="ticket-field-check" aria-hidden="true">✓</span> : null}
@@ -165,6 +102,7 @@ function TextFieldExpansion({
   onDone: (nextValue?: string) => void;
 }) {
   const text = uiText[language];
+  const [interim, setInterim] = useState("");
   return (
     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }} className="overflow-hidden">
       <div className="border-t border-dashed border-[var(--line)] p-4 md:p-5">
@@ -189,8 +127,11 @@ function TextFieldExpansion({
         </div>
         <div className="surface-card mt-3 rounded-2xl p-3.5">
           <textarea
-            value={value}
-            onChange={(event) => onChange(event.target.value)}
+            value={interim ? `${value}${value ? " " : ""}${interim}` : value}
+            onChange={(event) => {
+              setInterim("");
+              onChange(event.target.value);
+            }}
             rows={2}
             placeholder={placeholder}
             className="w-full resize-none bg-transparent text-[15px] text-[var(--text)] outline-none placeholder:text-[var(--faint)]"
@@ -202,8 +143,10 @@ function TextFieldExpansion({
               language={language}
               onTranscript={(transcript) => {
                 onVoiceUsed();
+                setInterim("");
                 onChange(value ? `${value} ${transcript}` : transcript);
               }}
+              onInterim={setInterim}
             />
             <button
               type="button"
@@ -231,14 +174,16 @@ export function PersonaBuilder({
   onCheckIn: (answers: PersonaAnswers) => Promise<void>;
 }) {
   const text = uiText[language];
-  const [expandedField, setExpandedField] = useState<FieldKey | null>("role");
-  const [checkedIn, setCheckedIn] = useState(false);
+  const activeFieldHint = language === "da" ? "Vælg eller skriv nedenfor ↓" : "Choose or write below ↓";
+  const [expandedField, setExpandedField] = useState<FieldKey | null>("age");
   const [isCheckingIn, setIsCheckingIn] = useState(false);
   const [role, setRole] = useState<UserRole | undefined>(undefined);
   const [hope, setHope] = useState("");
   const [fear, setFear] = useState("");
+  const [age, setAge] = useState<number | undefined>(undefined);
   const [hopeViaVoice, setHopeViaVoice] = useState(false);
   const [fearViaVoice, setFearViaVoice] = useState(false);
+  const pendingCheckInRef = useRef<PersonaAnswers | undefined>(undefined);
 
   const hopeChips = text.personaHopeChips.split(",");
   const fearChips = text.personaFearChips.split(",");
@@ -247,8 +192,9 @@ export function PersonaBuilder({
   // the ticket, so the pass becomes yours rather than staying printed decoration.
   const ticket = useMemo(() => {
     const roleIndex = role ? visibleRoles.indexOf(role) : -1;
-    const filled = [Boolean(role), Boolean(hope.trim()), Boolean(fear.trim())];
-    const hash = [role ?? "", hope, fear]
+    const filled = [age !== undefined, Boolean(role), Boolean(hope.trim()), Boolean(fear.trim())];
+    const checkInReady = Boolean(role && hope.trim() && fear.trim());
+    const hash = [role ?? "", hope, fear, age ?? ""]
       .join("|")
       .split("")
       .reduce((acc, char) => (acc * 31 + char.charCodeAt(0)) % 100000, 7);
@@ -256,12 +202,13 @@ export function PersonaBuilder({
       passenger: role ? roleLabels[language][role].toUpperCase() : null,
       seat: roleIndex >= 0 ? `${12 + roleIndex * 4}${"ABCDEF"[roleIndex]}` : null,
       zone: roleIndex >= 0 ? roleIndex + 1 : null,
-      serial: filled.every(Boolean)
+      serial: checkInReady
         ? `WLD-01-2026-AAR-${String(hash).padStart(5, "0")}`
         : "WLD-01-2026-AAR-•••••",
       stamped: filled.filter(Boolean).length,
+      checkInReady,
     };
-  }, [role, hope, fear, language]);
+  }, [role, hope, fear, age, language]);
 
   // One confirmation per field that gets its tick — driven off the count rather
   // than the individual setters, so typing into a field does not retrigger it.
@@ -276,27 +223,13 @@ export function PersonaBuilder({
     const resolvedFear = nextFear ?? fear;
     if (!role || !hope.trim() || !resolvedFear.trim()) return;
     worldSound.playPersonaCheckIn();
-    setExpandedField(null);
+    // Keep the open field in place until the ticket is off screen. Collapsing
+    // it here changes the paper's aspect ratio halfway through its departure.
     setIsCheckingIn(true);
-    // Let the pass slide off-screen before the departure board takes over —
-    // the persona builds in parallel so the animation costs no extra wait.
-    const building = onCheckIn({ role, hope, fear: resolvedFear, hopeViaVoice, fearViaVoice });
-    await building;
+    // Do not change the app phase yet: the pass's paper CSS belongs to the
+    // persona phase and must remain active until it has left the screen.
+    pendingCheckInRef.current = { role, hope, fear: resolvedFear, age, hopeViaVoice, fearViaVoice };
   };
-
-  if (checkedIn) {
-    return (
-      <motion.section
-        className="relative z-20 grid min-h-screen place-items-center px-6 py-10"
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.65, ease: [0.86, 0, 0.07, 1] }}
-      >
-        <div className="persona-loading-stage">
-          <TimeFlowDepartureBoard language={language} loadingText={text.personaBuilding} />
-        </div>
-      </motion.section>
-    );
-  }
 
   return (
     <section className="relative z-20 grid min-h-screen place-items-center px-4 py-10">
@@ -314,7 +247,9 @@ export function PersonaBuilder({
           }
           transition={isCheckingIn ? { duration: UX_TIMING.boardingPassSlideMs / 1000, ease: [0.22, 0.8, 0.3, 1] } : { type: "spring", stiffness: 170, damping: 26, mass: 0.9 }}
           onAnimationComplete={() => {
-            if (isCheckingIn) setCheckedIn(true);
+            if (!isCheckingIn) return;
+            const answers = pendingCheckInRef.current;
+            if (answers) void onCheckIn(answers);
           }}
         >
           {/* ── Boarding pass header ── */}
@@ -345,7 +280,7 @@ export function PersonaBuilder({
               <em>{ticket.zone ? `Zone ${ticket.zone}` : "Zone –"}</em>
             </div>
             <div className="bp-stub-code">
-              <span className={ticket.stamped === 3 ? "bp-stub-filled" : "bp-stub-pending"}>{ticket.serial}</span>
+              <span className={ticket.checkInReady ? "bp-stub-filled" : "bp-stub-pending"}>{ticket.serial}</span>
               <TicketBarcode seed={ticket.serial} />
             </div>
           </aside>
@@ -399,9 +334,20 @@ export function PersonaBuilder({
 
           <div className="bp-fields">
             <TicketField
+              label={language === "da" ? "Din alder nu" : "Your age now"}
+              value={age === undefined ? undefined : (language === "da" ? `${age} år · ${age + 20} i 2046` : `${age} · ${age + 20} in 2046`)}
+              active={expandedField === "age"}
+              activeHint={activeFieldHint}
+              onClick={() => {
+                worldSound.playTextFocus();
+                toggleField("age");
+              }}
+            />
+            <TicketField
               label={text.personaFieldRolePrompt}
               value={role ? roleLabels[language][role] : undefined}
               active={expandedField === "role"}
+              activeHint={activeFieldHint}
               onClick={() => {
                 worldSound.playTextFocus();
                 toggleField("role");
@@ -411,6 +357,7 @@ export function PersonaBuilder({
               label={text.personaFieldHopePrompt}
               value={hope || undefined}
               active={expandedField === "hope"}
+              activeHint={activeFieldHint}
               onClick={() => {
                 worldSound.playTextFocus();
                 toggleField("hope");
@@ -420,6 +367,7 @@ export function PersonaBuilder({
               label={text.personaFieldFearPrompt}
               value={fear || undefined}
               active={expandedField === "fear"}
+              activeHint={activeFieldHint}
               onClick={() => {
                 worldSound.playTextFocus();
                 toggleField("fear");
@@ -427,6 +375,48 @@ export function PersonaBuilder({
             />
 
             <AnimatePresence>
+              {expandedField === "age" && (
+                <motion.div
+                  key="age"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="overflow-hidden md:col-span-4"
+                >
+                  <div className="flex flex-wrap items-end gap-3 border-t border-dashed border-[var(--line)] p-4 md:p-5">
+                    <label className="flex items-center gap-3 text-sm font-medium text-[var(--muted)]" htmlFor="boarding-age">
+                      <span>{language === "da" ? "Hvor gammel er du nu?" : "How old are you now?"}</span>
+                      <input
+                        id="boarding-age"
+                        type="number"
+                        inputMode="numeric"
+                        min="0"
+                        max="120"
+                        autoFocus
+                        value={age ?? ""}
+                        onChange={(event) => {
+                          const raw = event.target.value;
+                          const next = Number(raw);
+                          setAge(raw !== "" && Number.isInteger(next) && next >= 0 && next <= 120 ? next : undefined);
+                        }}
+                        placeholder="—"
+                        className="surface-control w-24 rounded-xl px-3 py-2 text-lg font-semibold text-[var(--text)] outline-none"
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        worldSound.playChoiceSelect(0);
+                        setExpandedField("role");
+                      }}
+                      className="ticket-launch ml-auto rounded-full px-4 py-2 text-xs font-semibold"
+                    >
+                      {language === "da" ? "Fortsæt" : "Continue"}
+                    </button>
+                  </div>
+                </motion.div>
+              )}
               {expandedField === "role" && (
                 <motion.div
                   key="role"
@@ -434,7 +424,7 @@ export function PersonaBuilder({
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="overflow-hidden md:col-span-3"
+                  className="overflow-hidden md:col-span-4"
                 >
                   <div className="grid gap-2 border-t border-dashed border-[var(--line)] p-3 sm:grid-cols-2 md:p-4">
                     {visibleRoles.map((option, index) => (
@@ -469,7 +459,7 @@ export function PersonaBuilder({
               )}
 
               {expandedField === "hope" && (
-                <div key="hope" className="md:col-span-3">
+                <div key="hope" className="md:col-span-4">
                   <TextFieldExpansion
                     language={language}
                     chips={hopeChips}
@@ -484,7 +474,7 @@ export function PersonaBuilder({
               )}
 
               {expandedField === "fear" && (
-                <div key="fear" className="md:col-span-3">
+                <div key="fear" className="md:col-span-4">
                   <TextFieldExpansion
                     language={language}
                     chips={fearChips}

@@ -1,4 +1,4 @@
-import { appendFile, mkdir, readFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
 import type { ConsentedSessionRecord, SessionResult } from "@/types/world2046";
@@ -6,7 +6,7 @@ import { userRoles } from "@/data/taxonomies";
 
 export const runtime = "nodejs";
 
-const POLICY_VERSION = "2026-08-14" as const;
+const POLICY_VERSION = "2026-08-25" as const;
 let writeQueue = Promise.resolve();
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -23,11 +23,19 @@ function isValidSession(value: unknown): value is SessionResult {
     && typeof item.city === "string"
     && typeof item.country === "string"
     && typeof item.question === "string"
+    && isRecord(item.presented)
+    && typeof item.presented.title === "string"
+    && typeof item.presented.scene === "string"
+    && Array.isArray(item.presented.choices)
+    && item.presented.choices.length === 4
+    && item.presented.choices.every((choice) => isRecord(choice)
+      && typeof choice.id === "string"
+      && typeof choice.label === "string")
     && typeof item.selectedChoiceId === "string"
     && typeof item.selectedChoiceLabel === "string"
     && isRecord(item.valueImpacts));
   return typeof value.sessionId === "string"
-    && value.sessionId.startsWith("world2046-")
+    && /^world2046-[a-z0-9-]+$/.test(value.sessionId)
     && typeof value.createdAt === "string"
     && value.year === 2046
     && (value.language === "da" || value.language === "en")
@@ -38,27 +46,9 @@ function isValidSession(value: unknown): value is SessionResult {
     && validProfile;
 }
 
-function storagePath() {
+function storageDirectory() {
   const configured = process.env.SESSION_DATA_PATH;
-  return configured ? path.resolve(configured) : path.join(process.cwd(), ".data", "consented-sessions.jsonl");
-}
-
-async function alreadySaved(filePath: string, sessionId: string) {
-  try {
-    const content = await readFile(filePath, "utf8");
-    return content.split("\n").some((line) => {
-      if (!line.trim()) return false;
-      try {
-        const record = JSON.parse(line) as Partial<ConsentedSessionRecord>;
-        return record.session?.sessionId === sessionId;
-      } catch {
-        return false;
-      }
-    });
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") return false;
-    throw error;
-  }
+  return configured ? path.resolve(configured) : path.join(process.cwd(), ".data", "sessions");
 }
 
 export async function POST(request: Request) {
@@ -74,20 +64,27 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid session" }, { status: 400 });
   }
 
-  const filePath = storagePath();
+  const directory = storageDirectory();
+  const filePath = path.join(directory, `${session.sessionId}.json`);
   let duplicate = false;
   try {
     writeQueue = writeQueue.then(async () => {
-      await mkdir(path.dirname(filePath), { recursive: true });
-      duplicate = await alreadySaved(filePath, session.sessionId);
-      if (duplicate) return;
+      await mkdir(directory, { recursive: true });
       const record: ConsentedSessionRecord = {
-        schemaVersion: 1,
+        schemaVersion: 2,
         consentPolicyVersion: POLICY_VERSION,
         acceptedAt: new Date().toISOString(),
         session,
       };
-      await appendFile(filePath, `${JSON.stringify(record)}\n`, "utf8");
+      try {
+        await writeFile(filePath, `${JSON.stringify(record, null, 2)}\n`, { encoding: "utf8", flag: "wx" });
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === "EEXIST") {
+          duplicate = true;
+          return;
+        }
+        throw error;
+      }
     });
     await writeQueue;
     return NextResponse.json({ saved: true, duplicate });

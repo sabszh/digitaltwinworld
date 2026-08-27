@@ -10,7 +10,7 @@ export const DEFAULT_MODEL = "gpt-5.6-luna";
  * with the same handful of scenes all journey.
  * Reasoning models: temperature is rejected outright, and left to its own
  * devices the model spends 2-3k reasoning tokens and 30-37 s on one dilemma,
- * which blows the client's 20 s abort (UX_TIMING.dilemmaFetchTimeoutMs) so every
+ * which blows the client's request timeout (UX_TIMING.dilemmaFetchTimeoutMs) so every
  * round would fall back. "low" lands around 13 s with the reasoning that
  * actually helps here.
  */
@@ -29,6 +29,9 @@ export type JsonRequest = {
   systemNote?: string;
   /** Only reaches gpt-4/3 models; reasoning models refuse the knob entirely. */
   temperature?: number;
+  /** Avoid a stalled provider request holding an interaction or an evaluation
+   * forever. Callers already have fallback/retry behaviour for an error. */
+  timeoutMs?: number;
 };
 
 export type JsonResult<T> = { data: T } | { error: string };
@@ -50,6 +53,7 @@ export async function requestJson<T>({
   language,
   systemNote,
   temperature,
+  timeoutMs = 20_000,
 }: JsonRequest): Promise<JsonResult<T>> {
   const model = process.env.OPENAI_MODEL ?? DEFAULT_MODEL;
   const system = [
@@ -60,6 +64,8 @@ export async function requestJson<T>({
     .join(" ");
 
   let response: Response;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
     response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -67,6 +73,7 @@ export async function requestJson<T>({
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
+      signal: controller.signal,
       body: JSON.stringify({
         model,
         ...samplingFor(model, temperature),
@@ -81,7 +88,9 @@ export async function requestJson<T>({
       }),
     });
   } catch {
-    return { error: "openai_unreachable" };
+    return { error: controller.signal.aborted ? "openai_timeout" : "openai_unreachable" };
+  } finally {
+    clearTimeout(timeout);
   }
 
   if (!response.ok) return { error: `openai_${response.status}` };

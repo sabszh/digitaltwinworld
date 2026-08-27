@@ -21,10 +21,22 @@ export function SoundEffects({ activeDilemma, phase }: { activeDilemma?: Generat
       return;
     }
 
-    let cancelled = false;
+    let welcomed = false;
+    let introActive = true;
     const arm = () => {
       void worldSound.unlock().then(() => {
-        if (!cancelled) worldSound.startAmbientDrone();
+        if (!welcomed) {
+          welcomed = true;
+          worldSound.playIntroWelcome();
+        }
+        // A visitor's first gesture is often the click on "Start rejsen".
+        // That click immediately changes phase and runs this effect's cleanup.
+        // The welcome sound must still be allowed to play after the AudioContext
+        // resumes; only the idle drone belongs exclusively to the intro phase.
+        if (introActive) worldSound.startAmbientDrone();
+      }).catch(() => {
+        // Audio can be unavailable (for example in a browser with sound
+        // disabled). The journey must remain usable in that case.
       });
     };
     const gestures = ["pointerdown", "keydown", "touchstart"] as const;
@@ -33,7 +45,7 @@ export function SoundEffects({ activeDilemma, phase }: { activeDilemma?: Generat
     gestures.forEach((gesture) => window.addEventListener(gesture, arm, { once: true, passive: true }));
 
     return () => {
-      cancelled = true;
+      introActive = false;
       gestures.forEach((gesture) => window.removeEventListener(gesture, arm));
       worldSound.stopAmbientDrone();
     };

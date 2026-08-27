@@ -228,6 +228,8 @@ export default function Home() {
                 dilemma={store.activeDilemma}
                 language={language}
                 isFirstTrip={store.completedDilemmas.length === 0}
+                error={store.journeyError}
+                onRetry={() => void store.generateNext()}
                 onArrive={store.enterLanding}
               />
             )}
@@ -250,7 +252,7 @@ export default function Home() {
                 }}
               />
             )}
-            {store.phase === "report" && <FinalReport result={result} loading={store.reportLoading} language={language} onContinue={store.reviewConsent} />}
+            {store.phase === "report" && <FinalReport result={result} loading={store.reportLoading} error={store.reportError} language={language} onContinue={store.reviewConsent} onRetry={() => void store.finishJourney()} />}
             {store.phase === "consent" && <ConsentScreen language={language} status={store.consentStatus} onAccept={() => void store.saveConsentedSession()} onDecline={store.declineConsent} onBack={() => useSessionStore.setState({ phase: "report" })} />}
             {store.phase === "goodbye" && <GoodbyeScreen language={language} status={store.consentStatus === "saved" ? "saved" : "declined"} onFinish={store.restart} />}
           </motion.div>

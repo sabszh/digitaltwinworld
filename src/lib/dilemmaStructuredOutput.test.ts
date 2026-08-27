@@ -35,29 +35,28 @@ function baseline(overrides: Record<string, unknown> = {}) {
     scenePrompt: "Sofie, 11 år, holder tabletten og venter på sin plads i rækken.",
     landingScene: "Sofie, 11 år, holder tabletten ved sin plads. Sofie står nummer fjorten i hjælpekøen før fremlæggelsen.",
     stake: "Sofie risikerer at gå til fremlæggelsen uden den hjælp, hun mangler til den sidste opgave.",
-    question: "Hvordan skal rækkefølgen være, når læringsassistenten har lagt køen for klassen?",
+    question: "Hvad gør du, mens Sofie stadig venter?",
     locationType: "folkeskole",
     technology: "personlig læringsassistent",
     country: "Danmark",
     region: "Norden",
     city: "Herning",
     marker: { lat: 56.13, lng: 8.97 },
-    coreTension: { valueA: "equality", valueB: "efficiency", summary: "Hvem der hjælpes først." },
-    decisionAxis: "Hvem må bryde assistentens rækkefølge for én elev i dag?",
+    coreTension: { want: "at Sofie får hjælp nu", butAlsoWant: "at resten af klassen også når videre", whyCannotHaveBoth: "Læreren kan kun bruge den næste tid hos én gruppe." },
     logic: {
       rule: "Elevernes plads i hjælpekøen ligger fast fra morgenstunden og følger dem hele dagen.",
       benefit: "Læreren når flere elever, fordi ingen skal bruge timen på at fordele hjælpen.",
       trigger: "Sofie, 11 år, holder tabletten, mens hun venter som nummer fjorten i hjælpekøen.",
       decision: "Læreren skal vælge, om og hvordan Sofie kan flyttes frem i hjælpekøen i dag.",
+      choiceConstraint: "Læreren kan kun bruge den næste arbejdsblok ét sted, før fremlæggelsen begynder.",
     },
     futurePressureId: "automation",
     normalized2046: "Elevernes plads i hjælpekøen ligger fast fra morgenstunden og følger dem hele dagen.",
-    userRelation: "underviser",
     choices: [
-      { id: "a", label: "Læreren kan bryde assistentens kø", description: "Læreren sætter systemets rækkefølge til side for én elev i dag.", axisPosition: 1, consequence: "Det ændrer hverdagen i klassen.", valueImpacts: impacts({ equality: 2, efficiency: -1 }) },
-      { id: "b", label: "Klassen kan se assistentens rangorden", description: "Alle ved hvem systemet har sat øverst, og hvorfor.", axisPosition: 2, consequence: "Det ændrer hverdagen i klassen.", valueImpacts: impacts({ equality: 1, efficiency: 0 }) },
-      { id: "c", label: "Forældrene skriver reglen om hvert år", description: "De vælger hvad køen kigger på, men den ligger fast et helt skoleår.", axisPosition: 3, consequence: "Det ændrer hverdagen i klassen.", valueImpacts: impacts({ equality: 0, efficiency: 1 }) },
-      { id: "d", label: "Assistentens rangorden står urørt", description: "Ingen kan gøre undtagelser, og læreren kan ikke rykke nogen frem.", axisPosition: 4, consequence: "Det ændrer hverdagen i klassen.", valueImpacts: impacts({ equality: -1, efficiency: 2 }) },
+      { id: "a", label: "Hjælp Sofie først", description: "Du tager Sofie ud til fem minutters hjælp, men de andre grupper må vente.", consequence: "Sofie kan nå fremlæggelsen bedre, mens to andre grupper mister deres tur.", valueImpacts: impacts({ equality: 2, humanContact: 1, efficiency: -1 }) },
+      { id: "b", label: "Lad køen stå", description: "Du følger køen som den er, så alle kender rækkefølgen, men Sofie venter videre.", consequence: "Klassen beholder roen, men Sofie går til fremlæggelsen uden den hjælp hun bad om.", valueImpacts: impacts({ efficiency: 2, trust: 1, equality: -1 }) },
+      { id: "c", label: "Byt med en gruppe", description: "Du spørger én gruppe om at bytte tid med Sofie, men den gruppe mister sin planlagte hjælp.", consequence: "Sofie kommer frem uden at bryde hele køen, men en anden gruppe må ændre sin opgave.", valueImpacts: impacts({ localControl: 1, equality: 1, efficiency: -1 }) },
+      { id: "d", label: "Del hjælpen kort", description: "Du giver alle grupper en kort fælles gennemgang, men ingen får den fulde hjælp nu.", consequence: "Flere får et næste skridt, men Sofies særlige problem bliver kun delvist løst.", valueImpacts: impacts({ equality: 1, efficiency: 1, humanContact: -1 }) },
     ],
     ...overrides,
   };
@@ -84,7 +83,7 @@ describe("validateAiDilemmaDetailed", () => {
     expect(validateAiDilemmaDetailed(baseline({ locationType: "hospital" }), request)).toEqual({ reason: "bad_location_fit" });
   });
 
-  it("keeps scoring attached to each option when the order is shuffled", () => {
+  it("keeps scoring attached to each concrete action when the order is shuffled", () => {
     const result = validateAiDilemmaDetailed(baseline(), request);
     expect(result).toHaveProperty("dilemma");
     if (!("dilemma" in result)) return;
@@ -92,10 +91,8 @@ describe("validateAiDilemmaDetailed", () => {
     // impacts must survive it, since that pairing is the whole score.
     for (const choice of result.dilemma.choices) {
       const original = baseline().choices.find((item) => item.id === choice.id);
-      expect(choice.axisPosition).toBe(original?.axisPosition);
       expect(choice.valueImpacts).toEqual(original?.valueImpacts);
     }
-    expect(new Set(result.dilemma.choices.map((choice) => choice.axisPosition))).toEqual(new Set([1, 2, 3, 4]));
   });
 
   it("rejects a problem area the journey has already visited", () => {
@@ -126,10 +123,34 @@ describe("validateAiDilemmaDetailed", () => {
   it("rejects a question that fixes one side of the outcome", () => {
     expect(
       validateAiDilemmaDetailed(
-        baseline({ question: "Hvordan hjælper vi Sofie uden at læreren ændrer køen?" }),
+        baseline({ question: "Hvad gør du uden at læreren ændrer køen?" }),
         request,
       ),
     ).toEqual({ reason: "biased_question" });
+  });
+
+  it("rejects a choice set without a reason the actions compete", () => {
+    const dilemma = baseline();
+    dilemma.logic.choiceConstraint = "";
+    expect(validateAiDilemmaDetailed(dilemma, request)).toEqual({ reason: "incoherent_logic:incomplete" });
+  });
+
+  it("rejects a collapsed human conflict", () => {
+    expect(validateAiDilemmaDetailed(baseline({ coreTension: { want: "at Sofie får hjælp", butAlsoWant: "at Sofie får hjælp", whyCannotHaveBoth: "Tiden er knap." } }), request)).toEqual({
+      reason: "unusable_choice_set:collapsed_human_conflict",
+    });
+  });
+
+  it("rejects a choice with no value impact", () => {
+    const dilemma = baseline();
+    dilemma.choices[0].valueImpacts = impacts({});
+    expect(validateAiDilemmaDetailed(dilemma, request)).toEqual({ reason: "bad_choices:relevant_values" });
+  });
+
+  it("rejects an option that presents a gain without a visible price", () => {
+    const dilemma = baseline();
+    dilemma.choices[0].description = "Du ringer Sofie op, så hun kan få hjælp med det samme.";
+    expect(validateAiDilemmaDetailed(dilemma, request)).toEqual({ reason: "bad_choices:missing_tradeoff" });
   });
 
   it("still allows a title that names two people", () => {
@@ -138,5 +159,38 @@ describe("validateAiDilemmaDetailed", () => {
 
   it("allows a question title when the dilemma itself is coherent", () => {
     expect(validateAiDilemmaDetailed(baseline({ title: "Hvem hjælper Sofie i dag?" }), request)).toHaveProperty("dilemma");
+  });
+
+  it("checks the visible stake text for child language", () => {
+    expect(
+      validateAiDilemmaDetailed(
+        baseline({ stake: "Reservedelen kan kun bruges ét sted, så mælken eller isen må vente." }),
+        { ...request, role: "Barn" },
+      ),
+    ).toEqual({ reason: "audience_language" });
+  });
+
+  it("rejects false civic authority for a child", () => {
+    expect(
+      validateAiDilemmaDetailed(
+        baseline({ landingScene: "Du sidder i Aalborgs ungebyråd og skal sætte dit kryds om en ny plan." }),
+        { ...request, role: "Barn" },
+      ),
+    ).toEqual({ reason: "implausible_role" });
+  });
+
+  it("rejects medical authority for a child", () => {
+    expect(
+      validateAiDilemmaDetailed(
+        baseline({ scenePrompt: "På platformen skal du dele en test, før du må give andre medicinråd." }),
+        { ...request, role: "Barn" },
+      ),
+    ).toEqual({ reason: "implausible_role" });
+  });
+
+  it("rejects a visible stake that would be cut off in the card", () => {
+    expect(validateAiDilemmaDetailed(baseline({ stake: "Sofie ".repeat(30) }), request)).toEqual({
+      reason: "visible_text_too_long",
+    });
   });
 });
