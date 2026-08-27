@@ -47,6 +47,16 @@ const JOURNEYS: Array<{ role: UserRole; hope: string; fear: string }> = [
     fear: "at man aldrig får fred for at blive målt",
   },
   {
+    role: "Medarbejder",
+    hope: "at teknologi giver mere tid til det arbejde, der betyder noget",
+    fear: "at blive målt og vurderet uden selv at blive hørt",
+  },
+  {
+    role: "Arbejdsgiver",
+    hope: "at nye løsninger kan skabe en sund og robust arbejdsplads",
+    fear: "at effektivitet gør mennesker til tal",
+  },
+  {
     role: "Fagperson",
     hope: "at vi tør bruge teknologien til det, der er svært",
     fear: "at ingen længere kan svare på hvorfor",
@@ -66,6 +76,16 @@ const JOURNEYS: Array<{ role: UserRole; hope: string; fear: string }> = [
     hope: "at teknologi gør hverdagen lettere for flere",
     fear: "at nogen bliver glemt, når alt bliver digitalt",
   },
+  {
+    role: "Borger",
+    hope: "at fælles løsninger stadig føles retfærdige",
+    fear: "at miste indflydelse på mit eget liv",
+  },
+  {
+    role: "Beslutningstager",
+    hope: "at vi kan handle tidligt på de store problemer",
+    fear: "at gevinsterne skjuler hvem der betaler prisen",
+  },
 ];
 
 async function generateOne(input: DilemmaGenerationRequest): Promise<{ dilemma?: GeneratedDilemma; reason?: string; detail?: string }> {
@@ -75,7 +95,7 @@ async function generateOne(input: DilemmaGenerationRequest): Promise<{ dilemma?:
     schema: responseSchema,
     prompt: buildDilemmaPrompt(input, { technologies, locationTypes }),
     language: input.language,
-    timeoutMs: 27_000,
+    timeoutMs: 40_000,
   });
   if ("error" in outcome) return { reason: outcome.error };
   const parsed = outcome.data;
@@ -139,12 +159,13 @@ describe("dilemma generator evaluation", () => {
       const journeysToRun = requestedRoles.size
         ? JOURNEYS.filter((journey) => requestedRoles.has(journey.role))
         : JOURNEYS;
-      const journeys = await Promise.all(journeysToRun.map(async (journey) => {
+      const rounds = Math.max(1, Math.min(5, Number(process.env.DILEMMA_EVAL_ROUNDS ?? 5) || 5));
+      const runJourney = async (journey: typeof JOURNEYS[number]) => {
         const lines: string[] = [`## Rejse: ${journey.role}`, ""];
         const rejected: string[] = [];
         const previous: CompletedDilemma[] = [];
 
-        for (let round = 0; round < 5; round += 1) {
+        for (let round = 0; round < rounds; round += 1) {
           const input: DilemmaGenerationRequest = {
             role: journey.role,
             answers: { role: journey.role, hope: journey.hope, fear: journey.fear },
@@ -154,15 +175,23 @@ describe("dilemma generator evaluation", () => {
             generationPlan: planRound(previous, undefined, undefined, getAudienceProfile(journey.role).preferredProblemAreas),
           };
 
-          // Same one-retry policy as the API route, so the numbers here are the
-          // numbers a player would actually see.
-          let { dilemma, reason, detail } = await generateOne(input);
-          if (!dilemma) ({ dilemma, reason, detail } = await generateOne(input));
-          if (!dilemma) {
-            rejected.push(`${journey.role} runde ${round + 1}: ${reason}`);
-            lines.push(`#### Stop ${round + 1}: AFVIST (${reason})`, detail ?? "", "");
-            continue;
+          // The participant-facing client now retries behind the travel view
+          // until a valid destination exists. Mirror that behaviour here so a
+          // three-round evaluation actually contains three reviewable rounds.
+          let dilemma: GeneratedDilemma | undefined;
+          let attempt = 0;
+          while (!dilemma) {
+            attempt += 1;
+            const generated = await generateOne(input);
+            dilemma = generated.dilemma;
+            if (!dilemma) {
+              console.warn(`[eval] ${journey.role} · stop ${round + 1} · forsøg ${attempt} afvist: ${generated.reason}`);
+              rejected.push(`${journey.role} runde ${round + 1}, forsøg ${attempt}: ${generated.reason}${generated.detail ? ` · ${generated.detail}` : ""}`);
+              const delay = Math.min(8000, 1500 * 2 ** Math.min(attempt - 1, 3));
+              await new Promise((resolve) => setTimeout(resolve, delay));
+            }
           }
+          console.warn(`[eval] ${journey.role} · stop ${round + 1} godkendt efter ${attempt} forsøg`);
 
           lines.push(render(dilemma, round + 1));
           previous.push({
@@ -194,7 +223,14 @@ describe("dilemma generator evaluation", () => {
           });
         }
         return { lines, rejected };
-      }));
+      };
+
+      const concurrency = Math.max(1, Math.min(4, Number(process.env.DILEMMA_EVAL_CONCURRENCY ?? 3) || 3));
+      const journeys: Array<Awaited<ReturnType<typeof runJourney>>> = [];
+      for (let start = 0; start < journeysToRun.length; start += concurrency) {
+        const batch = journeysToRun.slice(start, start + concurrency);
+        journeys.push(...await Promise.all(batch.map(runJourney)));
+      }
 
       const lines = ["# Dilemma-evaluering", "", ...journeys.flatMap((journey) => journey.lines)];
       const rejected = journeys.flatMap((journey) => journey.rejected);

@@ -228,8 +228,6 @@ export default function Home() {
                 dilemma={store.activeDilemma}
                 language={language}
                 isFirstTrip={store.completedDilemmas.length === 0}
-                error={store.journeyError}
-                onRetry={() => void store.generateNext()}
                 onArrive={store.enterLanding}
               />
             )}

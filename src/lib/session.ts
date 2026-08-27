@@ -29,7 +29,6 @@ type SessionStore = {
   valueProfile: ValueProfile;
   futureReport?: FutureProfileReport;
   reportLoading: boolean;
-  journeyError?: string;
   reportError?: string;
   consentStatus: "idle" | "saving" | "saved" | "error" | "declined";
   sessionId: string;
@@ -53,6 +52,8 @@ type SessionStore = {
 };
 
 const createSessionId = () => `world2046-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+let dilemmaGenerationRun = 0;
+let activeDilemmaController: AbortController | undefined;
 
 export const useSessionStore = create<SessionStore>((set, get) => ({
   phase: "intro",
@@ -81,35 +82,62 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     }
     const preferredSeverity = completedDilemmas.length === 0 ? "low" : "medium";
     const travelStartedAt = Date.now();
+    const runId = ++dilemmaGenerationRun;
+    activeDilemmaController?.abort();
 
-    set({ activeDilemma: undefined, journeyError: undefined, phase: "traveling" });
+    set({ activeDilemma: undefined, phase: "traveling" });
 
     let nextDilemma: GeneratedDilemma | undefined;
-    try {
+    let attempt = 0;
+    const isCurrentRun = () =>
+      dilemmaGenerationRun === runId &&
+      get().sessionId === sessionId &&
+      get().phase === "traveling";
+
+    while (!nextDilemma && isCurrentRun()) {
       const controller = new AbortController();
+      activeDilemmaController = controller;
       const timeout = window.setTimeout(() => controller.abort(), UX_TIMING.dilemmaFetchTimeoutMs);
-      const response = await fetch("/api/dilemma", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role, answers: personaAnswers, previousDilemmas: completedDilemmas, preferredSeverity, language }),
-        signal: controller.signal,
-      }).finally(() => window.clearTimeout(timeout));
-      if (!response.ok) throw new Error((await response.json() as { error?: string }).error ?? "Failed to generate dilemma");
-      const data = (await response.json()) as { dilemma?: GeneratedDilemma };
-      if (!data.dilemma) throw new Error("Missing generated dilemma");
-      nextDilemma = data.dilemma;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to generate dilemma";
-      if (get().sessionId === sessionId) set({ journeyError: message });
-      return;
+      let retryDelay = 0;
+
+      try {
+        const response = await fetch("/api/dilemma", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ role, answers: personaAnswers, previousDilemmas: completedDilemmas, preferredSeverity, language }),
+          signal: controller.signal,
+        });
+        if (!response.ok) throw new Error((await response.json() as { error?: string }).error ?? "Failed to generate dilemma");
+        const data = (await response.json()) as { dilemma?: GeneratedDilemma };
+        if (!data.dilemma) throw new Error("Missing generated dilemma");
+        nextDilemma = data.dilemma;
+      } catch (error) {
+        if (!isCurrentRun()) return;
+        attempt += 1;
+        const message = error instanceof Error ? error.message : "Failed to generate dilemma";
+        retryDelay = Math.min(
+          UX_TIMING.dilemmaRetryMaxMs,
+          UX_TIMING.dilemmaRetryBaseMs * 2 ** Math.min(attempt - 1, 3),
+        );
+        console.warn(`[journey] destination attempt ${attempt} failed; retrying in background`, message);
+      } finally {
+        window.clearTimeout(timeout);
+        if (activeDilemmaController === controller) activeDilemmaController = undefined;
+      }
+
+      if (retryDelay > 0) {
+        await new Promise((resolve) => window.setTimeout(resolve, retryDelay));
+      }
     }
+
+    if (!nextDilemma || !isCurrentRun()) return;
 
     const elapsed = Date.now() - travelStartedAt;
     if (elapsed < UX_TIMING.minimumTravelLoadingMs) {
       await new Promise((resolve) => window.setTimeout(resolve, UX_TIMING.minimumTravelLoadingMs - elapsed));
     }
 
-    if (get().sessionId !== sessionId || get().phase !== "traveling") return;
+    if (!isCurrentRun()) return;
     set({ activeDilemma: nextDilemma });
   },
   enterLanding: () => {
@@ -248,7 +276,10 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     }
   },
   declineConsent: () => set({ consentStatus: "declined", phase: "goodbye" }),
-  restart: () =>
+  restart: () => {
+    dilemmaGenerationRun += 1;
+    activeDilemmaController?.abort();
+    activeDilemmaController = undefined;
     set({
       phase: "intro",
       language: get().language,
@@ -261,12 +292,12 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       valueProfile: emptyValueProfile,
       futureReport: undefined,
       reportLoading: false,
-      journeyError: undefined,
       reportError: undefined,
       consentStatus: "idle",
       sessionId: createSessionId(),
       createdAt: new Date().toISOString(),
-    }),
+    });
+  },
   getResult: () => {
     const { sessionId, createdAt, role, personaAnswers, completedDilemmas, valueProfile, futureReport, language } = get();
     return {

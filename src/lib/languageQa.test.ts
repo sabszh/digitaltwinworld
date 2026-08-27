@@ -30,4 +30,11 @@ describe("findAudienceLanguageIssues", () => {
     expect(findAudienceLanguageIssues("Barn", "Min data-agent åbner min wallet")).toEqual(expect.arrayContaining(["data-agent", "wallet"]));
     expect(findAudienceLanguageIssues("Ung", "Jeg køber en reservedel til min cykel")).toEqual([]);
   });
+
+  it("rejects short adult-system words in child dilemmas", () => {
+    expect(findAudienceLanguageIssues("Barn", "Du har et vandbudget og skal vælge en prioritering")).toEqual(
+      expect.arrayContaining(["vandbudget", "prioritering"]),
+    );
+    expect(findAudienceLanguageIssues("Barn", "Bussen kører selv, og din ven venter")).toEqual([]);
+  });
 });

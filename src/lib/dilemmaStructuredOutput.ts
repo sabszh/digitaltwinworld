@@ -186,6 +186,81 @@ const GENERIC_FUTURE =
 const TITLE_NAMES_TENSION = /^\s*(valget|balancen?|afvejningen|kampen|striden|dilemmaet|the\s+balance|the\s+choice)\s+(mellem|between)\b/iu;
 const BIASED_QUESTION = /\b(uden at|samtidig med at|på en ansvarlig måde|på den rigtige måde|without|while ensuring|responsibly)\b/iu;
 const CHILD_FALSE_AUTHORITY = /\b(ungebyråd|byråd|kommunalbestyrelse|afstemning|sætte (dit|jeres) kryds|godkende (planen|adgangen|fordelingen|ordningen)|medicinråd|medicinsk(?:e)? råd|vælge (?:hans|hendes|andres) behandling|give andre medicin)\b/iu;
+const CHILD_EVERYDAY_FUTURE = /\b(computer|robot|app|maskine|smart\w*|automatisk\w*|selvkørende\w*|skærm|varme|hede\w*|regn\w*|vand\w*|strøm\w*|energi\w*|mad\w*|natur\w*|vejr\w*|tørke\w*|oversvømm\w*|træ\w*|skygge\w*|genbrug\w*|computer|robot|machine|smart\w*|automatic\w*|self-driving|screen|heat\w*|rain\w*|water\w*|power\w*|energy\w*|food\w*|nature\w*|weather\w*|drought\w*|flood\w*|tree\w*|shade\w*|recycl\w*)\b/iu;
+const ARTIFICIAL_CONFLICT_MECHANIC = new RegExp([
+  "(?:reserveret|særlig|eneste) plads .{0,45}(?:bortfalder|forsvinder|frigives|går til en anden)",
+  "(?:tilbuddet|pladsen|hjælpen|adgangen|muligheden) .{0,35}(?:bortfalder|udløber|forsvinder|frigives)",
+  "(?:kun|præcis) (?:én|en|1) (?:plads|billet|adgang|tur|chance|mulighed)",
+  "(?:vælg|vælge|beslut|beslutte|svar|svare|accepter|acceptere) .{0,25}(?:inden|før) (?:midnat|tiden løber ud|uret ringer|\\d+ (?:minutter|timer))",
+  "(?:har|får) (?:kun )?\\d+ (?:point|tokens?|liv|kreditter)\\b",
+  "(?:fastlåst|bindende) (?:valg|aftale|systemregel|beslutning)",
+  "(?:valget|beslutningen|aftalen) gælder resten af (?:året|livet|forløbet)",
+  "plads(?:en)? i .{0,20}køen ligger fast",
+  "(?:reserved|special|only) (?:place|seat|slot) .{0,45}(?:expires|disappears|is released|goes to someone else)",
+  "(?:offer|place|seat|slot|support|access|opportunity) .{0,35}(?:expires|disappears|is released)",
+  "(?:only|exactly) one (?:place|seat|slot|ticket|access pass|chance|opportunity)",
+  "(?:choose|decide|answer|accept) .{0,25}(?:before midnight|before time runs out|within \\d+ (?:minutes|hours))",
+  "(?:have|receive|get) (?:only )?\\d+ (?:points?|tokens?|lives|credits)\\b",
+  "(?:locked|binding) (?:choice|agreement|system rule|decision)",
+  "(?:choice|decision|agreement) lasts for the rest of (?:the year|your life|the course)",
+].join("|"), "iu");
+
+function hasArtificialConflictMechanic(value: Record<string, unknown>) {
+  const logic = isRecord(value.logic) ? Object.values(value.logic) : [];
+  const tension = isRecord(value.coreTension) ? Object.values(value.coreTension) : [];
+  const choices = Array.isArray(value.choices)
+    ? value.choices.flatMap((choice) => isRecord(choice) ? [choice.label, choice.description, choice.consequence] : [])
+    : [];
+  const text = [
+    value.title, value.scenePrompt, value.landingScene, value.stake, value.question,
+    value.normalized2046, ...logic, ...tension, ...choices,
+  ].filter((part): part is string => typeof part === "string").join(" ");
+  return ARTIFICIAL_CONFLICT_MECHANIC.test(text);
+}
+
+/** Clear linguistic tells that an option is trying to escape the fixed
+ * decision instead of accepting one side's price. Semantic edge cases still
+ * belong to the prompt's no-workaround score; this gate catches the recurring
+ * failures cheaply and deterministically. */
+const CHOICE_WORKAROUND = new RegExp([
+  "(?:få|bed om|kræv) en ny vurdering",
+  "(?:vurdér|vurdere|vurderes) igen",
+  "(?:få|lad) (?:systemet|AI|computeren|modellen) til at ombestemme sig",
+  "(?:vis|del|giv) mere (?:data|information|oplysninger|skolearbejde)",
+  "(?:hent|indsaml|find) (?:mere|flere) (?:data|information|oplysninger)",
+  "(?:undersøg|afklar|find ud af) .{0,35} først",
+  "^spørg (?:en |din |jeres )?(?:voksen|lærer|ekspert|medarbejder|leder)",
+  "(?:lad|bed) .{0,30} (?:vælge|beslutte|afgøre) (?:for dig|for jer|det)",
+  "(?:vent|vente|udskyd|udsæt) (?:valget|beslutningen|svaret|lidt|til senere)",
+  "prøv .{0,35} først",
+  "(?:slå|sluk) .{0,25} (?:fra|helt)",
+  "(?:manuel|analog) løsning",
+  "(?:omgå|gå uden om) (?:systemet|reglen|ordningen|kravet)",
+  "(?:ændr|ændre|lav om på) (?:reglen|reglerne|ordningen|systemet)",
+  "(?:byg|bygge) .{0,30} om",
+  "(?:installér|installer|udvikl|konstruér) .{0,30} løsning",
+  "(?:lidt|noget) af begge",
+  "kombinér (?:begge|de to)",
+  "lad (?:tjenesten|systemet|modellen) kende (?:dig|din identitet)",
+  "(?:get|request|ask for) (?:a )?new (?:assessment|evaluation|review)",
+  "(?:show|share|give) more (?:data|information|schoolwork)",
+  "(?:gather|collect|find) more (?:data|information)",
+  "ask (?:an? |your )?(?:adult|teacher|expert|employee|manager)",
+  "(?:wait|delay|postpone) (?:the )?(?:choice|decision|answer)",
+  "try .{0,35} first",
+  "(?:turn|switch) .{0,25} off",
+  "(?:manual|analogue|analog) solution",
+  "(?:bypass|work around) (?:the )?(?:system|rule|scheme|requirement)",
+  "(?:change|rewrite) (?:the )?(?:rule|rules|system)",
+  "(?:build|rebuild|retrofit) .{0,30} (?:solution|house|home)",
+  "(?:a little|some) of both",
+  "combine (?:both|the two)",
+  "let (?:the )?(?:service|system|model) know (?:you|your identity)",
+].join("|"), "iu");
+
+function isChoiceWorkaround(choice: Choice) {
+  return CHOICE_WORKAROUND.test([choice.label, choice.description, choice.consequence].filter(Boolean).join(" "));
+}
 
 /** Word overlap, so "Del data bredt" and "Del data meget bredt" are caught as
  *  the same position rather than two. Deliberately crude: the real work of
@@ -218,6 +293,7 @@ function findChoiceSetProblem(
 ): string | null {
   const ids = choices.map((choice) => choice.id);
   if (new Set(ids).size !== 4 || !["a", "b", "c", "d"].every((id) => ids.includes(id))) return "ids";
+  if (choices.some(isChoiceWorkaround)) return "workaround";
 
   for (let i = 0; i < choices.length; i += 1) {
     for (let j = i + 1; j < choices.length; j += 1) {
@@ -328,9 +404,42 @@ export type DilemmaRejection =
   | "not_an_object" | "missing_text" | "bad_taxonomy" | "bad_place" | "geography_rule"
   | "bad_marker" | "bad_arrays" | "empty_arrays" | "bad_choices" | `bad_choices:${string}`
   | "audience_language" | "title_names_tension" | "biased_question" | "bad_location_fit"
-  | "implausible_role" | "visible_text_too_long"
+  | "implausible_role" | "visible_text_too_long" | "child_text_too_complex" | "child_missing_everyday_future"
+  | "artificial_conflict"
   | "generic_future" | "bad_future_pressure" | "wrong_generation_plan" | "problem_area_reused"
   | `incoherent_logic:${string}` | `unusable_choice_set:${string}`;
+
+function wordCount(text: string | undefined) {
+  if (!text) return 0;
+  return text.trim().split(/\s+/u).filter(Boolean).length;
+}
+
+function sentenceWordCounts(text: string | undefined) {
+  if (!text) return [];
+  return text
+    .split(/[.!?]+/u)
+    .map((sentence) => sentence.trim())
+    .filter(Boolean)
+    .map(wordCount);
+}
+
+/**
+ * A vocabulary blacklist catches individual hard words, but a child can still
+ * receive a dense paragraph made entirely from ordinary words. Keep the actual
+ * card within a small, predictable reading budget as a second line of defence.
+ */
+function isChildTextTooComplex(value: AiDilemma) {
+  if (wordCount(value.title) > 8 || wordCount(value.question) > 9 || wordCount(value.stake) > 22) return true;
+  if (wordCount(value.scenePrompt) > 45 || wordCount(value.landingScene) > 30) return true;
+  if (sentenceWordCounts(value.scenePrompt).some((count) => count > 18)) return true;
+  if (sentenceWordCounts(value.landingScene).some((count) => count > 16)) return true;
+
+  return value.choices.some((choice) =>
+    wordCount(choice.label) > 5 ||
+    wordCount(choice.description) > 24 ||
+    wordCount(choice.consequence) > 24,
+  );
+}
 
 export function validateAiDilemmaDetailed(
   value: unknown,
@@ -389,11 +498,17 @@ export function validateAiDilemmaDetailed(
   }
   const logicProblem = findLogicProblem(value);
   if (logicProblem) return { reason: `incoherent_logic:${logicProblem}` as DilemmaRejection };
+  if (hasArtificialConflictMechanic(value)) return { reason: "artificial_conflict" };
   const choiceSetProblem = findChoiceSetProblem(value.choices as Choice[], value.coreTension);
   if (choiceSetProblem) return { reason: `unusable_choice_set:${choiceSetProblem}` as DilemmaRejection };
 
   const structured = toGeneratedDilemma(value as AiDilemma, input);
+  if (input.role === "Barn" && isChildTextTooComplex(value as AiDilemma)) return { reason: "child_text_too_complex" };
   if (input.language === "da" && hasAudienceLanguageIssues(structured)) return { reason: "audience_language" };
+  if (
+    input.role === "Barn" &&
+    !CHILD_EVERYDAY_FUTURE.test([value.landingScene, value.scenePrompt, value.stake, value.question].join(" "))
+  ) return { reason: "child_missing_everyday_future" };
 
   return { dilemma: structured };
 }

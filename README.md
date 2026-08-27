@@ -30,10 +30,12 @@ NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=din_mapbox_token
 World 2046 tegner det færdige værdikort som et 384 px sort/hvidt billede, passende til 57/58 mm-papir på 384-dot-printere som 5801/5802. Opret først en lokal macOS CUPS-kø med producentens driver og sæt dens kønavn i `.env.local`:
 
 ```bash
-THERMAL_PRINTER_NAME=GEZHI_micro_printer
+THERMAL_PRINTER_NAME=GEZHI_micro_printer_384
 ```
 
 Appen sender billedet til CUPS med 58 mm-mediet. Det lader den installerede driver håndtere Bluetooth-forbindelsen og gør dansk/engelsk, Gejst-logoet og typografien ensartet.
+
+Den aktuelle GEZHI-kø bruger også `scripts/rasterto58SeriesNoFinalReset.py` som CUPS-filter. Det videresender producentens rasterdata, men fjerner dens afsluttende resetsekvens, som på denne printer kunne få starten af det næste værdikort til at blive udskrevet som symboler. Filteret skal installeres lokalt på udstillings-Mac’en og vælges i den pågældende CUPS-køs PPD; det er en maskinopsætning og ikke noget, browseren selv kan ændre.
 
 ## Hvad prototypen gør
 

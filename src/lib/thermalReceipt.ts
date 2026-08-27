@@ -11,8 +11,12 @@ import type { SessionResult, ValueProfile } from "@/types/world2046";
 // changes the paper edges, not the image width this printer can render.
 const WIDTH = 384;
 const PADDING = 12;
-const CONTENT_WIDTH = WIDTH - (PADDING * 2);
-const VALUE_LABEL_WIDTH = 118;
+// The installed driver advertises a slightly wider page than the physical
+// 384-dot head. Keep extra room on the right so bars and symbols cannot be
+// clipped by that mismatch.
+const RIGHT_PADDING = 40;
+const CONTENT_WIDTH = WIDTH - PADDING - RIGHT_PADDING;
+const VALUE_LABEL_WIDTH = 150;
 const VALUE_GAP = 8;
 const VALUE_BAR_WIDTH = CONTENT_WIDTH - VALUE_LABEL_WIDTH - VALUE_GAP;
 const VALUE_BAR_X = PADDING + VALUE_LABEL_WIDTH + VALUE_GAP;
@@ -25,9 +29,9 @@ const cardText = {
     profile: "DIN PROFIL FRA 2046",
     passenger: "PASSAGER",
     values: "DINE VÆRDIER",
-    less: "MINDRE",
+    less: "−",
     neutral: "NEUTRAL",
-    more: "MERE",
+    more: "+",
     takeaway: "DET, DER TEGNER DIN REJSE",
     stops: "STOP · VERDEN I 2046",
   },
@@ -36,9 +40,9 @@ const cardText = {
     profile: "YOUR 2046 PROFILE",
     passenger: "PASSENGER",
     values: "YOUR VALUES",
-    less: "LESS",
+    less: "−",
     neutral: "NEUTRAL",
-    more: "MORE",
+    more: "+",
     takeaway: "WHAT SHAPED YOUR JOURNEY",
     stops: "STOPS · THE WORLD IN 2046",
   },
@@ -62,7 +66,7 @@ function wrap(context: CanvasRenderingContext2D, text: string, maxWidth: number)
 }
 
 function drawValueBar(context: CanvasRenderingContext2D, y: number, score: number) {
-  const height = 10;
+  const height = 14;
   const center = VALUE_BAR_X + (VALUE_BAR_WIDTH / 2);
   const boundedScore = Math.max(-SCORE_LIMIT, Math.min(SCORE_LIMIT, score));
   const extent = Math.abs(boundedScore / SCORE_LIMIT) * (VALUE_BAR_WIDTH / 2);
@@ -72,8 +76,8 @@ function drawValueBar(context: CanvasRenderingContext2D, y: number, score: numbe
   context.strokeRect(VALUE_BAR_X + 0.5, y + 0.5, VALUE_BAR_WIDTH - 1, height - 1);
   context.fillStyle = "black";
   context.fillRect(center - 0.5, y - 2, 1, height + 4);
-  if (boundedScore < 0) context.fillRect(center - extent, y + 1, extent, height - 2);
-  if (boundedScore > 0) context.fillRect(center, y + 1, extent, height - 2);
+  if (boundedScore < 0) context.fillRect(center - extent, y + 2, extent, height - 4);
+  if (boundedScore > 0) context.fillRect(center, y + 2, extent, height - 4);
 }
 
 async function drawGejstLogo(context: CanvasRenderingContext2D, y: number) {
@@ -84,7 +88,7 @@ async function drawGejstLogo(context: CanvasRenderingContext2D, y: number) {
     image.onerror = () => reject(new Error("Gejst Studio logo could not be rendered"));
     image.src = source;
   });
-  const logoWidth = 192;
+  const logoWidth = 260;
   const logoHeight = Math.round((logoWidth * 62) / 341);
   context.drawImage(image, (WIDTH - logoWidth) / 2, y, logoWidth, logoHeight);
 }
@@ -94,7 +98,11 @@ async function drawGejstLogo(context: CanvasRenderingContext2D, y: number) {
 export async function createThermalReceipt(result: SessionResult, language: Language) {
   const canvas = document.createElement("canvas");
   canvas.width = WIDTH;
-  canvas.height = 710;
+  // At 203 DPI, the old 8–12 px type printed at roughly 3–4 pt. A taller
+  // receipt lets the important copy render at 12–16 px without squeezing the
+  // ten value rows. The 384 px width remains a one-dot-per-pixel match for the
+  // print head.
+  canvas.height = 900;
   const context = canvas.getContext("2d");
   if (!context) throw new Error("Thermal receipt canvas is unavailable");
 
@@ -111,66 +119,75 @@ export async function createThermalReceipt(result: SessionResult, language: Lang
   context.fillStyle = "white";
   context.fillRect(0, 0, WIDTH, canvas.height);
   context.fillStyle = "black";
-  let y = 31;
+  let y = 35;
 
-  context.font = "700 28px Georgia, serif";
-  context.fillText("WORLD 2046", PADDING, y);
-  y += 15;
-  context.font = "700 10px ui-monospace, Menlo, monospace";
-  context.fillText(text.subtitle, PADDING, y);
-  y += 15;
+  context.font = "700 32px Georgia, serif";
+  context.textAlign = "center";
+  context.fillText("WORLD 2046", WIDTH / 2, y);
+  y += 20;
+  context.font = "700 12px ui-monospace, Menlo, monospace";
+  context.fillText(text.subtitle, WIDTH / 2, y);
+  context.textAlign = "left";
+  y += 18;
   context.fillRect(PADDING, y, CONTENT_WIDTH, 2);
 
-  y += 28;
-  context.font = "700 10px ui-monospace, Menlo, monospace";
+  y += 32;
+  context.font = "700 12px ui-monospace, Menlo, monospace";
   context.fillText(text.profile, PADDING, y);
-  y += 22;
+  y += 26;
   context.fillText(text.passenger, PADDING, y);
-  y += 19;
-  context.font = "700 16px Arial, sans-serif";
+  y += 24;
+  context.font = "700 20px Arial, sans-serif";
   context.fillText(passenger, PADDING, y);
 
-  y += 32;
-  context.font = "700 10px ui-monospace, Menlo, monospace";
+  y += 40;
+  context.font = "700 12px ui-monospace, Menlo, monospace";
   context.fillText(text.values, PADDING, y);
-  y += 16;
-  context.font = "700 8px ui-monospace, Menlo, monospace";
+  y += 20;
+  context.font = "700 26px Arial, sans-serif";
   context.fillText(text.less, VALUE_BAR_X, y);
+  context.font = "700 16px Arial, sans-serif";
   context.textAlign = "center";
   context.fillText(text.neutral, VALUE_BAR_X + (VALUE_BAR_WIDTH / 2), y);
+  context.font = "700 26px Arial, sans-serif";
   context.textAlign = "right";
   context.fillText(text.more, VALUE_BAR_X + VALUE_BAR_WIDTH, y);
   context.textAlign = "left";
 
-  y += 21;
+  y += 32;
   for (const key of valueKeys) {
     const label = valueLabelsByLanguage[language][key];
     const highlighted = dominant.has(key);
-    context.font = `${highlighted ? "700" : "400"} 12px Arial, sans-serif`;
-    if (context.measureText(label).width > VALUE_LABEL_WIDTH) context.font = `${highlighted ? "700" : "400"} 11px Arial, sans-serif`;
+    context.font = `${highlighted ? "700" : "400"} 16px Arial, sans-serif`;
+    if (context.measureText(label).width > VALUE_LABEL_WIDTH) context.font = `${highlighted ? "700" : "400"} 14px Arial, sans-serif`;
     context.fillText(label, PADDING, y);
-    drawValueBar(context, y - 11, result.valueProfile[key]);
-    y += 23;
+    drawValueBar(context, y - 13, result.valueProfile[key]);
+    y += 31;
   }
 
-  y += 3;
+  y += 5;
   context.fillRect(PADDING, y, CONTENT_WIDTH, 1);
-  y += 22;
-  context.font = "700 10px ui-monospace, Menlo, monospace";
+  y += 27;
+  context.font = "700 18px Arial, sans-serif";
   context.fillText(text.takeaway, PADDING, y);
-  y += 20;
-  context.font = "12px Arial, sans-serif";
+  y += 25;
+  context.font = "18px Arial, sans-serif";
   for (const line of wrap(context, summary, CONTENT_WIDTH).slice(0, 4)) {
     context.fillText(line, PADDING, y);
-    y += 17;
+    y += 25;
   }
 
-  y = Math.max(y + 19, 616);
-  context.font = "700 10px ui-monospace, Menlo, monospace";
+  y = Math.max(y + 24, 790);
+  context.font = "700 12px ui-monospace, Menlo, monospace";
   context.textAlign = "center";
   context.fillText(`${result.completedDilemmas.length} ${text.stops}`, WIDTH / 2, y);
   context.textAlign = "left";
   await drawGejstLogo(context, y + 21);
+  // Keep a few millimetres of the raster after the logo. The driver's larger
+  // FeedDist settings are not understood by this portable printer and can be
+  // emitted as visible glyphs, while its blank-space trimming would otherwise
+  // stop before the logo has cleared the tear edge.
+  context.fillRect(PADDING, canvas.height - 18, 1, 1);
 
   return canvas.toDataURL("image/png").split(",", 2)[1];
 }

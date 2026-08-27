@@ -9,6 +9,10 @@ export const UX_TIMING = {
   yearCounterLandMs: 900,
   minimumTravelLoadingMs: 6400,
   dilemmaFetchTimeoutMs: 45000,
+  /** Failed destination generations stay behind the travel animation and retry
+   *  with a capped backoff rather than turning into a participant-facing error. */
+  dilemmaRetryBaseMs: 1500,
+  dilemmaRetryMaxMs: 8000,
   destinationRevealHoldMs: 3000,
   arrivalCtaDelayMs: 3000,
 } as const;
