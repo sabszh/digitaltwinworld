@@ -27,6 +27,15 @@ describe("golden dilemma examples", () => {
     expect(selected.relatedQuestion.developmentIds).not.toContain(target.id);
   });
 
+  it("also excludes the target development from the related-theme fallback", () => {
+    const target = futureDevelopments.find((item) => item.id === "ai-predicts-dropout")!;
+    const selected = selectDilemmaExamples("Barn", {
+      ...target,
+      themes: [],
+    }, () => 0);
+    expect(selected.relatedQuestion.developmentIds).not.toContain(target.id);
+  });
+
   it("always returns two different examples in the requested slots", () => {
     const selected = selectDilemmaExamples("Barn", {
       id: "nyt-development",
