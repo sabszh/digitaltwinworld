@@ -10,7 +10,7 @@ export const creativeSchemaLimits = {
   humanCost: 420,
   decision: 320,
   title: 96,
-  scene: 700,
+  scene: 900,
   stake: 360,
   question: 300,
   choiceLabel: 96,
@@ -20,8 +20,8 @@ export const creativeSchemaLimits = {
 
 export const dilemmaDisplayLimits = {
   title: 58,
-  landingScene: 320,
-  scenePrompt: 360,
+  landingScene: 700,
+  scenePrompt: 700,
   stake: 190,
   question: 160,
   choiceLabel: 46,

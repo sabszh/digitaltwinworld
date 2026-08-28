@@ -19,6 +19,7 @@ export const runtime = "nodejs";
 
 const generationError = (reason: string) => NextResponse.json({ error: reason }, { status: 502 });
 const GENERATION_TIMEOUT_MS = 50_000;
+export const DILEMMA_MAX_COMPLETION_TOKENS = 2_400;
 
 type Attempt =
   | { transport: string }
@@ -39,6 +40,7 @@ async function requestDilemma(
     prompt: buildDilemmaPrompt(input),
     language: input.language,
     timeoutMs,
+    maxCompletionTokens: DILEMMA_MAX_COMPLETION_TOKENS,
   });
   if ("error" in outcome) return { transport: outcome.error };
   return { validation: validateCreativeDilemma(outcome.data, input) };

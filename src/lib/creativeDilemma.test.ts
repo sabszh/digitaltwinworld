@@ -83,4 +83,19 @@ describe("creative dilemma boundary", () => {
     expect(result.title).toMatch(/\s\S+…$/u);
     expect(result.stake?.length).toBeLessThanOrEqual(dilemmaDisplayLimits.stake);
   });
+
+  it("keeps a complete ordinary scene beyond the old 360-character display cap", () => {
+    const scene = [
+      "Du besøger oldefar i hans lejlighed, hvor robotten hjælper med vand og medicin.",
+      "En sygeplejerske taler med ham gennem væggen hver morgen, og systemet holder ham tryg.",
+      "Mens I bygger med klodser, fortæller han dig stille, at han savner mennesker, der kommer forbi uden at være på en skærm.",
+      "Han beder dig om ikke at sige det til familien, fordi han selv vil bestemme, hvilken hjælp han får.",
+    ].join(" ");
+    expect(scene.length).toBeGreaterThan(360);
+
+    const result = enrichCreativeDilemma(creative({ scene }), input, seed, zeroValueImpacts());
+    expect(result.scenePrompt).toBe(scene);
+    expect(result.landingScene).toBe(scene);
+    expect(result.scenePrompt).not.toContain("…");
+  });
 });

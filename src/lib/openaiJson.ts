@@ -46,6 +46,9 @@ export type JsonRequest = {
   /** Different jobs have different quality/cost needs. */
   model?: string;
   reasoningEffort?: "low" | "medium" | "high";
+  /** Chat Completions output ceiling. This includes visible output and hidden
+   * reasoning tokens for reasoning models. */
+  maxCompletionTokens?: number;
 };
 
 export type JsonUsage = {
@@ -78,6 +81,7 @@ export async function requestJson<T>({
   timeoutMs = 20_000,
   model: requestedModel,
   reasoningEffort,
+  maxCompletionTokens,
 }: JsonRequest): Promise<JsonResult<T>> {
   const model = requestedModel ?? utilityModel();
   const system = [
@@ -103,6 +107,7 @@ export async function requestJson<T>({
         model,
         ...samplingFor(model, temperature),
         ...(!/^gpt-(4|3)/.test(model) && reasoningEffort ? { reasoning_effort: reasoningEffort } : {}),
+        ...(maxCompletionTokens ? { max_completion_tokens: maxCompletionTokens } : {}),
         messages: [
           { role: "system", content: system },
           { role: "user", content: prompt },
