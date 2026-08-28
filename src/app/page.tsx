@@ -235,7 +235,12 @@ export default function Home() {
               <LandingScene dilemma={store.activeDilemma} language={language} onEnter={store.enterDilemma} />
             )}
             {store.phase === "dilemma" && store.activeDilemma && (
-              <DilemmaCard dilemma={store.activeDilemma} language={language} onAnswer={handleAnswer} />
+              <DilemmaCard
+                dilemma={store.activeDilemma}
+                language={language}
+                customAnswerDraft={store.customAnswerDraft}
+                onAnswer={handleAnswer}
+              />
             )}
             {store.phase === "consequence" && (
               <ConsequenceCard

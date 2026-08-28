@@ -25,6 +25,7 @@ type SessionStore = {
   activeDilemma?: GeneratedDilemma;
   lastChoice?: Choice;
   lastCustomAnswer?: string;
+  customAnswerDraft?: { dilemmaId: string; text: string; viaVoice: boolean };
   completedDilemmas: CompletedDilemma[];
   valueProfile: ValueProfile;
   futureReport?: FutureProfileReport;
@@ -191,7 +192,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     if (dilemmaPrefetch && !matchingPrefetch) prefetchedDilemmaController?.abort();
     dilemmaPrefetch = undefined;
 
-    set({ activeDilemma: undefined, phase: "traveling" });
+    set({ activeDilemma: undefined, customAnswerDraft: undefined, phase: "traveling" });
 
     let nextDilemma = await matchingPrefetch?.promise;
     let attempt = 0;
@@ -305,6 +306,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       valueProfile: addProfiles(valueProfile, impacts),
       lastChoice: choice,
       lastCustomAnswer: customAnswer,
+      customAnswerDraft: undefined,
       phase: "consequence",
     });
   },
@@ -334,6 +336,13 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       valueProfile: addProfiles(valueProfile, revertedImpacts),
       lastChoice: undefined,
       lastCustomAnswer: undefined,
+      customAnswerDraft: previous.customAnswer
+        ? {
+            dilemmaId: previous.dilemmaId,
+            text: previous.customAnswer,
+            viaVoice: previous.answeredByVoice ?? false,
+          }
+        : undefined,
       phase: "dilemma",
     });
   },
@@ -405,6 +414,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       activeDilemma: undefined,
       lastChoice: undefined,
       lastCustomAnswer: undefined,
+      customAnswerDraft: undefined,
       completedDilemmas: [],
       valueProfile: emptyValueProfile,
       futureReport: undefined,

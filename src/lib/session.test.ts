@@ -103,6 +103,28 @@ describe("destination generation", () => {
     // been reused, the second dilemma would still be waiting on this promise.
     expect(fetchMock).toHaveBeenCalledTimes(3);
   });
+
+  it("restores a written answer when returning from its consequence", () => {
+    const activeDilemma = dilemma("written-answer");
+    useSessionStore.setState({ activeDilemma, phase: "dilemma" });
+
+    useSessionStore.getState().answer(
+      { id: "custom", label: "Egen løsning", valueImpacts: {} },
+      "Jeg vil tale med oldefar først.",
+      false,
+    );
+    useSessionStore.getState().backToDilemma();
+
+    expect(useSessionStore.getState()).toMatchObject({
+      phase: "dilemma",
+      completedDilemmas: [],
+      customAnswerDraft: {
+        dilemmaId: "written-answer",
+        text: "Jeg vil tale med oldefar først.",
+        viaVoice: false,
+      },
+    });
+  });
 });
 
 const UX_WAIT_MS = 7000;

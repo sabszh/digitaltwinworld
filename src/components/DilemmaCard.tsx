@@ -37,11 +37,21 @@ export function ChoiceButton({ choice, index, onChoose }: { choice: Choice; inde
   );
 }
 
-export function CustomAnswerInput({ language, onSubmit }: { language: Language; onSubmit: (text: string, viaVoice: boolean) => void }) {
+export function CustomAnswerInput({
+  language,
+  initialValue = "",
+  initialViaVoice = false,
+  onSubmit,
+}: {
+  language: Language;
+  initialValue?: string;
+  initialViaVoice?: boolean;
+  onSubmit: (text: string, viaVoice: boolean) => void;
+}) {
   const text = uiText[language];
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(initialValue);
   const [interim, setInterim] = useState("");
-  const [usedVoice, setUsedVoice] = useState(false);
+  const [usedVoice, setUsedVoice] = useState(initialViaVoice);
 
   return (
     <div className="custom-answer-card p-3.5">
@@ -85,10 +95,12 @@ export function CustomAnswerInput({ language, onSubmit }: { language: Language; 
 export function DilemmaCard({
   dilemma,
   language,
+  customAnswerDraft,
   onAnswer,
 }: {
   dilemma: GeneratedDilemma;
   language: Language;
+  customAnswerDraft?: { dilemmaId: string; text: string; viaVoice: boolean };
   onAnswer: (choice: Choice, customAnswer?: string, viaVoice?: boolean) => void;
 }) {
   // No impacts here. A written answer used to score a fixed +1 trust / localControl
@@ -138,7 +150,12 @@ export function DilemmaCard({
               {dilemma.choices.map((choice, index) => (
                 <ChoiceButton key={choice.id} choice={choice} index={index} onChoose={onAnswer} />
               ))}
-              <CustomAnswerInput language={language} onSubmit={(value, viaVoice) => onAnswer(customChoice, value, viaVoice)} />
+              <CustomAnswerInput
+                language={language}
+                initialValue={customAnswerDraft?.dilemmaId === dilemma.id ? customAnswerDraft.text : ""}
+                initialViaVoice={customAnswerDraft?.dilemmaId === dilemma.id ? customAnswerDraft.viaVoice : false}
+                onSubmit={(value, viaVoice) => onAnswer(customChoice, value, viaVoice)}
+              />
             </div>
           </motion.div>
         </div>
