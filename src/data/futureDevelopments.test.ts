@@ -26,15 +26,32 @@ describe("future developments", () => {
   });
 
   it("keeps every major future theme available to children", () => {
+    const childSuitable = futureDevelopments.filter((item) => developmentIsSuitableForRole(item, "Barn"));
+    expect(childSuitable.length).toBeGreaterThanOrEqual(60);
     for (const theme of validThemes) {
-      expect(futureDevelopments.some((item) =>
-        item.themes.includes(theme) && developmentIsSuitableForRole(item, "Barn"),
-      )).toBe(true);
+      expect(childSuitable.some((item) => item.themes.includes(theme))).toBe(true);
     }
   });
 
-  it("keeps intimate authority and inferred-distress developments away from child seeds", () => {
-    for (const id of ["ai-detects-distress", "ai-simulates-life-choices", "school-detects-isolation", "robots-personal-care"]) {
+  it("keeps adult authority, employment and inferred-distress developments away from child seeds", () => {
+    for (const id of [
+      "ai-detects-distress",
+      "ai-detects-burnout",
+      "ai-simulates-life-choices",
+      "agents-find-work",
+      "continuous-local-participation",
+      "dynamic-energy-budgets",
+      "humans-liable-for-ai",
+      "humans-supervise-ai",
+      "many-career-switches",
+      "needs-before-application",
+      "remote-physical-work",
+      "robots-dangerous-work",
+      "school-detects-isolation",
+      "tiny-agent-organisations",
+      "work-measured-continuously",
+      "robots-personal-care",
+    ]) {
       const item = futureDevelopments.find((candidate) => candidate.id === id);
       expect(item).toBeDefined();
       expect(developmentIsSuitableForRole(item!, "Barn")).toBe(false);
