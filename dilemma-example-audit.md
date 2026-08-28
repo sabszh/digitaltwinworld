@@ -20,9 +20,12 @@ The review focused on whether each example teaches Terra:
 4. The remote-treatment example transferred the professional decision to the patient. Its four choices now place final authority differently between the local professional and remote specialist.
 5. The unsolicited-public-help example offered a human meeting without data as a workaround. It was replaced by a continuous-democracy example with four genuine forms of participation.
 6. The child night-school example taught a “little of both” compromise and an exit from the situation. It was replaced by a child-readable dilemma about live AI fact-checking, truth and a grandparent's memory.
+7. The youth dropout example repeated a binary accept/decline choice to fill four slots. It was replaced by a social-robot dilemma with four different placements of an enduring relationship in a new human home.
+8. The parent genetic-risk example used waiting as a clean exit. The revised choices all decide how the family carries the knowledge now: shared with the child, held by adults, limited to actionable findings or refused entirely.
+9. Two selected examples could still teach the same development from different roles. Selection now prefers a different development for the second slot as well as excluding the target development.
 
 ## Current evidence
 
 - All active examples still have a valid role, development, future normal, human cost, decision and exactly four choices.
-- The library-selection tests prove that the two example slots are distinct and do not reuse the target development, including the fallback path.
+- The library-selection tests prove that the two example slots are distinct, do not reuse the target development (including the fallback path), and avoid sharing a development with each other when the library permits it.
 - This audit improves the editorial inputs but does not prove generation consistency by itself. The next broad live evaluation should only happen when a new bounded evaluation is explicitly wanted; these changes do not trigger one automatically.

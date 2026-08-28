@@ -47,6 +47,13 @@ describe("golden dilemma examples", () => {
     expect(selected.sameRole.id).not.toBe(selected.relatedQuestion.id);
   });
 
+  it("keeps the two example slots on different developments when possible", () => {
+    const target = futureDevelopments.find((item) => item.id === "live-fact-checking")!;
+    const selected = selectDilemmaExamples("Ung", target, () => 0);
+    expect(selected.sameRole.developmentIds).not.toEqual(selected.relatedQuestion.developmentIds);
+    expect(selected.sameRole.developmentIds?.some((id) => selected.relatedQuestion.developmentIds?.includes(id))).toBe(false);
+  });
+
   it("does not teach the known scarcity and deadline mechanics", () => {
     const visible = dilemmaExamples.map((item) => [
       item.dilemma.futureNormal,

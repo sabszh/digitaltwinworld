@@ -126,25 +126,25 @@ export const dilemmaExamples: DilemmaExample[] = [
   },
 
   {
-    id: "youth-predicted-dropout",
+    id: "youth-social-robot-move",
     role: "Ung",
-    themes: ["AI og beslutninger", "Uddannelse"],
-    futureQuestions: [Q.prediction, Q.fairness],
-    development: "AI kan forudsige risiko for frafald og tilbyde et andet uddannelsesforløb tidligt",
-    developmentIds: ["ai-predicts-dropout"],
+    themes: ["Robotter og autonome systemer", "Relationer, familie og hverdagsliv", "Data, identitet og privatliv"],
+    futureQuestions: [Q.humanContact, Q.memory],
+    development: "En social robot kan bevare den samme relation og fælles historie gennem mange livsfaser",
+    developmentIds: ["social-robots-lasting"],
     dilemma: {
-      futureNormal: "Uddannelser bruger løbende arbejde til at forudsige, hvem der får svært ved at gennemføre.",
-      humanCost: "Tidlig støtte kan hjælpe, men forudsigelsen kan også ændre en ungs muligheder, før noget er sket.",
-      decision: "Den unge vælger, om AI-forudsigelsen skal bruges til at ændre det næste skoleår.",
-      title: "DIN FREMTID ER ALLEREDE BEREGNET",
-      scene: "Din uddannelse tilbyder dig et støttet forløb med færre fag. AI'en siger, at du ellers sandsynligvis falder fra. Hvis du tager imod, kan du ikke søge den linje, du har drømt om næste år.",
-      stake: "Du kan få en mere sikker vej gennem uddannelsen eller beholde chancen for selv at overraske alle — også systemet.",
-      question: "Lader du forudsigelsen ændre dit forløb?",
+      futureNormal: "En ung kan have den samme sociale robot med sig fra barndommen og ind i nye hjem og fællesskaber.",
+      humanCost: "Robotten giver en relation, der kender hele ens historie, men nye mennesker må leve tæt på noget, der husker og lytter hele tiden.",
+      decision: "Den unge vælger, hvilken plads den gamle robotrelation skal have i det nye hjem.",
+      title: "DEN ENESTE, DER KENDER HELE DIG",
+      scene: "Du er flyttet hjemmefra og deler lejlighed med to nye venner. Din robot Mio har været hos dig, siden du var otte, og husker alt det, du ikke længere fortæller andre. Dine venner kan godt lide Mio, men siger, at de ikke kan slappe af, når den lytter og lærer dem at kende.",
+      stake: "Du kan beholde den relation, der kender hele dit liv, eller give mere plads til mennesker, der kun kan lære dig at kende fra nu af.",
+      question: "Hvilken plads giver du Mio i dit nye hjem?",
       choices: choices(
-        ["TAG DET STØTTEDE FORLØB", "Du får mere hjælp og større chance for at gennemføre, men opgiver din ønskede linje."],
-        ["BEHOLD DIT NUVÆRENDE FORLØB", "Du beholder muligheden, du ønsker, men risikerer at stå uden den støtte, der kunne have hjulpet."],
-        ["TAG STØTTEN OG SLIP LINJEN", "Du vælger sikkerheden helt og bruger kræfterne på en ny retning, men lader en prognose lukke den gamle."],
-        ["AFVIS AT BLIVE FORUDSIGT", "Du beskytter retten til at blive mødt åbent, men siger også nej til en tidlig hjælp, der kunne være rigtig."],
+        ["LAD MIO BO I FÆLLESRUMMET", "Du beholder den nære hverdag med Mio, men dine nye venner mister følelsen af at være alene med dig."],
+        ["HOLD MIO PÅ DIT VÆRELSE", "Du bevarer relationen privat, men deler dit nye liv op i mennesker på den ene side og Mio på den anden."],
+        ["MØD KUN MIO GENNEM EN SKÆRM", "Dine venner får et hjem uden robotten, men din ældste relation bliver noget, du besøger på afstand."],
+        ["SLUK MIO OG BEVAR MINDERNE", "Du giver de nye relationer fuld plads, men mister den eneste, der kunne tale med dig om hele dit liv."],
       ),
     },
   },
@@ -211,8 +211,8 @@ export const dilemmaExamples: DilemmaExample[] = [
       stake: "Du kan give dit barn bedre odds for et langt liv eller beskytte en barndom, der ikke er styret af mulige sygdomme.",
       question: "Åbner I risikoprofilen nu?",
       choices: choices(
-        ["ÅBN ALT NU", "I får flest muligheder for at forebygge, men barnets fremtid bliver tidligt fyldt med risici og tal."],
-        ["VENT TIL BARNET SELV KAN VÆLGE", "Barnet får retten til beslutningen, men familien mister år, hvor tidlig forebyggelse kunne have hjulpet."],
+        ["ÅBN OG FORTÆL BARNET ALT", "I får flest muligheder for at forebygge sammen, men barnets fremtid bliver tidligt fyldt med risici og tal."],
+        ["ÅBN DET KUN FOR DE VOKSNE", "I kan ændre familiens vaner uden at belaste barnet nu, men omsorgen bygger på en sandhed, I skjuler."],
         ["ÅBN KUN DET, DER KAN HANDLES PÅ", "I får brugbar viden, men voksne afgør på forhånd, hvilke sandheder barnet senere skal kende."],
         ["VÆLG VIDEN FRA", "Barnet vokser op uden en genetisk fortælling over sig, men kan miste chancen for at forebygge noget alvorligt."],
       ),
@@ -765,6 +765,12 @@ function pickOne<T>(items: T[], pick: Picker): T {
   return items[Math.min(items.length - 1, Math.max(0, pick(items.length)))];
 }
 
+function examplesShareDevelopment(a: DilemmaExample, b: DilemmaExample): boolean {
+  return a.development === b.development || Boolean(
+    a.developmentIds?.some((id) => b.developmentIds?.includes(id)),
+  );
+}
+
 export type SelectedDilemmaExamples = {
   sameRole: DilemmaExample;
   relatedQuestion: DilemmaExample;
@@ -783,15 +789,23 @@ export function selectDilemmaExamples(
   const differentTheme = roleCandidates.filter((item) => !item.themes.some((theme) => themes.includes(theme)));
   const sameRole = pickOne(differentTheme.length ? differentTheme : roleCandidates, pick);
 
-  const relatedCandidates = enabledDilemmaExamples.filter((item) =>
-    item.id !== sameRole.id && item.role !== role && item.themes.some((theme) => themes.includes(theme)) &&
-    item.development !== targetDevelopment && !item.developmentIds?.includes(targetDevelopmentId),
-  );
-  const fallback = enabledDilemmaExamples.filter((item) =>
+  const eligibleRelated = enabledDilemmaExamples.filter((item) =>
     item.id !== sameRole.id && item.role !== role &&
     item.development !== targetDevelopment && !item.developmentIds?.includes(targetDevelopmentId),
   );
-  const relatedQuestion = pickOne(relatedCandidates.length ? relatedCandidates : fallback, pick);
+  const relatedTheme = eligibleRelated.filter((item) => item.themes.some((theme) => themes.includes(theme)));
+  const relatedThemeDifferentDevelopment = relatedTheme.filter((item) => !examplesShareDevelopment(item, sameRole));
+  const fallbackDifferentDevelopment = eligibleRelated.filter((item) => !examplesShareDevelopment(item, sameRole));
+  const relatedQuestion = pickOne(
+    relatedThemeDifferentDevelopment.length
+      ? relatedThemeDifferentDevelopment
+      : relatedTheme.length
+        ? relatedTheme
+        : fallbackDifferentDevelopment.length
+          ? fallbackDifferentDevelopment
+          : eligibleRelated,
+    pick,
+  );
 
   return { sameRole, relatedQuestion };
 }
