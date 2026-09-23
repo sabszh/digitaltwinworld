@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "walkthrough": {
+      "source": "alexanderop/walkthrough",
+      "sourceType": "github",
+      "skillPath": "skills/walkthrough/SKILL.md",
+      "computedHash": "3d5d97121c2e10023d772871acca0fda89e334937b56729bed0d4f958bec2ea8"
+    }
+  }
+}

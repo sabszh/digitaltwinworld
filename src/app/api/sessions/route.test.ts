@@ -2,6 +2,7 @@ import { readFile, rm } from "node:fs/promises";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { POST } from "./route";
+import { SESSION_DILEMMA_COUNT } from "@/data/taxonomies";
 
 const testDirectory = "/tmp/world2046-vitest-consent";
 const completedDilemma = {
@@ -24,7 +25,7 @@ const session = {
   year: 2046,
   language: "en",
   role: "Borger",
-  completedDilemmas: Array.from({ length: 5 }, (_, index) => ({ ...completedDilemma, dilemmaId: `${completedDilemma.dilemmaId}-${index}` })),
+  completedDilemmas: Array.from({ length: SESSION_DILEMMA_COUNT }, (_, index) => ({ ...completedDilemma, dilemmaId: `${completedDilemma.dilemmaId}-${index}` })),
   valueProfile: { trust: 0, freedom: 0, equality: 0, efficiency: 0, humanContact: 0, safety: 0, innovation: 0, sustainability: 0, localControl: 0, transparency: 0 },
   generatedSummary: "Test",
 };

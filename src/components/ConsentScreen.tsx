@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import type { Language } from "@/lib/i18n";
 import { JourneyButton, JourneyCard } from "@/components/ui/journey";
+import { useEnterToContinue } from "@/lib/useEnterToContinue";
 
 export function ConsentScreen({ language, status, onAccept, onDecline, onBack }: {
   language: Language;
@@ -13,12 +14,13 @@ export function ConsentScreen({ language, status, onAccept, onDecline, onBack }:
 }) {
   const da = language === "da";
   const saving = status === "saving";
+  useEnterToContinue(onAccept, !saving);
   return (
     <section className="relative z-20 grid min-h-dvh place-items-center px-5 py-10">
       <motion.div className="w-full max-w-2xl" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", bounce: 0, duration: 0.4 }}>
         <JourneyCard className="p-7 md:p-10">
           <JourneyButton type="button" onClick={onBack} disabled={saving} variant="secondary" direction="back">
-            {da ? "Tilbage til rapporten" : "Back to the report"}
+            {da ? "Tilbage til sidste valg" : "Back to the last choice"}
           </JourneyButton>
 
           <h1 className="mt-8 text-4xl font-semibold tracking-[-0.025em] text-[var(--text)]">
@@ -28,8 +30,8 @@ export function ConsentScreen({ language, status, onAccept, onDecline, onBack }:
               question and says what it is for. Anything longer reads as a policy. */}
           <p className="mt-5 text-lg leading-7 text-[var(--muted)]">
             {da
-              ? "Vi bruger svarene til at forstå, hvad mennesker prioriterer i 2046. Hvis du ikke vil gemme dem, afslutter du bare rejsen."
-              : "We use the answers to understand what people prioritise in 2046. If you do not want to save them, simply finish your journey."}
+              ? "Vi bruger svarene til at forstå, hvad mennesker prioriterer i 2046. Du får din rapport bagefter, uanset hvad du vælger."
+              : "We use the answers to understand what people prioritise in 2046. You will see your report afterwards, whatever you choose."}
           </p>
 
           <div className="consent-scope-list surface-card mt-6 rounded-2xl p-5">
@@ -52,7 +54,7 @@ export function ConsentScreen({ language, status, onAccept, onDecline, onBack }:
               {saving ? (da ? "Gemmer…" : "Saving…") : status === "error" ? (da ? "Prøv igen" : "Try again") : da ? "Gem svarene" : "Save my answers"}
             </JourneyButton>
             <JourneyButton type="button" onClick={onDecline} disabled={saving} variant="secondary">
-              {da ? "Afslut uden at gemme" : "Finish without saving"}
+              {da ? "Fortsæt uden at gemme" : "Continue without saving"}
             </JourneyButton>
           </div>
         </JourneyCard>

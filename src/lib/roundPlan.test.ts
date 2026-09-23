@@ -8,12 +8,17 @@ const zeroes: ValueProfile = {
   safety: 0, innovation: 0, sustainability: 0, localControl: 0, transparency: 0,
 };
 
-function completed(developmentId: string, city = "Aarhus", problemArea: ProblemArea = "Sundhed og omsorg"): CompletedDilemma {
+function completed(
+  developmentId: string,
+  city = "Aarhus",
+  problemArea: ProblemArea = "Sundhed og omsorg",
+  geography: { region: string; country: string } = { region: "Norden", country: "Danmark" },
+): CompletedDilemma {
   return {
     dilemmaId: developmentId,
     problemArea,
-    region: "Norden",
-    country: "Danmark",
+    region: geography.region,
+    country: geography.country,
     city,
     locationType: "hjemmet",
     technology: "sundhedsdata",
@@ -36,6 +41,43 @@ describe("dilemma seed selection", () => {
   it("avoids an already used city while alternatives exist", () => {
     const next = selectDilemmaSeed([completed("disease-before-symptoms", "Aarhus")], "Borger", () => 0);
     expect(next.location.city).not.toBe("Aarhus");
+  });
+
+  it("keeps the first stop in Denmark and avoids repeated cities", () => {
+    const first = selectDilemmaSeed([], "Borger", () => 0);
+    const afterFirst = [completed(first.development.id, first.location.city, "Sundhed og omsorg", first.location)];
+    const second = selectDilemmaSeed(afterFirst, "Borger", () => 0);
+    const afterSecond = [
+      ...afterFirst,
+      completed(second.development.id, second.location.city, "Uddannelse og læring", second.location),
+    ];
+    const third = selectDilemmaSeed(afterSecond, "Borger", () => 0);
+
+    expect(first.location.country).toBe("Danmark");
+    expect(new Set([first.location.city, second.location.city, third.location.city])).toHaveLength(3);
+  });
+
+  it("uses a supplied global random location after the Danish first stop", () => {
+    const remoteLocation = {
+      id: "random-jp-tsukuba",
+      region: "JP",
+      country: "Japan",
+      city: "Tsukuba",
+      lat: 36.08333,
+      lng: 140.11667,
+      validLocationTypes: [],
+      validProblemAreas: [],
+    };
+    const next = selectDilemmaSeed([completed("disease-before-symptoms")], "Borger", () => 0, remoteLocation);
+
+    expect(next.location).toEqual(remoteLocation);
+  });
+
+  it("offers a wider pool of Danish first stops", () => {
+    const firstStopCities = new Set(
+      Array.from({ length: 12 }, (_, index) => selectDilemmaSeed([], "Borger", () => index).location.city),
+    );
+    expect(firstStopCities.size).toBeGreaterThanOrEqual(8);
   });
 
   it("prefers a theme that has not dominated the journey", () => {

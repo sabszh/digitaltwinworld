@@ -19,6 +19,15 @@ const isRecord = (value: unknown): value is Record<string, unknown> => Boolean(v
 const isString = (value: unknown): value is string => typeof value === "string";
 
 const reportError = (reason: string) => NextResponse.json({ error: reason }, { status: 502 });
+const REPORT_LIMITS = {
+  narrative: 620,
+  quote: 110,
+  quoteContext: 60,
+  quoteCount: 2,
+  pattern: 48,
+  patternCount: 3,
+  reflectionNote: 140,
+} as const;
 
 function collectUserTexts(completed: CompletedDilemma[]) {
   return completed.flatMap((item) => [item.customAnswer, item.reflection].filter(isString).map((value) => value.trim()));
@@ -31,7 +40,7 @@ function normalize(value: string) {
 function validateReport(value: unknown, userTexts: string[]): FutureProfileReport | undefined {
   if (!isRecord(value)) return undefined;
   if (!isString(value.headline) || value.headline.length === 0 || value.headline.length > 64) return undefined;
-  if (!isString(value.narrative) || value.narrative.length === 0 || value.narrative.length > 950) return undefined;
+  if (!isString(value.narrative) || value.narrative.length === 0 || value.narrative.length > REPORT_LIMITS.narrative) return undefined;
   if (!Array.isArray(value.quotes)) return undefined;
   if (!Array.isArray(value.patterns) || !value.patterns.every(isString)) return undefined;
   if (!isString(value.reflectionNote)) return undefined;
@@ -40,14 +49,14 @@ function validateReport(value: unknown, userTexts: string[]): FutureProfileRepor
   const quotes = (value.quotes as unknown[])
     .filter((quote): quote is { quote: string; context: string } => isRecord(quote) && isString(quote.quote) && isString(quote.context))
     .filter((quote) => normalizedUserTexts.some((text) => text.includes(normalize(quote.quote))))
-    .slice(0, 3);
+    .slice(0, REPORT_LIMITS.quoteCount);
 
   return {
     headline: value.headline,
     narrative: value.narrative,
     quotes,
-    patterns: (value.patterns as string[]).slice(0, 4),
-    reflectionNote: value.reflectionNote.slice(0, 220),
+    patterns: (value.patterns as string[]).slice(0, REPORT_LIMITS.patternCount),
+    reflectionNote: value.reflectionNote.slice(0, REPORT_LIMITS.reflectionNote),
     source: "openai",
   };
 }
@@ -131,10 +140,10 @@ ${quotedTexts}
 
 Opgave:
 1. Skriv en overskrift (headline), maks 64 tegn.
-2. Skriv en personlig narrativ fremtidsprofil i 2. person, maks 950 tegn. Ingen ros-floskler, ingen generisk positivitet.
-3. Citér op til 3 af brugerens egne ord ORDRET (kun hvis der findes egne ord ovenfor) — hver quote skal være et eksakt uddrag, og context skal sige hvor/hvornår.
-4. List 2-4 mønstre på tværs af valgene, hver maks 60 tegn.
-5. Skriv en kort reflectionNote, maks 220 tegn, der stiller ét åbent spørgsmål tilbage til brugeren.
+2. Skriv en personlig narrativ fremtidsprofil i 2. person, højst 2 korte afsnit og 620 tegn. Ingen ros-floskler eller gentagelser.
+3. Citér op til 2 af brugerens egne ord ORDRET (kun hvis der findes egne ord ovenfor) — hver quote skal være et kort, eksakt uddrag, og context skal sige hvor/hvornår.
+4. List 2-3 korte mønstre på tværs af valgene, hver maks 48 tegn.
+5. Skriv en kort reflectionNote, maks 140 tegn, der stiller ét åbent spørgsmål tilbage til brugeren.
 6. Skriv på ${languageName}.
 7. Beskriv spændinger i valgene som observationer, ikke som en personlighedstest eller diagnose. Brug konkrete situationer og undgå ros-floskler.
 8. Returnér kun JSON, intet andet.`;
@@ -145,22 +154,22 @@ const responseSchema = {
   additionalProperties: false,
   properties: {
     headline: { type: "string", maxLength: 64 },
-    narrative: { type: "string", maxLength: 950 },
+    narrative: { type: "string", maxLength: REPORT_LIMITS.narrative },
     quotes: {
       type: "array",
-      maxItems: 3,
+      maxItems: REPORT_LIMITS.quoteCount,
       items: {
         type: "object",
         additionalProperties: false,
         properties: {
-          quote: { type: "string", maxLength: 160 },
-          context: { type: "string", maxLength: 90 },
+          quote: { type: "string", maxLength: REPORT_LIMITS.quote },
+          context: { type: "string", maxLength: REPORT_LIMITS.quoteContext },
         },
         required: ["quote", "context"],
       },
     },
-    patterns: { type: "array", minItems: 2, maxItems: 4, items: { type: "string", maxLength: 60 } },
-    reflectionNote: { type: "string", maxLength: 220 },
+    patterns: { type: "array", minItems: 2, maxItems: REPORT_LIMITS.patternCount, items: { type: "string", maxLength: REPORT_LIMITS.pattern } },
+    reflectionNote: { type: "string", maxLength: REPORT_LIMITS.reflectionNote },
   },
   required: ["headline", "narrative", "quotes", "patterns", "reflectionNote"],
 };

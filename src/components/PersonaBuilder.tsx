@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { VoiceInput } from "@/components/VoiceInput";
 import type { Language } from "@/lib/i18n";
@@ -52,13 +52,11 @@ function TicketField({
   label,
   value,
   active,
-  activeHint,
   onClick,
 }: {
   label: string;
   value?: string;
   active: boolean;
-  activeHint: string;
   onClick: () => void;
 }) {
   return (
@@ -66,10 +64,10 @@ function TicketField({
       <span className="ticket-field-body">
         <span className="ticket-field-copy">
           <span className="ticket-label">{label}</span>
-          {/* An active empty field points to its open input below; inactive fields
-              keep a blank line so the ticket never jumps when an answer lands. */}
+          {/* Empty fields keep a blank line so the ticket never jumps when an
+              answer lands. The expanded input already shows what to do. */}
           <strong className="block truncate text-[13px] font-semibold text-[var(--text)]">
-            {value || (active ? activeHint : " ")}
+            {value || " "}
           </strong>
         </span>
         {value ? <span className="ticket-field-check" aria-hidden="true">✓</span> : null}
@@ -85,6 +83,7 @@ function TextFieldExpansion({
   placeholder,
   doneLabel,
   doneDisabled,
+  hideDoneAction,
   autoAdvanceOnChip,
   onChange,
   onVoiceUsed,
@@ -96,6 +95,7 @@ function TextFieldExpansion({
   placeholder: string;
   doneLabel?: string;
   doneDisabled?: boolean;
+  hideDoneAction?: boolean;
   autoAdvanceOnChip?: boolean;
   onChange: (text: string) => void;
   onVoiceUsed: () => void;
@@ -132,6 +132,12 @@ function TextFieldExpansion({
               setInterim("");
               onChange(event.target.value);
             }}
+            onKeyDown={(event) => {
+              if (event.key !== "Enter" || event.shiftKey || event.nativeEvent.isComposing || doneDisabled) return;
+              event.preventDefault();
+              worldSound.playChoiceSelect(1);
+              onDone();
+            }}
             rows={2}
             placeholder={placeholder}
             className="w-full resize-none bg-transparent text-[15px] text-[var(--text)] outline-none placeholder:text-[var(--faint)]"
@@ -148,17 +154,19 @@ function TextFieldExpansion({
               }}
               onInterim={setInterim}
             />
-            <button
-              type="button"
-              disabled={doneDisabled}
-              onClick={() => {
-                worldSound.playChoiceSelect(1);
-                onDone();
-              }}
-              className="ticket-launch rounded-full px-4 py-2 text-xs font-semibold"
-            >
-              {doneLabel ?? text.personaContinue}
-            </button>
+            {!hideDoneAction && (
+              <button
+                type="button"
+                disabled={doneDisabled}
+                onClick={() => {
+                  worldSound.playChoiceSelect(1);
+                  onDone();
+                }}
+                className="ticket-launch rounded-full px-4 py-2 text-xs font-semibold"
+              >
+                {doneLabel ?? text.personaContinue}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -174,7 +182,6 @@ export function PersonaBuilder({
   onCheckIn: (answers: PersonaAnswers) => Promise<void>;
 }) {
   const text = uiText[language];
-  const activeFieldHint = language === "da" ? "Vælg eller skriv nedenfor ↓" : "Choose or write below ↓";
   const [expandedField, setExpandedField] = useState<FieldKey | null>("age");
   const [isCheckingIn, setIsCheckingIn] = useState(false);
   const [role, setRole] = useState<UserRole | undefined>(undefined);
@@ -193,7 +200,7 @@ export function PersonaBuilder({
   const ticket = useMemo(() => {
     const roleIndex = role ? visibleRoles.indexOf(role) : -1;
     const filled = [age !== undefined, Boolean(role), Boolean(hope.trim()), Boolean(fear.trim())];
-    const checkInReady = Boolean(role && hope.trim() && fear.trim());
+    const checkInReady = Boolean(age !== undefined && role && hope.trim() && fear.trim());
     const hash = [role ?? "", hope, fear, age ?? ""]
       .join("|")
       .split("")
@@ -219,9 +226,9 @@ export function PersonaBuilder({
   }, [ticket.stamped]);
 
   const toggleField = (field: FieldKey) => setExpandedField((current) => (current === field ? null : field));
-  const handleCheckIn = async (nextFear?: string) => {
+  const handleCheckIn = useCallback((nextFear?: string) => {
     const resolvedFear = nextFear ?? fear;
-    if (!role || !hope.trim() || !resolvedFear.trim()) return;
+    if (isCheckingIn || pendingCheckInRef.current || age === undefined || !role || !hope.trim() || !resolvedFear.trim()) return;
     worldSound.playPersonaCheckIn();
     // Keep the open field in place until the ticket is off screen. Collapsing
     // it here changes the paper's aspect ratio halfway through its departure.
@@ -229,7 +236,15 @@ export function PersonaBuilder({
     // Do not change the app phase yet: the pass's paper CSS belongs to the
     // persona phase and must remain active until it has left the screen.
     pendingCheckInRef.current = { role, hope, fear: resolvedFear, age, hopeViaVoice, fearViaVoice };
-  };
+  }, [age, fear, fearViaVoice, hope, hopeViaVoice, isCheckingIn, role]);
+
+  // Picking the last chip checks in immediately. Free text gets a short pause,
+  // so normal typing is not interrupted after the first character.
+  useEffect(() => {
+    if (!ticket.checkInReady || isCheckingIn) return;
+    const timeout = window.setTimeout(() => handleCheckIn(), 1200);
+    return () => window.clearTimeout(timeout);
+  }, [handleCheckIn, isCheckingIn, ticket.checkInReady]);
 
   return (
     <section className="relative z-20 grid min-h-screen place-items-center px-4 py-10">
@@ -337,7 +352,6 @@ export function PersonaBuilder({
               label={language === "da" ? "Din alder nu" : "Your age now"}
               value={age === undefined ? undefined : (language === "da" ? `${age} år · ${age + 20} i 2046` : `${age} · ${age + 20} in 2046`)}
               active={expandedField === "age"}
-              activeHint={activeFieldHint}
               onClick={() => {
                 worldSound.playTextFocus();
                 toggleField("age");
@@ -347,7 +361,6 @@ export function PersonaBuilder({
               label={text.personaFieldRolePrompt}
               value={role ? roleLabels[language][role] : undefined}
               active={expandedField === "role"}
-              activeHint={activeFieldHint}
               onClick={() => {
                 worldSound.playTextFocus();
                 toggleField("role");
@@ -357,7 +370,6 @@ export function PersonaBuilder({
               label={text.personaFieldHopePrompt}
               value={hope || undefined}
               active={expandedField === "hope"}
-              activeHint={activeFieldHint}
               onClick={() => {
                 worldSound.playTextFocus();
                 toggleField("hope");
@@ -367,7 +379,6 @@ export function PersonaBuilder({
               label={text.personaFieldFearPrompt}
               value={fear || undefined}
               active={expandedField === "fear"}
-              activeHint={activeFieldHint}
               onClick={() => {
                 worldSound.playTextFocus();
                 toggleField("fear");
@@ -399,6 +410,12 @@ export function PersonaBuilder({
                           const raw = event.target.value;
                           const next = Number(raw);
                           setAge(raw !== "" && Number.isInteger(next) && next >= 0 && next <= 120 ? next : undefined);
+                        }}
+                        onKeyDown={(event) => {
+                          if (event.key !== "Enter" || event.nativeEvent.isComposing) return;
+                          event.preventDefault();
+                          worldSound.playChoiceSelect(0);
+                          setExpandedField("role");
                         }}
                         placeholder="—"
                         className="surface-control w-24 rounded-xl px-3 py-2 text-lg font-semibold text-[var(--text)] outline-none"
@@ -480,8 +497,9 @@ export function PersonaBuilder({
                     chips={fearChips}
                     value={fear}
                     placeholder={text.personaStepFearPlaceholder}
-                    doneLabel={text.personaCheckIn}
                     doneDisabled={!fear.trim()}
+                    hideDoneAction
+                    autoAdvanceOnChip
                     onChange={setFear}
                     onVoiceUsed={() => setFearViaVoice(true)}
                     onDone={(nextValue) => void handleCheckIn(nextValue)}

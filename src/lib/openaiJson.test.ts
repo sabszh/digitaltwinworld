@@ -68,5 +68,8 @@ describe("requestJson completion budget", () => {
     const body = JSON.parse(String(init.body)) as Record<string, unknown>;
     expect(body.max_completion_tokens).toBe(2_400);
     expect(body).not.toHaveProperty("max_tokens");
+    const messages = body.messages as Array<{ role: string; content: string }>;
+    expect(messages[0].content).toContain("plain, honest, easy-to-understand language");
+    expect(messages[0].content).toContain("Avoid jargon, bureaucratic language, abstractions, metaphors");
   });
 });

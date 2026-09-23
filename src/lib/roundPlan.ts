@@ -34,11 +34,25 @@ function noveltyScore(item: FutureDevelopment, counts: Map<FutureTheme, number>)
   return Math.min(...item.themes.map((theme) => counts.get(theme) ?? 0));
 }
 
+function selectLocation(previous: CompletedDilemma[], round: number, pick: Picker): LocationNode {
+  const usedCities = new Set(previous.map((item) => item.city));
+
+  if (round === 0) {
+    const unusedDomestic = locations.filter((item) => item.country === "Danmark" && !usedCities.has(item.city));
+    const domestic = locations.filter((item) => item.country === "Danmark");
+    return pickOne(unusedDomestic.length ? unusedDomestic : domestic, pick);
+  }
+
+  const unusedCities = locations.filter((item) => !usedCities.has(item.city));
+  return pickOne(unusedCities.length ? unusedCities : locations, pick);
+}
+
 /** Select the concrete future and place. The participant's choices are ignored. */
 export function selectDilemmaSeed(
   previous: CompletedDilemma[],
   role: UserRole,
   pick: Picker = randomPick,
+  locationOverride?: LocationNode,
 ): DilemmaSeed {
   const usedDevelopmentIds = new Set(previous.map((item) => item.futurePressureId).filter(Boolean));
   const suitable = futureDevelopments.filter((item) => developmentIsSuitableForRole(item, role));
@@ -51,14 +65,7 @@ export function selectDilemmaSeed(
   const selected = pickOne(roleWeighted, pick);
 
   const round = previous.length;
-  const usedCities = new Set(previous.map((item) => item.city));
-  const domestic = locations.filter((item) => item.country === "Danmark" && !usedCities.has(item.city));
-  const international = locations.filter((item) => item.country !== "Danmark" && !usedCities.has(item.city));
-  const anyUnused = locations.filter((item) => !usedCities.has(item.city));
-  const locationPool = round === 0
-    ? (domestic.length ? domestic : anyUnused)
-    : (international.length ? international : anyUnused);
-  const location = pickOne(locationPool.length ? locationPool : locations, pick);
+  const location = locationOverride ?? selectLocation(previous, round, pick);
   const examples = selectDilemmaExamples(role, selected, pick);
 
   return {

@@ -10,23 +10,26 @@ export const creativeSchemaLimits = {
   humanCost: 420,
   decision: 320,
   title: 96,
-  scene: 900,
-  stake: 360,
-  question: 300,
+  scene: 460,
+  stake: 125,
+  question: 105,
   choiceLabel: 96,
-  choiceConsequence: 420,
+  choiceConsequence: 105,
   placeHint: 180,
 } as const;
 
 export const dilemmaDisplayLimits = {
   title: 58,
-  landingScene: 700,
-  scenePrompt: 700,
-  stake: 190,
-  question: 160,
-  choiceLabel: 46,
-  choiceDescription: 160,
-  choiceConsequence: 192,
+  landingScene: 180,
+  scenePrompt: 460,
+  stake: 125,
+  question: 105,
+  // Choice labels are already bounded by the authoring schema. Keep that full
+  // text: truncating it here can remove the action that distinguishes one
+  // answer from another and leaves a misleading ellipsis in the UI.
+  choiceLabel: 96,
+  choiceDescription: 105,
+  choiceConsequence: 105,
   placeHint: 100,
 } as const;
 
@@ -147,6 +150,14 @@ export function trimCreativeText(text: string, limit: number, ellipsis = true): 
   return kept.length ? `${kept.join(" ").replace(/[\s,;:.\-–—]+$/u, "")}${suffix}` : suffix;
 }
 
+/** The arrival only needs to open the scene. The complete, still concise scene
+ * follows on the dilemma card, so repeating it here doubles the reading load. */
+function openingSentence(text: string): string {
+  const normalized = text.trim().replace(/\s+/gu, " ");
+  const sentence = normalized.match(/^.*?[.!?](?=\s|$)/u)?.[0] ?? normalized;
+  return trimCreativeText(sentence, dilemmaDisplayLimits.landingScene);
+}
+
 const problemAreaByTheme: Partial<Record<string, ProblemArea>> = {
   "Uddannelse": "Uddannelse og læring",
   "Arbejde": "Arbejde og arbejdsliv",
@@ -236,7 +247,7 @@ export function enrichCreativeDilemma(
     technology,
     role: input.role,
     marker: { lat: seed.location.lat, lng: seed.location.lng },
-    landingScene: trimCreativeText(creative.scene, dilemmaDisplayLimits.landingScene),
+    landingScene: openingSentence(creative.scene),
     stake: trimCreativeText(creative.stake, dilemmaDisplayLimits.stake),
     logic: {
       rule: creative.futureNormal,

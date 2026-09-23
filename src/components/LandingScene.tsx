@@ -8,9 +8,11 @@ import type { Language } from "@/lib/i18n";
 import { uiText } from "@/lib/i18n";
 import { worldSound } from "@/lib/sound";
 import { UX_TIMING } from "@/lib/uxTiming";
+import { useEnterToContinue } from "@/lib/useEnterToContinue";
 import { useFitHeadline } from "@/lib/useFitHeadline";
 import type { GeneratedDilemma } from "@/types/world2046";
 import { JourneyButton, JourneyCard } from "@/components/ui/journey";
+import { TextToSpeechButton } from "@/components/TextToSpeechButton";
 
 export function LandingScene({
   dilemma,
@@ -24,7 +26,7 @@ export function LandingScene({
   const text = uiText[language];
   const [showButton, setShowButton] = useState(false);
   const recording = useAmbienceStore((state) => state.recording);
-  const place = dilemma.exactPlace?.name ?? dilemma.city;
+  const place = `${dilemma.city}, ${dilemma.country}`;
   const titleRef = useFitHeadline<HTMLHeadingElement>(place);
   const scene = dilemma.landingScene ?? (language === "da" ? `Du lander i ${place}, 2046.` : `You arrive at ${place}, 2046.`);
 
@@ -35,6 +37,13 @@ export function LandingScene({
     };
   }, [dilemma.id]);
 
+  const enterDilemma = () => {
+    worldSound.playButtonTap();
+    onEnter();
+  };
+
+  useEnterToContinue(enterDilemma, showButton);
+
   return (
     <section className="relative z-20 flex min-h-screen items-end justify-center px-4 py-8 md:items-center md:justify-end md:px-10">
       <motion.div
@@ -44,7 +53,10 @@ export function LandingScene({
         className="w-full max-w-lg"
       >
         <JourneyCard className="arrival-card">
-        <h2 ref={titleRef}>{place}</h2>
+        <div className="flex items-start justify-between gap-4">
+          <h2 ref={titleRef}>{place}</h2>
+          <TextToSpeechButton text={`${place}. ${scene}`} language={language} />
+        </div>
 
         <motion.p
           initial={{ opacity: 0, y: 8 }}
@@ -75,10 +87,7 @@ export function LandingScene({
 
         <motion.div className="arrival-card-action" initial={{ opacity: 0, y: 8 }} animate={{ opacity: showButton ? 1 : 0, y: showButton ? 0 : 8 }} transition={{ duration: 0.4 }}>
           <JourneyButton
-            onClick={() => {
-              worldSound.playButtonTap();
-              onEnter();
-            }}
+            onClick={enterDilemma}
             style={{ pointerEvents: showButton ? "auto" : "none" }}
             variant="primary"
             direction="forward"

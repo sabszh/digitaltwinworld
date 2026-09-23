@@ -68,10 +68,12 @@ describe("creative dilemma boundary", () => {
     expect(result.choices.every((choice) => choice.valueImpacts && choice.description)).toBe(true);
   });
 
-  it("gives the schema headroom and trims final copy only at whole words", () => {
+  it("keeps visible authoring inside the display limits and trims defensive overflow at whole words", () => {
     expect(creativeDilemmaSchema.properties.title.maxLength).toBeGreaterThan(dilemmaDisplayLimits.title);
-    expect(creativeDilemmaSchema.properties.scene.maxLength).toBeGreaterThan(dilemmaDisplayLimits.scenePrompt);
-    expect(creativeDilemmaSchema.properties.stake.maxLength).toBeGreaterThan(dilemmaDisplayLimits.stake);
+    expect(creativeDilemmaSchema.properties.scene.maxLength).toBe(dilemmaDisplayLimits.scenePrompt);
+    expect(creativeDilemmaSchema.properties.stake.maxLength).toBe(dilemmaDisplayLimits.stake);
+    expect(creativeDilemmaSchema.properties.question.maxLength).toBe(dilemmaDisplayLimits.question);
+    expect(creativeDilemmaSchema.properties.choices.items.properties.consequence.maxLength).toBe(dilemmaDisplayLimits.choiceDescription);
     expect(trimCreativeText("alpha beta gamma", 11)).toBe("alpha beta…");
     expect(trimCreativeText("averylongsingleword", 8)).toBe("…");
 
@@ -95,7 +97,19 @@ describe("creative dilemma boundary", () => {
 
     const result = enrichCreativeDilemma(creative({ scene }), input, seed, zeroValueImpacts());
     expect(result.scenePrompt).toBe(scene);
-    expect(result.landingScene).toBe(scene);
+    expect(result.landingScene).toBe("Du besøger oldefar i hans lejlighed, hvor robotten hjælper med vand og medicin.");
     expect(result.scenePrompt).not.toContain("…");
+  });
+
+  it("keeps the complete choice label instead of shortening it with an ellipsis", () => {
+    const label = "Lad læreren og eleverne beslutte sammen, hvordan den nye ordning skal bruges i klassen";
+    const dilemma = creative();
+    dilemma.choices[0].label = label;
+
+    const result = enrichCreativeDilemma(dilemma, input, seed, zeroValueImpacts());
+    const matchingChoice = result.choices.find((choice) => choice.id === "a");
+
+    expect(matchingChoice?.label).toBe(label);
+    expect(matchingChoice?.label).not.toContain("…");
   });
 });

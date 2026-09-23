@@ -2,10 +2,12 @@
 
 import type { Language } from "@/lib/i18n";
 import { JourneyButton, JourneyCard } from "@/components/ui/journey";
+import { useEnterToContinue } from "@/lib/useEnterToContinue";
 
 export function GoodbyeScreen({ language, status, onFinish }: { language: Language; status: "saved" | "declined"; onFinish: () => void }) {
   const da = language === "da";
   const saved = status === "saved";
+  useEnterToContinue(onFinish);
   return (
     <section className="relative z-20 grid min-h-dvh place-items-center px-5 py-10">
       <JourneyCard className="w-full max-w-xl p-8 text-center md:p-12">

@@ -35,6 +35,32 @@ function setPrintDensity(imagePath: string) {
   });
 }
 
+function ensurePrinterIsOnline(printer: string) {
+  return new Promise<void>((resolve, reject) => {
+    const child = spawn("lpoptions", ["-p", printer], { stdio: ["ignore", "pipe", "pipe"] });
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (chunk: Buffer) => { stdout += chunk.toString(); });
+    child.stderr.on("data", (chunk: Buffer) => { stderr += chunk.toString(); });
+    child.on("error", reject);
+    child.on("close", (code) => {
+      if (code !== 0) {
+        reject(new Error(stderr || `lpoptions exited with ${code}`));
+        return;
+      }
+
+      const isOffline = /printer-state-reasons=[^\n]*(offline|connecting-to-device)/i.test(stdout);
+      const isUsableState = /\bprinter-state=[34]\b/.test(stdout);
+      if (isOffline || !isUsableState) {
+        reject(new Error("thermal printer is offline"));
+        return;
+      }
+
+      resolve();
+    });
+  });
+}
+
 function printValueCard(printer: string, imagePath: string) {
   return new Promise<void>((resolve, reject) => {
     // Use the installed Rongta/GEZHI driver. Its Bluetooth transport is reliable
@@ -75,6 +101,12 @@ export async function POST(request: Request) {
   }
   const image = decodePng(typeof body === "object" && body !== null ? (body as { image?: unknown }).image : undefined);
   if (!image) return NextResponse.json({ error: "invalid_value_card" }, { status: 400 });
+
+  try {
+    await ensurePrinterIsOnline(printer);
+  } catch {
+    return NextResponse.json({ error: "thermal_printer_offline" }, { status: 503 });
+  }
 
   const directory = await mkdtemp(join(tmpdir(), "world2046-value-card-"));
   const imagePath = join(directory, "value-card.png");

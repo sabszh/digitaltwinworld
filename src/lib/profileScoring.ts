@@ -36,13 +36,14 @@ export function inferAiAttitude(profile: ValueProfile, language: Language = "da"
 
 export function generateSummary(completed: CompletedDilemma[], profile: ValueProfile, language: Language = "da") {
   const attitude = inferAiAttitude(profile, language);
+  const stopCount = completed.length;
   const values = getDominantValues(profile, 3).map(([key]) => key);
   const areas = [...new Set(completed.map((item) => item.problemArea))].slice(0, 3).join(", ").toLowerCase();
   const human = values.includes("humanContact") || values.includes("equality") ? "menneskecentreret" : "systemisk";
   const governance = profile.localControl + profile.transparency >= profile.efficiency ? "klare rammer og åbenhed" : "hurtig koordinering og effektiv drift";
 
   if (language === "en") {
-    return `Across five places, you kept returning to ${values.join(", ")}. Your choices were ${attitude}: willing to use new tools when the people living with the consequences can question and adjust them. In ${areas || "everyday life"}, you placed responsibility close to the people affected.`;
+    return `Across ${stopCount} places, you prioritised ${values.join(", ")}. Your approach was ${attitude}, with responsibility kept close to the people affected in ${areas || "everyday life"}.`;
   }
-  return `På fem forskellige steder vendte du tilbage til ${human} ansvar og ${governance}. Din tilgang til teknologi var ${attitude}: ikke et ja eller nej, men et krav om, at mennesker tæt på hverdagen kan forstå og ændre det, der påvirker dem.`;
+  return `På tværs af ${stopCount} steder prioriterede du ${human} ansvar og ${governance}. Din tilgang til teknologi var ${attitude}.`;
 }

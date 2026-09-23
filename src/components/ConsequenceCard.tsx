@@ -4,14 +4,17 @@ import { motion } from "framer-motion";
 import type { Language } from "@/lib/i18n";
 import { uiText } from "@/lib/i18n";
 import { worldSound } from "@/lib/sound";
+import { useEnterToContinue } from "@/lib/useEnterToContinue";
 import type { Choice, GeneratedDilemma } from "@/types/world2046";
 import { JourneyButton, JourneyCard } from "@/components/ui/journey";
+import { TextToSpeechButton } from "@/components/TextToSpeechButton";
 
 export function ConsequenceCard({
   choice,
   dilemma,
   customAnswer,
   language,
+  isFinalStop = false,
   onBack,
   onContinue,
 }: {
@@ -19,11 +22,19 @@ export function ConsequenceCard({
   dilemma?: GeneratedDilemma;
   customAnswer?: string;
   language: Language;
+  isFinalStop?: boolean;
   onBack: () => void;
   onContinue: (reflection: string, viaVoice: boolean) => void;
 }) {
   const text = uiText[language];
   const place = dilemma?.exactPlace?.name ?? dilemma?.locationType ?? "stedet";
+
+  const continueJourney = () => {
+    worldSound.playButtonTap();
+    onContinue("", false);
+  };
+
+  useEnterToContinue(continueJourney);
 
   const consequenceText = customAnswer
     ? language === "da" ? `Dit valg ændrer, hvem der får indflydelse på ${place}, og hvem der må leve med usikkerheden.` : `Your choice changes who has influence at ${place}, and who must live with the uncertainty.`
@@ -42,7 +53,13 @@ export function ConsequenceCard({
       transition={{ duration: 1.0, ease: "easeOut" }}
     >
       <JourneyCard className="consequence-card max-w-xl p-7 md:p-8">
-        <h2 className="text-3xl font-semibold tracking-[-0.025em] text-[var(--text)]">{customAnswer ? text.consequenceOwnPath : choice?.label}</h2>
+        <div className="flex items-start justify-between gap-4">
+          <h2 className="text-3xl font-semibold tracking-[-0.025em] text-[var(--text)]">{customAnswer ? text.consequenceOwnPath : choice?.label}</h2>
+          <TextToSpeechButton
+            text={`${customAnswer ? text.consequenceOwnPath : choice?.label ?? ""}. ${consequenceText}`}
+            language={language}
+          />
+        </div>
         <p className="mt-5 text-lg font-normal leading-7 text-[var(--muted)]">{consequenceText}</p>
 
         <div className="mt-7 flex flex-wrap justify-end gap-3">
@@ -57,14 +74,13 @@ export function ConsequenceCard({
             {text.back}
           </JourneyButton>
           <JourneyButton
-            onClick={() => {
-              worldSound.playButtonTap();
-              onContinue("", false);
-            }}
+            onClick={continueJourney}
             variant="primary"
             direction="forward"
           >
-            {text.continueJourney}
+            {isFinalStop
+              ? text.endJourney
+              : text.continueJourney}
           </JourneyButton>
         </div>
       </JourneyCard>

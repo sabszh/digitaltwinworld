@@ -11,6 +11,7 @@ import type { CreativeDilemma, DilemmaGenerationRequest } from "@/lib/dilemmaGen
 import { locatePlace } from "@/lib/geocode";
 import { dilemmaModel, requestJson } from "@/lib/openaiJson";
 import { buildDilemmaPrompt } from "@/lib/prompts/dilemmaPrompt";
+import { fetchRandomJourneyLocation } from "@/lib/randomLocation";
 import { selectDilemmaSeed } from "@/lib/roundPlan";
 import { scoreDilemmaValues } from "@/lib/valueScoring";
 import { NextResponse } from "next/server";
@@ -52,13 +53,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  const generationPlan = selectDilemmaSeed(body.previousDilemmas, body.role);
+  const language = body.language === "en" ? "en" : "da";
+  const randomLocation = body.previousDilemmas.length > 0
+    ? await fetchRandomJourneyLocation(body.previousDilemmas, language)
+    : undefined;
+  const generationPlan = selectDilemmaSeed(body.previousDilemmas, body.role, undefined, randomLocation);
   const input: DilemmaGenerationRequest = {
     role: body.role,
     answers: body.answers,
     previousDilemmas: body.previousDilemmas,
     preferredSeverity: body.preferredSeverity === "medium" ? "medium" : "low",
-    language: body.language === "en" ? "en" : "da",
+    language,
     generationPlan,
   };
 

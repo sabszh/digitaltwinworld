@@ -11,6 +11,10 @@ import type { SessionResult, ValueProfile } from "@/types/world2046";
 // changes the paper edges, not the image width this printer can render.
 const WIDTH = 384;
 const PADDING = 12;
+// Some inexpensive ESC/POS clones occasionally render bytes from the first
+// raster block as glyphs. Reserve physical paper before the card's content so
+// that a stray first line stays outside the designed value card.
+const TOP_GUARD_BAND = 72;
 // The installed driver advertises a slightly wider page than the physical
 // 384-dot head. Keep extra room on the right so bars and symbols cannot be
 // clipped by that mismatch.
@@ -20,8 +24,15 @@ const VALUE_LABEL_WIDTH = 150;
 const VALUE_GAP = 8;
 const VALUE_BAR_WIDTH = CONTENT_WIDTH - VALUE_LABEL_WIDTH - VALUE_GAP;
 const VALUE_BAR_X = PADDING + VALUE_LABEL_WIDTH + VALUE_GAP;
-const SCORE_LIMIT = 10;
 const valueKeys = Object.keys(emptyValueProfile) as Array<keyof ValueProfile>;
+
+export function valueProfileScale(profile: ValueProfile): number {
+  return Math.max(1, ...valueKeys.map((key) => Math.abs(profile[key])));
+}
+
+export function valueBarRatio(score: number, scale: number): number {
+  return Math.min(1, Math.abs(score) / Math.max(1, scale));
+}
 
 const cardText = {
   da: {
@@ -65,19 +76,18 @@ function wrap(context: CanvasRenderingContext2D, text: string, maxWidth: number)
   return lines;
 }
 
-function drawValueBar(context: CanvasRenderingContext2D, y: number, score: number) {
+function drawValueBar(context: CanvasRenderingContext2D, y: number, score: number, scale: number) {
   const height = 14;
   const center = VALUE_BAR_X + (VALUE_BAR_WIDTH / 2);
-  const boundedScore = Math.max(-SCORE_LIMIT, Math.min(SCORE_LIMIT, score));
-  const extent = Math.abs(boundedScore / SCORE_LIMIT) * (VALUE_BAR_WIDTH / 2);
+  const extent = valueBarRatio(score, scale) * (VALUE_BAR_WIDTH / 2);
 
   context.strokeStyle = "black";
   context.lineWidth = 1;
   context.strokeRect(VALUE_BAR_X + 0.5, y + 0.5, VALUE_BAR_WIDTH - 1, height - 1);
   context.fillStyle = "black";
   context.fillRect(center - 0.5, y - 2, 1, height + 4);
-  if (boundedScore < 0) context.fillRect(center - extent, y + 2, extent, height - 4);
-  if (boundedScore > 0) context.fillRect(center, y + 2, extent, height - 4);
+  if (score < 0) context.fillRect(center - extent, y + 2, extent, height - 4);
+  if (score > 0) context.fillRect(center, y + 2, extent, height - 4);
 }
 
 async function drawGejstLogo(context: CanvasRenderingContext2D, y: number) {
@@ -108,6 +118,10 @@ export async function createThermalReceipt(result: SessionResult, language: Lang
 
   const text = cardText[language];
   const dominant = new Set(getDominantValues(result.valueProfile, 4).map(([key]) => key));
+  // Match the on-screen profile: this is a relative value portrait, not a
+  // fixed five-stop score. The strongest value therefore reaches an endpoint
+  // and the other bars retain their proportion after any journey-length change.
+  const valueScale = valueProfileScale(result.valueProfile);
   const ageIn2046 = result.personaAnswers?.age === undefined ? undefined : result.personaAnswers.age + 20;
   const passenger = ageIn2046 === undefined
     ? roleLabels[language][result.role]
@@ -119,7 +133,7 @@ export async function createThermalReceipt(result: SessionResult, language: Lang
   context.fillStyle = "white";
   context.fillRect(0, 0, WIDTH, canvas.height);
   context.fillStyle = "black";
-  let y = 35;
+  let y = TOP_GUARD_BAND + 35;
 
   context.font = "700 32px Georgia, serif";
   context.textAlign = "center";
@@ -161,7 +175,7 @@ export async function createThermalReceipt(result: SessionResult, language: Lang
     context.font = `${highlighted ? "700" : "400"} 16px Arial, sans-serif`;
     if (context.measureText(label).width > VALUE_LABEL_WIDTH) context.font = `${highlighted ? "700" : "400"} 14px Arial, sans-serif`;
     context.fillText(label, PADDING, y);
-    drawValueBar(context, y - 13, result.valueProfile[key]);
+    drawValueBar(context, y - 13, result.valueProfile[key], valueScale);
     y += 31;
   }
 

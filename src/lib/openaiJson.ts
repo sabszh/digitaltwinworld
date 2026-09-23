@@ -86,6 +86,7 @@ export async function requestJson<T>({
   const model = requestedModel ?? utilityModel();
   const system = [
     `Return only valid JSON matching the schema. Write all audience-facing text in ${language === "da" ? "Danish" : "English"}. No markdown.`,
+    "Use plain, honest, easy-to-understand language. State the meaning directly with familiar words and concrete sentences. Avoid jargon, bureaucratic language, abstractions, metaphors, and cryptic or polished-sounding phrasing. Never hide a consequence behind vague or euphemistic wording.",
     systemNote,
   ]
     .filter(Boolean)

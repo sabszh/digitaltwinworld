@@ -466,8 +466,8 @@ export function validateAiDilemmaDetailed(
   }
 
   const previousCountries = new Set(input.previousDilemmas.map((item) => item.country));
-  // Five stops out of seven areas: a journey that spends three of them inside
-  // "Digital tillid, rettigheder og styring" is the same stop three times.
+  // Every stop uses a different area, so a shorter journey still preserves the
+  // thematic breadth that makes the final comparison meaningful.
   if (input.previousDilemmas.some((item) => item.problemArea === value.problemArea)) return { reason: "problem_area_reused" };
   if (!locationTypesByProblemArea[value.problemArea as ProblemArea]?.includes(value.locationType as LocationType)) {
     return { reason: "bad_location_fit" };

@@ -45,7 +45,7 @@ type SessionStore = {
   backToDilemma: () => void;
   continueJourney: () => void;
   finishJourney: () => Promise<void>;
-  reviewConsent: () => void;
+  completeJourney: () => void;
   saveConsentedSession: () => Promise<void>;
   declineConsent: () => void;
   restart: () => void;
@@ -172,8 +172,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     const { role, personaAnswers, completedDilemmas, sessionId, language } = get();
     if (!role) return;
     if (completedDilemmas.length >= SESSION_DILEMMA_COUNT) {
-      set({ phase: "report", activeDilemma: undefined });
-      void get().finishJourney();
+      set({ phase: "consent", activeDilemma: undefined, consentStatus: "idle" });
       return;
     }
     const preferredSeverity = completedDilemmas.length === 0 ? "low" : "medium";
@@ -349,8 +348,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   continueJourney: () => {
     const { completedDilemmas } = get();
     if (completedDilemmas.length >= SESSION_DILEMMA_COUNT) {
-      set({ phase: "report" });
-      void get().finishJourney();
+      set({ phase: "consent", consentStatus: "idle" });
     } else {
       void get().generateNext();
     }
@@ -382,23 +380,33 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     if (get().sessionId !== sessionId) return;
     set({ futureReport: report, reportError: undefined, reportLoading: false, valueProfile: scoredProfile });
   },
-  reviewConsent: () => set({ phase: "consent", consentStatus: "idle" }),
+  completeJourney: () => get().restart(),
   saveConsentedSession: async () => {
     if (get().consentStatus === "saving" || get().consentStatus === "saved") return;
-    set({ consentStatus: "saving" });
+    const sessionId = get().sessionId;
+    // Consent is the user's last decision, not a loading screen. Show the report
+    // immediately and finish report generation + persistence in the background.
+    set({ consentStatus: "saving", phase: "report" });
     try {
+      await get().finishJourney();
+      if (get().sessionId !== sessionId) return;
+      if (get().reportError || !get().futureReport) throw new Error("Failed to build report");
+      const session = get().getResult();
       const response = await fetch("/api/sessions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session: get().getResult() }),
+        body: JSON.stringify({ session }),
       });
       if (!response.ok) throw new Error("Failed to save session");
-      set({ consentStatus: "saved", phase: "goodbye" });
+      if (get().sessionId === sessionId) set({ consentStatus: "saved" });
     } catch {
-      set({ consentStatus: "error" });
+      if (get().sessionId === sessionId) set({ consentStatus: "error" });
     }
   },
-  declineConsent: () => set({ consentStatus: "declined", phase: "goodbye" }),
+  declineConsent: () => {
+    set({ consentStatus: "declined", phase: "report" });
+    void get().finishJourney();
+  },
   restart: () => {
     dilemmaGenerationRun += 1;
     activeDilemmaController?.abort();

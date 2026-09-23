@@ -32,8 +32,8 @@ export const roleLabels: Record<Language, Record<UserRole, string>> = {
 export const uiText = {
   da: {
     introBody: "Dine valg i dag er en helt almindelig tirsdag i 2046.",
-    introMeta: "5 stop · 7 min · år 2046",
-    introHeroPromise: "Fem stop. Fem hverdage. Ét 2046.",
+    introMeta: "3 stop · 5 min · år 2046",
+    introHeroPromise: "Tre stop. Tre hverdage. Ét 2046.",
     introHeroPromiseSub: "Du møder mennesker, der lever med de valg, vi træffer i dag. Hvad vil du beskytte, når noget må vige?",
     roleQuestion: "Hvem rejser du som?",
     left: "tilbage",
@@ -45,9 +45,9 @@ export const uiText = {
     introScrollLabel: "Scroll til gate",
 
     personaStepRole: "Hvem rejser du som?",
-    personaStepHope: "Hvad håber du mest på ved 2046?",
+    personaStepHope: "Hvad håber du på for fremtiden?",
     personaStepHopePlaceholder: "Skriv eller indtal dit håb...",
-    personaStepFear: "Hvad frygter du mest ved 2046?",
+    personaStepFear: "Hvad er du bange for i fremtiden?",
     personaStepFearPlaceholder: "Skriv eller indtal din bekymring...",
     personaHopeChips: "At vi stadig har tid til hinanden,At alle får bedre muligheder,At vi løser klimakrisen,At teknologien er til at stole på,At man stadig kan vælge selv,At naturen har det bedre",
     personaFearChips: "At vi mister menneskelig kontakt,At teknologien styrer for meget,At kun de få får magten,At privatlivet forsvinder,At forskellene vokser,At beslutninger sker uden mennesker",
@@ -58,8 +58,8 @@ export const uiText = {
     personaSkipVoice: "Mikrofon blokeret — skriv i stedet",
 
     personaFieldRolePrompt: "Hvem er du?",
-    personaFieldHopePrompt: "Hvad håber du på?",
-    personaFieldFearPrompt: "Hvad er du bange for?",
+    personaFieldHopePrompt: "Hvad håber du på for fremtiden?",
+    personaFieldFearPrompt: "Hvad er du bange for i fremtiden?",
     personaCheckIn: "Tjek ind",
     personaPassenger: "Passager",
     personaBoardingNotes: "Boarding notes",
@@ -96,6 +96,8 @@ export const uiText = {
     consequenceOwnPath: "Din egen vej",
     back: "Tilbage",
     continueJourney: "Rejs videre",
+    endJourney: "Slut rejsen",
+    journeyThanks: "Tak fordi du rejste med",
 
     reportKicker: "Din rapport",
     reportTitle: "Din verden i 2046",
@@ -120,8 +122,8 @@ export const uiText = {
   },
   en: {
     introBody: "Your choices today are just an ordinary Tuesday in 2046.",
-    introMeta: "5 stops · 7 min · year 2046",
-    introHeroPromise: "Five stops. Five ordinary days. One 2046.",
+    introMeta: "3 stops · 5 min · year 2046",
+    introHeroPromise: "Three stops. Three ordinary days. One 2046.",
     introHeroPromiseSub: "You'll meet people living with the choices we make today. What will you protect when something has to give?",
     roleQuestion: "Who are you travelling as?",
     left: "left",
@@ -133,9 +135,9 @@ export const uiText = {
     introScrollLabel: "Scroll to gate",
 
     personaStepRole: "Who are you travelling as?",
-    personaStepHope: "What do you most hope for in 2046?",
+    personaStepHope: "What do you hope for in the future?",
     personaStepHopePlaceholder: "Type or speak your hope...",
-    personaStepFear: "What do you most fear about 2046?",
+    personaStepFear: "What are you afraid of in the future?",
     personaStepFearPlaceholder: "Type or speak your worry...",
     personaHopeChips: "That we still have time for each other,That everyone gets better chances,That we solve the climate crisis,That technology is worth trusting,That you can still choose for yourself,That nature is better off",
     personaFearChips: "That we lose human contact,That technology controls too much,That only a few gain power,That privacy disappears,That the gaps grow wider,That decisions happen without people",
@@ -146,8 +148,8 @@ export const uiText = {
     personaSkipVoice: "Microphone blocked — type instead",
 
     personaFieldRolePrompt: "Who are you?",
-    personaFieldHopePrompt: "What do you hope for?",
-    personaFieldFearPrompt: "What are you afraid of?",
+    personaFieldHopePrompt: "What do you hope for in the future?",
+    personaFieldFearPrompt: "What are you afraid of in the future?",
     personaCheckIn: "Check in",
     personaPassenger: "Passenger",
     personaBoardingNotes: "Boarding notes",
@@ -184,6 +186,8 @@ export const uiText = {
     consequenceOwnPath: "Your own path",
     back: "Back",
     continueJourney: "Travel on",
+    endJourney: "End journey",
+    journeyThanks: "Thank you for travelling with us",
 
     reportKicker: "Your report",
     reportTitle: "Your world in 2046",

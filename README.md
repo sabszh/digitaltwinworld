@@ -1,6 +1,6 @@
 # World 2046
 
-Interaktiv webprototype af en varm, futuristisk 3D worldbuilding-oplevelse. Brugeren vælger rolle, rejser via en roterende globus til fem steder i verden og løser korte fremtidsdilemmaer om AI, robotter, data, klima, sundhed, arbejde, mobilitet og digital tillid.
+Interaktiv webprototype af en varm, futuristisk 3D worldbuilding-oplevelse. Brugeren vælger rolle, rejser via en roterende globus til tre steder i verden og løser korte fremtidsdilemmaer om AI, robotter, data, klima, sundhed, arbejde, mobilitet og digital tillid.
 
 ## Kør lokalt
 
@@ -15,7 +15,7 @@ npm run dev
 
 Når en besøgende aktivt giver samtykke efter rapporten, gemmes rejsen som standard i `.data/sessions/`. Hver deltager får sin egen fil: `world2046-<session-id>.json`. Sæt `SESSION_DATA_PATH` i `.env.local`, hvis udstillingscomputeren skal bruge en anden mappe. Afviste sessions skrives ikke til disk.
 
-Hver fil indeholder en komplet, samtykket rejse med samtykke- og tidsmarkering, passagerens valgte rolle/alder/svar, værdiprofilen og fem dilemma-poster. En dilemma-post gemmer både det valgte svar og et deltager-vendt snapshot af det, der blev vist: titel, scene, hvad der stod på spil, ankomsttekst, sted/koordinater og alle fire svarmuligheder. De skjulte værdiscores for de fire muligheder gemmes ikke i dette snapshot.
+Hver fil indeholder en komplet, samtykket rejse med samtykke- og tidsmarkering, passagerens valgte rolle/alder/svar, værdiprofilen og tre dilemma-poster. En dilemma-post gemmer både det valgte svar og et deltager-vendt snapshot af det, der blev vist: titel, scene, hvad der stod på spil, ankomsttekst, sted/koordinater og alle fire svarmuligheder. De skjulte værdiscores for de fire muligheder gemmes ikke i dette snapshot.
 
 ## Kort
 
@@ -41,7 +41,7 @@ Den aktuelle GEZHI-kø bruger også `scripts/rasterto58SeriesNoFinalReset.py` so
 
 - Intro med 3D-globus og dansk tone of voice.
 - Rollevalg: barn, ung, forælder, lærer/pædagog, fagperson eller for alle.
-- Fem dilemmaer pr. session, med første scenarie fast i Danmark.
+- Tre dilemmaer pr. session, med første scenarie fast i Danmark.
 - Valg og egne løsninger gemmes i lokal Zustand session state.
 - Slutrapport opsummerer værdiprofil, AI-holdning, styringsstil og løste dilemmaer.
 - Dev/debug-panel viser session JSON, valgte områder, lande og aggregerede værdier.
