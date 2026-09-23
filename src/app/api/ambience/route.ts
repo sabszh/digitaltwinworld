@@ -27,8 +27,8 @@ const MAX_DISTANCE_KM = 8;
 const MAX_CANDIDATES = 5;
 const NEARBY_FALLBACK_KM = 1.5;
 
-/** Ambience is optional by design: every failure path returns 200 with a null
- *  recording so the journey continues in silence rather than surfacing an error. */
+/** Every failure path returns 200 with a null recording. The client then uses
+ *  its local drone fallback instead of surfacing an error or leaving silence. */
 const silent = (reason: string) => NextResponse.json({ recording: null, reason });
 
 async function fetchJson(url: string, timeoutMs: number): Promise<unknown> {

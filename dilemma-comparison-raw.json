@@ -1,0 +1,4042 @@
+{
+  "calls": {
+    "A": 10,
+    "B": 10,
+    "C": 10
+  },
+  "plans": [
+    {
+      "round": 0,
+      "pressure": {
+        "id": "extreme-heat",
+        "family": "klima og natur",
+        "pressure": "Flere og længere hedebølger presser byer, boliger og alt udearbejde",
+        "responses": [
+          "arbejdsdagen er delt omkring middagen store dele af året, og skoler og arbejdspladser følger samme rytme",
+          "offentlige kølerum står åbne i hvert kvarter, og nogle boligblokke har fælles sovesale på de varmeste nætter",
+          "byens træer og skygge er blevet en tildelt ressource, som kvarterer søger om"
+        ],
+        "problemAreas": [
+          "Klima, energi og resiliens",
+          "Mobilitet, byliv og bolig",
+          "Arbejde og arbejdsliv"
+        ]
+      },
+      "response": "arbejdsdagen er delt omkring middagen store dele af året, og skoler og arbejdspladser følger samme rytme",
+      "responses": [
+        "arbejdsdagen er delt omkring middagen store dele af året, og skoler og arbejdspladser følger samme rytme",
+        "offentlige kølerum står åbne i hvert kvarter, og nogle boligblokke har fælles sovesale på de varmeste nætter",
+        "byens træer og skygge er blevet en tildelt ressource, som kvarterer søger om"
+      ],
+      "severity": "low",
+      "problemAreas": [
+        "Klima, energi og resiliens",
+        "Mobilitet, byliv og bolig",
+        "Arbejde og arbejdsliv"
+      ],
+      "location": {
+        "id": "dk-aarhus",
+        "region": "Norden",
+        "country": "Danmark",
+        "city": "Aarhus",
+        "lat": 56.1629,
+        "lng": 10.2039,
+        "validLocationTypes": [
+          "folkeskole",
+          "gymnasium",
+          "universitet",
+          "bibliotek",
+          "fritidsklub",
+          "online læringsplatform",
+          "kontor",
+          "fabrik",
+          "lager",
+          "platformarbejdsplads",
+          "kommune",
+          "hjemmearbejdsplads",
+          "hospital",
+          "sundhedsklinik",
+          "plejehjem",
+          "hjemmet",
+          "apotek",
+          "mental health center",
+          "vej",
+          "bymidte",
+          "lufthavn",
+          "togstation",
+          "havn",
+          "cykelkryds",
+          "boligområde",
+          "energinet",
+          "kystby",
+          "boligområde",
+          "landbrug",
+          "datacenter",
+          "kommune",
+          "gård",
+          "supermarked",
+          "havn",
+          "vandværk",
+          "lager",
+          "distributionscenter",
+          "retsbygning",
+          "rådhus",
+          "social platform",
+          "bank",
+          "grænsekontrol",
+          "digital borgerservice"
+        ],
+        "validProblemAreas": [
+          "Uddannelse og læring",
+          "Arbejde og arbejdsliv",
+          "Sundhed og omsorg",
+          "Mobilitet, byliv og bolig",
+          "Klima, energi og resiliens",
+          "Mad, vand og forsyning",
+          "Digital tillid, rettigheder og styring"
+        ]
+      }
+    },
+    {
+      "round": 0,
+      "pressure": {
+        "id": "ageing",
+        "family": "mennesker og bevægelse",
+        "pressure": "Mange flere ældre og forholdsvis færre i den arbejdsdygtige alder",
+        "responses": [
+          "de fleste bliver boende hjemme til det sidste, og hjemmet er fyldt med ting, der holder øje",
+          "pensionering er blevet en glidende ting over mange år frem for en dato",
+          "flere generationer bor sammen igen, ofte i boliger, der er bygget til netop det"
+        ],
+        "problemAreas": [
+          "Sundhed og omsorg",
+          "Arbejde og arbejdsliv",
+          "Mobilitet, byliv og bolig"
+        ]
+      },
+      "response": "pensionering er blevet en glidende ting over mange år frem for en dato",
+      "responses": [
+        "de fleste bliver boende hjemme til det sidste, og hjemmet er fyldt med ting, der holder øje",
+        "pensionering er blevet en glidende ting over mange år frem for en dato",
+        "flere generationer bor sammen igen, ofte i boliger, der er bygget til netop det"
+      ],
+      "severity": "low",
+      "problemAreas": [
+        "Sundhed og omsorg",
+        "Arbejde og arbejdsliv",
+        "Mobilitet, byliv og bolig"
+      ],
+      "location": {
+        "id": "dk-odense",
+        "region": "Norden",
+        "country": "Danmark",
+        "city": "Odense",
+        "lat": 55.4038,
+        "lng": 10.4024,
+        "validLocationTypes": [
+          "folkeskole",
+          "gymnasium",
+          "universitet",
+          "bibliotek",
+          "fritidsklub",
+          "online læringsplatform",
+          "kontor",
+          "fabrik",
+          "lager",
+          "platformarbejdsplads",
+          "kommune",
+          "hjemmearbejdsplads",
+          "hospital",
+          "sundhedsklinik",
+          "plejehjem",
+          "hjemmet",
+          "apotek",
+          "mental health center",
+          "vej",
+          "bymidte",
+          "lufthavn",
+          "togstation",
+          "havn",
+          "cykelkryds",
+          "boligområde",
+          "energinet",
+          "kystby",
+          "boligområde",
+          "landbrug",
+          "datacenter",
+          "kommune",
+          "gård",
+          "supermarked",
+          "havn",
+          "vandværk",
+          "lager",
+          "distributionscenter",
+          "retsbygning",
+          "rådhus",
+          "social platform",
+          "bank",
+          "grænsekontrol",
+          "digital borgerservice"
+        ],
+        "validProblemAreas": [
+          "Uddannelse og læring",
+          "Arbejde og arbejdsliv",
+          "Sundhed og omsorg",
+          "Mobilitet, byliv og bolig",
+          "Klima, energi og resiliens",
+          "Mad, vand og forsyning",
+          "Digital tillid, rettigheder og styring"
+        ]
+      }
+    },
+    {
+      "round": 0,
+      "pressure": {
+        "id": "living-norms",
+        "family": "mennesker og bevægelse",
+        "pressure": "Normerne for familie, uddannelse og omsorg har flyttet sig",
+        "responses": [
+          "man tager uddannelse i korte stykker hele livet i stedet for i én lang ungdom",
+          "omsorg for gamle forældre er noget, kolleger planlægger omkring, ligesom barsel",
+          "venner og naboer står formelt registreret som dem, der henter og passer"
+        ],
+        "problemAreas": [
+          "Uddannelse og læring",
+          "Sundhed og omsorg",
+          "Arbejde og arbejdsliv"
+        ]
+      },
+      "response": "venner og naboer står formelt registreret som dem, der henter og passer",
+      "responses": [
+        "man tager uddannelse i korte stykker hele livet i stedet for i én lang ungdom",
+        "omsorg for gamle forældre er noget, kolleger planlægger omkring, ligesom barsel",
+        "venner og naboer står formelt registreret som dem, der henter og passer"
+      ],
+      "severity": "low",
+      "problemAreas": [
+        "Uddannelse og læring",
+        "Sundhed og omsorg",
+        "Arbejde og arbejdsliv"
+      ],
+      "location": {
+        "id": "dk-copenhagen",
+        "region": "Norden",
+        "country": "Danmark",
+        "city": "København",
+        "lat": 55.6761,
+        "lng": 12.5683,
+        "validLocationTypes": [
+          "folkeskole",
+          "gymnasium",
+          "universitet",
+          "bibliotek",
+          "fritidsklub",
+          "online læringsplatform",
+          "kontor",
+          "fabrik",
+          "lager",
+          "platformarbejdsplads",
+          "kommune",
+          "hjemmearbejdsplads",
+          "hospital",
+          "sundhedsklinik",
+          "plejehjem",
+          "hjemmet",
+          "apotek",
+          "mental health center",
+          "vej",
+          "bymidte",
+          "lufthavn",
+          "togstation",
+          "havn",
+          "cykelkryds",
+          "boligområde",
+          "energinet",
+          "kystby",
+          "boligområde",
+          "landbrug",
+          "datacenter",
+          "kommune",
+          "gård",
+          "supermarked",
+          "havn",
+          "vandværk",
+          "lager",
+          "distributionscenter",
+          "retsbygning",
+          "rådhus",
+          "social platform",
+          "bank",
+          "grænsekontrol",
+          "digital borgerservice"
+        ],
+        "validProblemAreas": [
+          "Uddannelse og læring",
+          "Arbejde og arbejdsliv",
+          "Sundhed og omsorg",
+          "Mobilitet, byliv og bolig",
+          "Klima, energi og resiliens",
+          "Mad, vand og forsyning",
+          "Digital tillid, rettigheder og styring"
+        ]
+      }
+    },
+    {
+      "round": 0,
+      "pressure": {
+        "id": "power-concentration",
+        "family": "arbejde og økonomi",
+        "pressure": "Få aktører sidder på de systemer, data og modeller, alle andre bruger",
+        "responses": [
+          "kommuner og hospitaler lejer de systemer, de er helt afhængige af, og kan ikke flytte dem",
+          "nogle regioner har bygget deres egne, langsommere alternativer og holder fast i dem",
+          "det er blevet et krav, at man kan tage sine egne oplysninger med sig, når man skifter"
+        ],
+        "problemAreas": [
+          "Digital tillid, rettigheder og styring",
+          "Arbejde og arbejdsliv"
+        ]
+      },
+      "response": "kommuner og hospitaler lejer de systemer, de er helt afhængige af, og kan ikke flytte dem",
+      "responses": [
+        "kommuner og hospitaler lejer de systemer, de er helt afhængige af, og kan ikke flytte dem",
+        "nogle regioner har bygget deres egne, langsommere alternativer og holder fast i dem",
+        "det er blevet et krav, at man kan tage sine egne oplysninger med sig, når man skifter"
+      ],
+      "severity": "low",
+      "problemAreas": [
+        "Digital tillid, rettigheder og styring",
+        "Arbejde og arbejdsliv"
+      ],
+      "location": {
+        "id": "dk-aarhus",
+        "region": "Norden",
+        "country": "Danmark",
+        "city": "Aarhus",
+        "lat": 56.1629,
+        "lng": 10.2039,
+        "validLocationTypes": [
+          "folkeskole",
+          "gymnasium",
+          "universitet",
+          "bibliotek",
+          "fritidsklub",
+          "online læringsplatform",
+          "kontor",
+          "fabrik",
+          "lager",
+          "platformarbejdsplads",
+          "kommune",
+          "hjemmearbejdsplads",
+          "hospital",
+          "sundhedsklinik",
+          "plejehjem",
+          "hjemmet",
+          "apotek",
+          "mental health center",
+          "vej",
+          "bymidte",
+          "lufthavn",
+          "togstation",
+          "havn",
+          "cykelkryds",
+          "boligområde",
+          "energinet",
+          "kystby",
+          "boligområde",
+          "landbrug",
+          "datacenter",
+          "kommune",
+          "gård",
+          "supermarked",
+          "havn",
+          "vandværk",
+          "lager",
+          "distributionscenter",
+          "retsbygning",
+          "rådhus",
+          "social platform",
+          "bank",
+          "grænsekontrol",
+          "digital borgerservice"
+        ],
+        "validProblemAreas": [
+          "Uddannelse og læring",
+          "Arbejde og arbejdsliv",
+          "Sundhed og omsorg",
+          "Mobilitet, byliv og bolig",
+          "Klima, energi og resiliens",
+          "Mad, vand og forsyning",
+          "Digital tillid, rettigheder og styring"
+        ]
+      }
+    },
+    {
+      "round": 0,
+      "pressure": {
+        "id": "supply-chains",
+        "family": "systemer og forsyning",
+        "pressure": "Forsyningskæderne er kortere, dyrere og mere sårbare end i 2020'erne",
+        "responses": [
+          "meget produceres tæt på, i mindre mængder, og udvalget er smallere end før",
+          "reservedele printes lokalt, og det er normalt, at en ting ikke er helt som den oprindelige",
+          "lagre er store igen, og nogle varer kan kun bestilles på bestemte tider af året"
+        ],
+        "problemAreas": [
+          "Mad, vand og forsyning",
+          "Klima, energi og resiliens",
+          "Arbejde og arbejdsliv"
+        ]
+      },
+      "response": "reservedele printes lokalt, og det er normalt, at en ting ikke er helt som den oprindelige",
+      "responses": [
+        "meget produceres tæt på, i mindre mængder, og udvalget er smallere end før",
+        "reservedele printes lokalt, og det er normalt, at en ting ikke er helt som den oprindelige",
+        "lagre er store igen, og nogle varer kan kun bestilles på bestemte tider af året"
+      ],
+      "severity": "low",
+      "problemAreas": [
+        "Mad, vand og forsyning",
+        "Klima, energi og resiliens",
+        "Arbejde og arbejdsliv"
+      ],
+      "location": {
+        "id": "dk-odense",
+        "region": "Norden",
+        "country": "Danmark",
+        "city": "Odense",
+        "lat": 55.4038,
+        "lng": 10.4024,
+        "validLocationTypes": [
+          "folkeskole",
+          "gymnasium",
+          "universitet",
+          "bibliotek",
+          "fritidsklub",
+          "online læringsplatform",
+          "kontor",
+          "fabrik",
+          "lager",
+          "platformarbejdsplads",
+          "kommune",
+          "hjemmearbejdsplads",
+          "hospital",
+          "sundhedsklinik",
+          "plejehjem",
+          "hjemmet",
+          "apotek",
+          "mental health center",
+          "vej",
+          "bymidte",
+          "lufthavn",
+          "togstation",
+          "havn",
+          "cykelkryds",
+          "boligområde",
+          "energinet",
+          "kystby",
+          "boligområde",
+          "landbrug",
+          "datacenter",
+          "kommune",
+          "gård",
+          "supermarked",
+          "havn",
+          "vandværk",
+          "lager",
+          "distributionscenter",
+          "retsbygning",
+          "rådhus",
+          "social platform",
+          "bank",
+          "grænsekontrol",
+          "digital borgerservice"
+        ],
+        "validProblemAreas": [
+          "Uddannelse og læring",
+          "Arbejde og arbejdsliv",
+          "Sundhed og omsorg",
+          "Mobilitet, byliv og bolig",
+          "Klima, energi og resiliens",
+          "Mad, vand og forsyning",
+          "Digital tillid, rettigheder og styring"
+        ]
+      }
+    },
+    {
+      "round": 0,
+      "pressure": {
+        "id": "geopolitical-fragmentation",
+        "family": "systemer og forsyning",
+        "pressure": "Verden hænger ikke sammen på samme måde, og aftaler går på tværs af blokke",
+        "responses": [
+          "det afhænger af, hvor man er, hvilke tjenester og apparater der virker",
+          "unge tager kortere ophold i udlandet efter faste aftaler mellem regioner",
+          "data om mennesker må ikke forlade den region, de er født i"
+        ],
+        "problemAreas": [
+          "Digital tillid, rettigheder og styring",
+          "Uddannelse og læring",
+          "Arbejde og arbejdsliv"
+        ]
+      },
+      "response": "data om mennesker må ikke forlade den region, de er født i",
+      "responses": [
+        "det afhænger af, hvor man er, hvilke tjenester og apparater der virker",
+        "unge tager kortere ophold i udlandet efter faste aftaler mellem regioner",
+        "data om mennesker må ikke forlade den region, de er født i"
+      ],
+      "severity": "low",
+      "problemAreas": [
+        "Digital tillid, rettigheder og styring",
+        "Uddannelse og læring",
+        "Arbejde og arbejdsliv"
+      ],
+      "location": {
+        "id": "dk-copenhagen",
+        "region": "Norden",
+        "country": "Danmark",
+        "city": "København",
+        "lat": 55.6761,
+        "lng": 12.5683,
+        "validLocationTypes": [
+          "folkeskole",
+          "gymnasium",
+          "universitet",
+          "bibliotek",
+          "fritidsklub",
+          "online læringsplatform",
+          "kontor",
+          "fabrik",
+          "lager",
+          "platformarbejdsplads",
+          "kommune",
+          "hjemmearbejdsplads",
+          "hospital",
+          "sundhedsklinik",
+          "plejehjem",
+          "hjemmet",
+          "apotek",
+          "mental health center",
+          "vej",
+          "bymidte",
+          "lufthavn",
+          "togstation",
+          "havn",
+          "cykelkryds",
+          "boligområde",
+          "energinet",
+          "kystby",
+          "boligområde",
+          "landbrug",
+          "datacenter",
+          "kommune",
+          "gård",
+          "supermarked",
+          "havn",
+          "vandværk",
+          "lager",
+          "distributionscenter",
+          "retsbygning",
+          "rådhus",
+          "social platform",
+          "bank",
+          "grænsekontrol",
+          "digital borgerservice"
+        ],
+        "validProblemAreas": [
+          "Uddannelse og læring",
+          "Arbejde og arbejdsliv",
+          "Sundhed og omsorg",
+          "Mobilitet, byliv og bolig",
+          "Klima, energi og resiliens",
+          "Mad, vand og forsyning",
+          "Digital tillid, rettigheder og styring"
+        ]
+      }
+    },
+    {
+      "round": 0,
+      "pressure": {
+        "id": "labour-shortage",
+        "family": "arbejde og økonomi",
+        "pressure": "Der mangler folk til bestemte fag, og det kan ikke løses med løn alene",
+        "responses": [
+          "de samme faglærte deles mellem flere kommuner og virksomheder efter en fælles plan",
+          "folk arbejder i to eller tre fag samtidig, og det er blevet den almindelige måde",
+          "opgaver, der før krævede en fagperson på stedet, løses nu på afstand fra et andet land"
+        ],
+        "problemAreas": [
+          "Arbejde og arbejdsliv",
+          "Sundhed og omsorg"
+        ]
+      },
+      "response": "de samme faglærte deles mellem flere kommuner og virksomheder efter en fælles plan",
+      "responses": [
+        "de samme faglærte deles mellem flere kommuner og virksomheder efter en fælles plan",
+        "folk arbejder i to eller tre fag samtidig, og det er blevet den almindelige måde",
+        "opgaver, der før krævede en fagperson på stedet, løses nu på afstand fra et andet land"
+      ],
+      "severity": "low",
+      "problemAreas": [
+        "Arbejde og arbejdsliv",
+        "Sundhed og omsorg"
+      ],
+      "location": {
+        "id": "dk-aarhus",
+        "region": "Norden",
+        "country": "Danmark",
+        "city": "Aarhus",
+        "lat": 56.1629,
+        "lng": 10.2039,
+        "validLocationTypes": [
+          "folkeskole",
+          "gymnasium",
+          "universitet",
+          "bibliotek",
+          "fritidsklub",
+          "online læringsplatform",
+          "kontor",
+          "fabrik",
+          "lager",
+          "platformarbejdsplads",
+          "kommune",
+          "hjemmearbejdsplads",
+          "hospital",
+          "sundhedsklinik",
+          "plejehjem",
+          "hjemmet",
+          "apotek",
+          "mental health center",
+          "vej",
+          "bymidte",
+          "lufthavn",
+          "togstation",
+          "havn",
+          "cykelkryds",
+          "boligområde",
+          "energinet",
+          "kystby",
+          "boligområde",
+          "landbrug",
+          "datacenter",
+          "kommune",
+          "gård",
+          "supermarked",
+          "havn",
+          "vandværk",
+          "lager",
+          "distributionscenter",
+          "retsbygning",
+          "rådhus",
+          "social platform",
+          "bank",
+          "grænsekontrol",
+          "digital borgerservice"
+        ],
+        "validProblemAreas": [
+          "Uddannelse og læring",
+          "Arbejde og arbejdsliv",
+          "Sundhed og omsorg",
+          "Mobilitet, byliv og bolig",
+          "Klima, energi og resiliens",
+          "Mad, vand og forsyning",
+          "Digital tillid, rettigheder og styring"
+        ]
+      }
+    },
+    {
+      "round": 0,
+      "pressure": {
+        "id": "cyber-infrastructure",
+        "family": "systemer og forsyning",
+        "pressure": "Angreb på kritiske systemer er en normal driftsrisiko, ikke en undtagelse",
+        "responses": [
+          "vigtige tjenester har en langsom, manuel udgave, der øves fast nogle gange om året",
+          "systemer lukkes ned regionsvis efter en fast rækkefølge, når noget er galt",
+          "det er blevet almindeligt at kunne betale, rejse og få hjælp uden net i nogle dage"
+        ],
+        "problemAreas": [
+          "Digital tillid, rettigheder og styring",
+          "Klima, energi og resiliens"
+        ]
+      },
+      "response": "systemer lukkes ned regionsvis efter en fast rækkefølge, når noget er galt",
+      "responses": [
+        "vigtige tjenester har en langsom, manuel udgave, der øves fast nogle gange om året",
+        "systemer lukkes ned regionsvis efter en fast rækkefølge, når noget er galt",
+        "det er blevet almindeligt at kunne betale, rejse og få hjælp uden net i nogle dage"
+      ],
+      "severity": "low",
+      "problemAreas": [
+        "Digital tillid, rettigheder og styring",
+        "Klima, energi og resiliens"
+      ],
+      "location": {
+        "id": "dk-odense",
+        "region": "Norden",
+        "country": "Danmark",
+        "city": "Odense",
+        "lat": 55.4038,
+        "lng": 10.4024,
+        "validLocationTypes": [
+          "folkeskole",
+          "gymnasium",
+          "universitet",
+          "bibliotek",
+          "fritidsklub",
+          "online læringsplatform",
+          "kontor",
+          "fabrik",
+          "lager",
+          "platformarbejdsplads",
+          "kommune",
+          "hjemmearbejdsplads",
+          "hospital",
+          "sundhedsklinik",
+          "plejehjem",
+          "hjemmet",
+          "apotek",
+          "mental health center",
+          "vej",
+          "bymidte",
+          "lufthavn",
+          "togstation",
+          "havn",
+          "cykelkryds",
+          "boligområde",
+          "energinet",
+          "kystby",
+          "boligområde",
+          "landbrug",
+          "datacenter",
+          "kommune",
+          "gård",
+          "supermarked",
+          "havn",
+          "vandværk",
+          "lager",
+          "distributionscenter",
+          "retsbygning",
+          "rådhus",
+          "social platform",
+          "bank",
+          "grænsekontrol",
+          "digital borgerservice"
+        ],
+        "validProblemAreas": [
+          "Uddannelse og læring",
+          "Arbejde og arbejdsliv",
+          "Sundhed og omsorg",
+          "Mobilitet, byliv og bolig",
+          "Klima, energi og resiliens",
+          "Mad, vand og forsyning",
+          "Digital tillid, rettigheder og styring"
+        ]
+      }
+    },
+    {
+      "round": 0,
+      "pressure": {
+        "id": "antibiotic-resistance",
+        "family": "sundhed og omsorg",
+        "pressure": "Antibiotika virker ikke længere lige så bredt som før",
+        "responses": [
+          "de virksomme midler er reserveret, og adgangen til dem afgøres et andet sted end på klinikken",
+          "små indgreb udskydes eller flyttes til steder med lavere risiko for smitte",
+          "det er blevet normalt at blive testet grundigt, før man får noget som helst mod en infektion"
+        ],
+        "problemAreas": [
+          "Sundhed og omsorg",
+          "Digital tillid, rettigheder og styring"
+        ]
+      },
+      "response": "det er blevet normalt at blive testet grundigt, før man får noget som helst mod en infektion",
+      "responses": [
+        "de virksomme midler er reserveret, og adgangen til dem afgøres et andet sted end på klinikken",
+        "små indgreb udskydes eller flyttes til steder med lavere risiko for smitte",
+        "det er blevet normalt at blive testet grundigt, før man får noget som helst mod en infektion"
+      ],
+      "severity": "low",
+      "problemAreas": [
+        "Sundhed og omsorg",
+        "Digital tillid, rettigheder og styring"
+      ],
+      "location": {
+        "id": "dk-copenhagen",
+        "region": "Norden",
+        "country": "Danmark",
+        "city": "København",
+        "lat": 55.6761,
+        "lng": 12.5683,
+        "validLocationTypes": [
+          "folkeskole",
+          "gymnasium",
+          "universitet",
+          "bibliotek",
+          "fritidsklub",
+          "online læringsplatform",
+          "kontor",
+          "fabrik",
+          "lager",
+          "platformarbejdsplads",
+          "kommune",
+          "hjemmearbejdsplads",
+          "hospital",
+          "sundhedsklinik",
+          "plejehjem",
+          "hjemmet",
+          "apotek",
+          "mental health center",
+          "vej",
+          "bymidte",
+          "lufthavn",
+          "togstation",
+          "havn",
+          "cykelkryds",
+          "boligområde",
+          "energinet",
+          "kystby",
+          "boligområde",
+          "landbrug",
+          "datacenter",
+          "kommune",
+          "gård",
+          "supermarked",
+          "havn",
+          "vandværk",
+          "lager",
+          "distributionscenter",
+          "retsbygning",
+          "rådhus",
+          "social platform",
+          "bank",
+          "grænsekontrol",
+          "digital borgerservice"
+        ],
+        "validProblemAreas": [
+          "Uddannelse og læring",
+          "Arbejde og arbejdsliv",
+          "Sundhed og omsorg",
+          "Mobilitet, byliv og bolig",
+          "Klima, energi og resiliens",
+          "Mad, vand og forsyning",
+          "Digital tillid, rettigheder og styring"
+        ]
+      }
+    },
+    {
+      "round": 0,
+      "pressure": {
+        "id": "new-work-forms",
+        "family": "arbejde og økonomi",
+        "pressure": "Nye former for arbejde og ejerskab er vokset frem uden for det faste job",
+        "responses": [
+          "folk ejer små andele af det udstyr og de systemer, de arbejder med, i fællesskab",
+          "opgaver fordeles gennem fælles puljer, som man selv melder sig ind og ud af",
+          "en personlig agent forhandler tider, takster og vilkår på ens vegne, mens man sover"
+        ],
+        "problemAreas": [
+          "Arbejde og arbejdsliv",
+          "Digital tillid, rettigheder og styring"
+        ]
+      },
+      "response": "folk ejer små andele af det udstyr og de systemer, de arbejder med, i fællesskab",
+      "responses": [
+        "folk ejer små andele af det udstyr og de systemer, de arbejder med, i fællesskab",
+        "opgaver fordeles gennem fælles puljer, som man selv melder sig ind og ud af",
+        "en personlig agent forhandler tider, takster og vilkår på ens vegne, mens man sover"
+      ],
+      "severity": "low",
+      "problemAreas": [
+        "Arbejde og arbejdsliv",
+        "Digital tillid, rettigheder og styring"
+      ],
+      "location": {
+        "id": "dk-aarhus",
+        "region": "Norden",
+        "country": "Danmark",
+        "city": "Aarhus",
+        "lat": 56.1629,
+        "lng": 10.2039,
+        "validLocationTypes": [
+          "folkeskole",
+          "gymnasium",
+          "universitet",
+          "bibliotek",
+          "fritidsklub",
+          "online læringsplatform",
+          "kontor",
+          "fabrik",
+          "lager",
+          "platformarbejdsplads",
+          "kommune",
+          "hjemmearbejdsplads",
+          "hospital",
+          "sundhedsklinik",
+          "plejehjem",
+          "hjemmet",
+          "apotek",
+          "mental health center",
+          "vej",
+          "bymidte",
+          "lufthavn",
+          "togstation",
+          "havn",
+          "cykelkryds",
+          "boligområde",
+          "energinet",
+          "kystby",
+          "boligområde",
+          "landbrug",
+          "datacenter",
+          "kommune",
+          "gård",
+          "supermarked",
+          "havn",
+          "vandværk",
+          "lager",
+          "distributionscenter",
+          "retsbygning",
+          "rådhus",
+          "social platform",
+          "bank",
+          "grænsekontrol",
+          "digital borgerservice"
+        ],
+        "validProblemAreas": [
+          "Uddannelse og læring",
+          "Arbejde og arbejdsliv",
+          "Sundhed og omsorg",
+          "Mobilitet, byliv og bolig",
+          "Klima, energi og resiliens",
+          "Mad, vand og forsyning",
+          "Digital tillid, rettigheder og styring"
+        ]
+      }
+    }
+  ],
+  "summary": [
+    {
+      "setup": "A",
+      "label": "baseline",
+      "model": "gpt-5.6-luna",
+      "accepted": 7,
+      "attempts": 10,
+      "averageLatencyMs": 16074,
+      "inputTokens": 52990,
+      "outputTokens": 18992
+    },
+    {
+      "setup": "B",
+      "label": "simplified",
+      "model": "gpt-5.6-luna",
+      "accepted": 9,
+      "attempts": 10,
+      "averageLatencyMs": 10458,
+      "inputTokens": 11710,
+      "outputTokens": 11062
+    },
+    {
+      "setup": "C",
+      "label": "simplified + Terra",
+      "model": "gpt-5.6-terra",
+      "accepted": 10,
+      "attempts": 10,
+      "averageLatencyMs": 36064,
+      "inputTokens": 11710,
+      "outputTokens": 19050
+    }
+  ],
+  "cases": [
+    {
+      "setup": "A",
+      "role": "Barn",
+      "planIndex": 0,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "extreme-heat",
+        "pressure": "Flere og længere hedebølger presser byer, boliger og alt udearbejde",
+        "responses": [
+          "arbejdsdagen er delt omkring middagen store dele af året, og skoler og arbejdspladser følger samme rytme",
+          "offentlige kølerum står åbne i hvert kvarter, og nogle boligblokke har fælles sovesale på de varmeste nætter",
+          "byens træer og skygge er blevet en tildelt ressource, som kvarterer søger om"
+        ],
+        "problemAreas": [
+          "Klima, energi og resiliens",
+          "Mobilitet, byliv og bolig",
+          "Arbejde og arbejdsliv"
+        ],
+        "city": "Aarhus",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 5856,
+        "outputTokens": 1802,
+        "totalTokens": 7658,
+        "latencyMs": 16509
+      },
+      "raw": {
+        "id": "aarhus-heat-rhythm-child-01",
+        "problemArea": "Klima, energi og resiliens",
+        "validLocationTypes": [
+          "boligområde"
+        ],
+        "targetGroups": [
+          "Børn 7-11 år"
+        ],
+        "technologies": [
+          "dynamisk infrastruktur"
+        ],
+        "severity": "low",
+        "title": "Hvem vil du være sammen med i varmen?",
+        "scenePrompt": "I 2046 holder skole og arbejde en lang pause midt på dagen, fordi hedebølger gør timerne farlige. Din ven vil lege nu, men din mor har kun tid til dig i den samme pause.",
+        "question": "Hvem vil du bruge pausen sammen med?",
+        "stake": "Du kan beskytte tiden med din mor eller dit venskab, men du kan ikke få begge dele i dag.",
+        "coreTension": {
+          "want": "Du vil lege med din ven, mens luften er kølig nok til at være ude.",
+          "butAlsoWant": "Du vil have rolig tid alene med din mor, som ellers arbejder, mens du er i skole.",
+          "whyCannotHaveBoth": "Den lange varmepause er det eneste tidspunkt, hvor både din ven og din mor kan være sammen med dig, fordi deres dag følger samme rytme."
+        },
+        "logic": {
+          "rule": "I Aarhus ligger skole- og arbejdsdagen på hver sin side af den varmeste del af dagen.",
+          "benefit": "Rytmen beskytter børn og voksne mod farlig varme og gør det muligt at holde byen i gang hele sommeren.",
+          "trigger": "Din ven står ved døren med en bold, mens din mor har sat frokost frem og siger, at hun endelig har tid til dig.",
+          "decision": "I dette øjeblik skal du beslutte, hvem du vil bruge varmepausen sammen med.",
+          "choiceConstraint": "Den nye døgnrytme samler alles frie tid i den samme korte pause, så tid med din ven betyder, at tiden med din mor går tabt i dag."
+        },
+        "futurePressureId": "extreme-heat",
+        "normalized2046": "I Aarhus holder skoler og arbejdspladser pause midt på dagen i store dele af året. Dagen begynder tidligt og slutter sent, så mennesker kan arbejde og lære uden for den værste hede",
+        "choices": [
+          {
+            "id": "a",
+            "label": "Gå ud med din ven",
+            "description": "Du går ud og leger med din ven, men din mor må spise frokost alene.",
+            "consequence": "Din ven bliver glad og føler, at du stadig vælger jeres venskab. Din mor bliver stille resten af dagen.",
+            "valueImpacts": {
+              "trust": 0,
+              "freedom": 2,
+              "equality": 0,
+              "efficiency": 0,
+              "humanContact": 2,
+              "safety": 1,
+              "innovation": 0,
+              "sustainability": 1,
+              "localControl": 0,
+              "transparency": 0
+            }
+          },
+          {
+            "id": "b",
+            "label": "Bliv hos mor",
+            "description": "Du bliver hjemme og spiser med din mor, men din ven leger uden dig.",
+            "consequence": "Din mor får den sjældne stund, hun har ønsket sig. Din ven føler sig valgt fra, da han går alene.",
+            "valueImpacts": {
+              "trust": 2,
+              "freedom": 0,
+              "equality": 0,
+              "efficiency": 0,
+              "humanContact": 2,
+              "safety": 1,
+              "innovation": 0,
+              "sustainability": 1,
+              "localControl": 0,
+              "transparency": 0
+            }
+          },
+          {
+            "id": "c",
+            "label": "Læg dig og hvil",
+            "description": "Du bruger pausen på at hvile dig, men både din ven og din mor mister tiden med dig.",
+            "consequence": "Din krop får ro i varmen. Din ven og din mor må begge vente på en anden dag.",
+            "valueImpacts": {
+              "trust": 0,
+              "freedom": 2,
+              "equality": 0,
+              "efficiency": 1,
+              "humanContact": -2,
+              "safety": 2,
+              "innovation": 0,
+              "sustainability": 1,
+              "localControl": 1,
+              "transparency": 0
+            }
+          },
+          {
+            "id": "d",
+            "label": "Invitér din ven ind",
+            "description": "Du inviterer din ven til frokost med mor, men din mor mister den stille stund, hun havde glædet sig til.",
+            "consequence": "Din ven er med, men din mor taler næsten ikke. Du får fællesskab, men ikke den nære tid alene med hende.",
+            "valueImpacts": {
+              "trust": -1,
+              "freedom": 1,
+              "equality": 1,
+              "efficiency": 0,
+              "humanContact": 2,
+              "safety": 1,
+              "innovation": 0,
+              "sustainability": 1,
+              "localControl": 1,
+              "transparency": 0
+            }
+          }
+        ],
+        "tags": [
+          "hedebølger",
+          "familietid",
+          "venskab",
+          "børneperspektiv",
+          "Aarhus"
+        ],
+        "country": "Danmark",
+        "city": "Aarhus",
+        "region": "Norden",
+        "locationType": "boligområde",
+        "technology": "dynamisk infrastruktur",
+        "marker": {
+          "lat": 56.1572,
+          "lng": 10.1966
+        },
+        "exactPlace": {
+          "id": "generationernes-hus-aarhus",
+          "name": "Generationernes Hus",
+          "address": "Thit Jensens Gade 3, 8000 Aarhus C"
+        },
+        "landingScene": "Du åbner døren i Generationernes Hus. Din ven står med en bold, og din mor kalder på dig fra køkkenet."
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "A",
+      "role": "Ung",
+      "planIndex": 1,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "ageing",
+        "pressure": "Mange flere ældre og forholdsvis færre i den arbejdsdygtige alder",
+        "responses": [
+          "de fleste bliver boende hjemme til det sidste, og hjemmet er fyldt med ting, der holder øje",
+          "pensionering er blevet en glidende ting over mange år frem for en dato",
+          "flere generationer bor sammen igen, ofte i boliger, der er bygget til netop det"
+        ],
+        "problemAreas": [
+          "Sundhed og omsorg",
+          "Arbejde og arbejdsliv",
+          "Mobilitet, byliv og bolig"
+        ],
+        "city": "Odense",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 5241,
+        "outputTokens": 2157,
+        "totalTokens": 7398,
+        "latencyMs": 18496
+      },
+      "raw": {
+        "id": "aarhus-glidende-pension-01",
+        "problemArea": "Arbejde og arbejdsliv",
+        "validLocationTypes": [
+          "kontor",
+          "platformarbejdsplads"
+        ],
+        "targetGroups": [
+          "unge mellem 12 og 17 år",
+          "unge på vej mod første job"
+        ],
+        "technologies": [
+          "AI-ledelse",
+          "robotkollega",
+          "omskolings-AI"
+        ],
+        "severity": "low",
+        "title": "Hvem får plads ved siden af hende?",
+        "scenePrompt": "I 2046 stopper folk sjældent fra den ene dag til den anden. På INCUBA møder du din mor, 68, som stadig arbejder tre dage om ugen, mens du får tilbudt hendes nye fælles stilling.",
+        "question": "Hvad siger du ja til som din første arbejdsplads?",
+        "stake": "Du kan få din første rigtige chance, men dit valg påvirker også din mors arbejde, selvstændighed og plads i familien.",
+        "coreTension": {
+          "want": "Du vil have en selvstændig start på dit arbejdsliv og bevise, hvad du selv kan.",
+          "butAlsoWant": "Du vil gerne give din mor mulighed for at blive ved med at bruge sin erfaring og føle sig nødvendig.",
+          "whyCannotHaveBoth": "Den fælles stilling er bygget til, at én erfaren medarbejder langsomt giver ansvar videre til én ny; hvis du tager hele ansvaret, bliver hendes arbejde mest rådgivning, og hvis hun"
+        },
+        "logic": {
+          "rule": "På mange danske arbejdspladser er pensionering blevet en glidende overgang: ældre medarbejdere deler i flere år deres stillinger med yngre, mens AI-ledelse fordeler opgaver efter k",
+          "benefit": "Ordningen holder vigtig viden på arbejdspladserne, gør det muligt for flere ældre at arbejde på egne vilkår og mindsker manglen på medarbejdere.",
+          "trigger": "Din mor har fået tilbudt at dele sit vigtigste projekt med dig. Hun håber, at du vil vælge hende som makker, men du har også fået tilbud om at overtage projektet alene.",
+          "decision": "I dette øjeblik skal du beslutte, hvilken arbejdsrolle du vil sige ja til.",
+          "choiceConstraint": "Et projekt kan ikke samtidig være din selvstændige start og hendes fortsatte hovedansvar; ordningen virker netop ved, at ansvaret flytter mellem generationer."
+        },
+        "futurePressureId": "ageing",
+        "normalized2046": "I 2046 er pensionering ikke længere en bestemt alder, men en flerårig overgang, hvor ældre og yngre medarbejdere deler ansvar, løn og arbejdstid. AI-ledelse hjælper med at fordele,",
+        "choices": [
+          {
+            "id": "a",
+            "label": "Del ansvaret med mor",
+            "description": "Du tager stillingen som hendes makker og får hendes erfaring, men din egen vej begynder langsommere.",
+            "consequence": "Din mor beholder et reelt ansvar og en tydelig plads; du får tryg oplæring, men må vente længere på selv at lede projektet.",
+            "valueImpacts": {
+              "trust": 2,
+              "freedom": -1,
+              "equality": 2,
+              "efficiency": 1,
+              "humanContact": 2,
+              "safety": 1,
+              "innovation": 1,
+              "sustainability": 0,
+              "localControl": 1,
+              "transparency": 0
+            }
+          },
+          {
+            "id": "b",
+            "label": "Tag projektet alene",
+            "description": "Du overtager projektet og får frihed til at skabe din egen karriere, men din mor mister sit vigtigste ansvar.",
+            "consequence": "Du bliver hurtigt synlig på arbejdspladsen; din mor får færre beslutninger at træffe og mærker, at hendes erfaring ikke længere styrer retningen.",
+            "valueImpacts": {
+              "trust": -1,
+              "freedom": 2,
+              "equality": -1,
+              "efficiency": 2,
+              "humanContact": -1,
+              "safety": 0,
+              "innovation": 2,
+              "sustainability": 0,
+              "localControl": 0,
+              "transparency": 1
+            }
+          },
+          {
+            "id": "c",
+            "label": "Lad mor lede videre",
+            "description": "Du siger ja som hendes lærling og beskytter hendes rolle, men accepterer at være den, andre ser som nummer to.",
+            "consequence": "Din mor kan fortsætte som projektets ansigt; du lærer meget, men dit første job bliver tæt knyttet til hende og sværere at kalde dit eget.",
+            "valueImpacts": {
+              "trust": 2,
+              "freedom": -2,
+              "equality": 1,
+              "efficiency": 1,
+              "humanContact": 2,
+              "safety": 1,
+              "innovation": 0,
+              "sustainability": 0,
+              "localControl": 1,
+              "transparency": 0
+            }
+          },
+          {
+            "id": "d",
+            "label": "Vælg den hurtige karrierevej",
+            "description": "Du vælger den AI-accelererede rolle uden din mor og rykker frem hurtigere, men mister den daglige relation til hende.",
+            "consequence": "Du får adgang til større opgaver og højere løn; din mor arbejder stadig, men jeres fælles hverdag og mulighed for at lære af hinanden forsvinder.",
+            "valueImpacts": {
+              "trust": -2,
+              "freedom": 2,
+              "equality": -1,
+              "efficiency": 2,
+              "humanContact": -2,
+              "safety": 0,
+              "innovation": 2,
+              "sustainability": 0,
+              "localControl": -1,
+              "transparency": 1
+            }
+          }
+        ],
+        "tags": [
+          "aldring",
+          "første job",
+          "generationsskifte",
+          "AI-ledelse",
+          "familie",
+          "arbejdsliv"
+        ],
+        "country": "Danmark",
+        "city": "Aarhus",
+        "region": "Norden",
+        "locationType": "kontor",
+        "technology": "AI-ledelse",
+        "marker": {
+          "lat": 56.1722,
+          "lng": 10.2021
+        },
+        "exactPlace": {
+          "id": "incuba-katrinebjerg",
+          "name": "INCUBA Katrinebjerg",
+          "address": "Åbogade 15, 8200 Aarhus N"
+        },
+        "landingScene": "Du træder ind på INCUBA Katrinebjerg med din første jobaftale på mobilen. Din mor venter ved et mødebord, hvor hendes navn står ved siden af dit på projektet."
+      },
+      "validation": {
+        "accepted": false,
+        "reason": "audience_language"
+      }
+    },
+    {
+      "setup": "A",
+      "role": "Forælder",
+      "planIndex": 2,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "living-norms",
+        "pressure": "Normerne for familie, uddannelse og omsorg har flyttet sig",
+        "responses": [
+          "man tager uddannelse i korte stykker hele livet i stedet for i én lang ungdom",
+          "omsorg for gamle forældre er noget, kolleger planlægger omkring, ligesom barsel",
+          "venner og naboer står formelt registreret som dem, der henter og passer"
+        ],
+        "problemAreas": [
+          "Uddannelse og læring",
+          "Sundhed og omsorg",
+          "Arbejde og arbejdsliv"
+        ],
+        "city": "København",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 5228,
+        "outputTokens": 1804,
+        "totalTokens": 7032,
+        "latencyMs": 15461
+      },
+      "raw": {
+        "id": "randers-2046-001",
+        "problemArea": "Uddannelse og læring",
+        "validLocationTypes": [
+          "bibliotek"
+        ],
+        "targetGroups": [
+          "forældre",
+          "børn",
+          "familier"
+        ],
+        "technologies": [
+          "personlig læringsassistent",
+          "trivselsdata"
+        ],
+        "severity": "low",
+        "title": "Hvem må kende dit barns vej?",
+        "scenePrompt": "I 2046 hjælper registrerede venner og naboer med at hente børn og følge deres læring. På Randers Bibliotek skal du nu vælge, hvor meget din datters læringsassistent må dele med hendes nære netværk.",
+        "question": "Hvem vil du lade følge dit barns læring og hverdag?",
+        "stake": "Dit valg kan give din datter flere trygge voksne, men også gøre hendes usikkerheder synlige for mennesker tæt på jer.",
+        "coreTension": {
+          "want": "Du vil give dit barn flere trygge voksne, som kan hjælpe, når hverdagen vælter.",
+          "butAlsoWant": "Du vil beskytte dit barns ret til et privat rum, hvor fejl og tvivl ikke følger med videre.",
+          "whyCannotHaveBoth": "I 2046 virker den fælles støtte kun, når læringsassistenten deler barnets mønstre med de registrerede omsorgspersoner; samme deling gør barnets sårbarheder synlige uden for hjemmet"
+        },
+        "logic": {
+          "rule": "På Randers Bibliotek er børn tilknyttet en registreret omsorgskreds, hvor venner og naboer formelt kan hente dem, støtte deres læring og modtage udvalgte oplysninger fra barnets AI",
+          "benefit": "Ordningen gør det muligt for børn at have stabile voksne omkring sig, selv når forældre arbejder skæve tider, er syge eller ikke bor sammen",
+          "trigger": "Din datter har haft en svær måned og vil gerne have naboen Maja med i sin omsorgskreds, men hun ved også, at Maja derefter kan se, når hun kæmper fagligt eller socialt",
+          "decision": "I dette øjeblik skal du beslutte, hvem der skal have adgang til at følge og støtte dit barns læring gennem omsorgskredsen",
+          "choiceConstraint": "Omsorgskredsen kan kun have én person med fuld adgang til den løbende læringsprofil, fordi ansvaret kræver et samlet menneskeligt billede; den valgte voksne får nærhed og ansvar,7?"
+        },
+        "futurePressureId": "living-norms",
+        "normalized2046": "I 2046 er det normalt, at et barns omsorgskreds består af forældre samt en formelt registreret ven eller nabo. Barnets personlige læringsassistent deler løbende tegn på trivsel, fr",
+        "choices": [
+          {
+            "id": "a",
+            "label": "Vælg din partner",
+            "description": "Giv din partner fuld adgang til læringsprofilen, men hold hjælpen inden for familien.",
+            "consequence": "Dit barn får en voksen, der allerede kender hjemmets rytme, men naboen Maja forbliver uden det indblik, hun har tilbudt at bruge i hverdagen.",
+            "valueImpacts": {
+              "trust": 2,
+              "freedom": -2,
+              "equality": 0,
+              "efficiency": 1,
+              "humanContact": 2,
+              "safety": 1,
+              "innovation": 0,
+              "sustainability": 0,
+              "localControl": 1,
+              "transparency": -1
+            }
+          },
+          {
+            "id": "b",
+            "label": "Vælg naboen Maja",
+            "description": "Giv Maja fuld adgang, så hun kan støtte dit barn tæt, men lad en del af familielivet blive kendt uden for hjemmet.",
+            "consequence": "Maja kan opdage, når dit barn har brug for hjælp, men dit barn kan føle, at fejl og bekymringer ikke længere kun tilhører familien.",
+            "valueImpacts": {
+              "trust": -1,
+              "freedom": -2,
+              "equality": 1,
+              "efficiency": 2,
+              "humanContact": 2,
+              "safety": 1,
+              "innovation": 0,
+              "sustainability": 0,
+              "localControl": 2,
+              "transparency": -2
+            }
+          },
+          {
+            "id": "c",
+            "label": "Vælg barnets lærer",
+            "description": "Lad læreren følge profilen, så støtten hænger sammen med skolen, men gør læring mere synlig som præstation.",
+            "consequence": "Dit barn får målrettet hjælp fra en fagperson, men kan begynde at opleve selv fritiden som en forlængelse af skolens blik.",
+            "valueImpacts": {
+              "trust": 0,
+              "freedom": -2,
+              "equality": 2,
+              "efficiency": 2,
+              "humanContact": 1,
+              "safety": 1,
+              "innovation": 1,
+              "sustainability": 0,
+              "localControl": -1,
+              "transparency": -2
+            }
+          },
+          {
+            "id": "d",
+            "label": "Vælg kun barnet selv",
+            "description": "Lad dit barn eje og styre sin profil, men uden en voksen der automatisk opdager, når hjælpen er nødvendig.",
+            "consequence": "Dit barn får mest mulig kontrol over sit eget læringsspor, men skal selv bede om støtte, også når det måske ikke kan overskue det.",
+            "valueImpacts": {
+              "trust": 1,
+              "freedom": 2,
+              "equality": -1,
+              "efficiency": -1,
+              "humanContact": -2,
+              "safety": -2,
+              "innovation": 1,
+              "sustainability": 0,
+              "localControl": 2,
+              "transparency": 2
+            }
+          }
+        ],
+        "tags": [
+          "forældreskab",
+          "omsorgskredse",
+          "børns privatliv",
+          "læring",
+          "Randers",
+          "2046"
+        ],
+        "country": "Danmark",
+        "city": "Randers",
+        "region": "Norden",
+        "locationType": "bibliotek",
+        "technology": "personlig læringsassistent",
+        "marker": {
+          "lat": 56.4606,
+          "lng": 10.0364
+        },
+        "exactPlace": {
+          "id": "randers-bibliotek",
+          "name": "Randers Bibliotek",
+          "address": "Stemannsgade 2, 8900 Randers C"
+        },
+        "landingScene": "Du kommer til Randers Bibliotek med din datter efter skole. Ved skranken står hendes læringsassistent klar til at registrere den voksne, der fremover må følge hendes hverdag tæt."
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "A",
+      "role": "Lærer / pædagog",
+      "planIndex": 3,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "power-concentration",
+        "pressure": "Få aktører sidder på de systemer, data og modeller, alle andre bruger",
+        "responses": [
+          "kommuner og hospitaler lejer de systemer, de er helt afhængige af, og kan ikke flytte dem",
+          "nogle regioner har bygget deres egne, langsommere alternativer og holder fast i dem",
+          "det er blevet et krav, at man kan tage sine egne oplysninger med sig, når man skifter"
+        ],
+        "problemAreas": [
+          "Digital tillid, rettigheder og styring",
+          "Arbejde og arbejdsliv"
+        ],
+        "city": "Aarhus",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 5244,
+        "outputTokens": 1824,
+        "totalTokens": 7068,
+        "latencyMs": 15461
+      },
+      "raw": {
+        "id": "w2046-kolding-001",
+        "problemArea": "Digital tillid, rettigheder og styring",
+        "validLocationTypes": [
+          "rådhus",
+          "digital borgerservice"
+        ],
+        "targetGroups": [
+          "lærere",
+          "pædagoger",
+          "kommunale medarbejdere",
+          "skoleledere",
+          "forældre"
+        ],
+        "technologies": [
+          "kommunal beslutnings-AI",
+          "personlig data-agent"
+        ],
+        "severity": "low",
+        "title": "Skal Mika kende sin prognose?",
+        "scenePrompt": "I 2046 bruger Kolding Kommune en lejet beslutnings-AI, som samler skole-, sundheds- og fraværsdata for at opdage børn, der risikerer at falde ud. Den hjælper mange i tide, men gør det svært at se Mika uden om hans prognose.",
+        "question": "Hvad vil du lægge til grund for Mikas næste skoleforløb?",
+        "stake": "Mika kan få hjælp i tide, men risikerer at blive behandlet som sit dataspor og miste tilliden til dig.",
+        "coreTension": {
+          "want": "Du vil give Mika den støtte, der kan forhindre, at han mister fodfæstet i skolen.",
+          "butAlsoWant": "Du vil møde ham som et barn med mulighed for at overraske både dig og systemet.",
+          "whyCannotHaveBoth": "Kommunens prognose virker kun, når den får lov at styre tidlig støtte; bruger du den, følger dens risikobillede med ind i voksnes blik på Mika."
+        },
+        "logic": {
+          "rule": "Kolding Kommune lejer en fælles beslutnings-AI, som skoler og hospitaler bruger til at forudsige behov og fordele tidlig støtte; kommunens egne medarbejdere kan ikke flytte system,",
+          "benefit": "Færre børn overses, fordi støtte sættes ind, før fravær, mistrivsel eller sygdom bliver akut.",
+          "trigger": "Ved mødet på rådhuset viser systemet, at din elev Mika har høj risiko for at forlade skolen uden afgangsprøve, selv om han netop har fået sit bedste projektresultat.",
+          "decision": "Du skal beslutte, hvilken anbefaling du giver Mikas familie om hans næste skoleforløb.",
+          "choiceConstraint": "En anbefaling, der følger prognosen, kan udløse tidlig og omfattende støtte, men gør prognosen til en del af Mikas identitet; en anbefaling, der ser bort fra den, beskytter hans åb"
+        },
+        "futurePressureId": "power-concentration",
+        "normalized2046": "Kommuner og hospitaler i Norden lejer de samme få beslutningssystemer af private leverandører. Systemerne forbinder offentlige dataspor på tværs og anbefaler, hvem der skal have op",
+        "choices": [
+          {
+            "id": "a",
+            "label": "Følg prognosen åbent",
+            "description": "Anbefal et tæt støtteforløb ud fra prognosen, men accepter at Mika mødes som et barn i risiko.",
+            "consequence": "Mika får hurtigere hjælp og faste voksne omkring sig, men hans lærere og familie kan begynde at tolke hans fejl som bekræftelser på systemets dom.",
+            "valueImpacts": {
+              "trust": -1,
+              "freedom": -2,
+              "equality": 1,
+              "efficiency": 2,
+              "humanContact": 1,
+              "safety": 2,
+              "innovation": 1,
+              "sustainability": 0,
+              "localControl": -1,
+              "transparency": 2
+            }
+          },
+          {
+            "id": "b",
+            "label": "Stå ved din egen vurdering",
+            "description": "Anbefal det almindelige forløb ud fra Mikas aktuelle arbejde, men løb risikoen for at overse et behov, systemet har opdaget.",
+            "consequence": "Mika bevarer friheden til at blive vurderet på det, han gør nu, men kan senere stå uden den støtte, der kunne have holdt ham i skolen.",
+            "valueImpacts": {
+              "trust": 2,
+              "freedom": 2,
+              "equality": 0,
+              "efficiency": -1,
+              "humanContact": 2,
+              "safety": -2,
+              "innovation": -1,
+              "sustainability": 0,
+              "localControl": 2,
+              "transparency": -1
+            }
+          },
+          {
+            "id": "c",
+            "label": "Fortæl Mika prognosen",
+            "description": "Anbefal støtteforløbet og vis Mika prognosen, men lad ham bære viden om systemets forventning til ham.",
+            "consequence": "Mika kan forstå og udfordre den hjælp, han får, men kan også begynde at holde igen, fordi han tror, at nederlag allerede er skrevet ind i ham.",
+            "valueImpacts": {
+              "trust": 2,
+              "freedom": -1,
+              "equality": 1,
+              "efficiency": 1,
+              "humanContact": 2,
+              "safety": 1,
+              "innovation": 0,
+              "sustainability": 0,
+              "localControl": 1,
+              "transparency": 2
+            }
+          },
+          {
+            "id": "d",
+            "label": "Skærm ham fra prognosen",
+            "description": "Anbefal støtten uden at nævne prognosen, men accepter at andre træffer en skjult vurdering af hans fremtid.",
+            "consequence": "Mika kan tage imod hjælpen uden at føle sig dømt, men du kan ikke ærligt forklare, hvorfor hans skoleforløb pludselig bliver tæt overvåget.",
+            "valueImpacts": {
+              "trust": -2,
+              "freedom": -1,
+              "equality": 1,
+              "efficiency": 2,
+              "humanContact": 1,
+              "safety": 1,
+              "innovation": 0,
+              "sustainability": 0,
+              "localControl": -2,
+              "transparency": -2
+            }
+          }
+        ],
+        "tags": [
+          "kommunal AI",
+          "børn og data",
+          "skole",
+          "prognoser",
+          "leverandørafhængighed",
+          "tillid"
+        ],
+        "country": "Danmark",
+        "city": "Kolding",
+        "region": "Norden",
+        "locationType": "rådhus",
+        "technology": "kommunal beslutnings-AI",
+        "marker": {
+          "lat": 55.4904,
+          "lng": 9.4722
+        },
+        "exactPlace": {
+          "id": "kolding-raadhus",
+          "name": "Kolding Rådhus",
+          "address": "Akseltorv 1, 6000 Kolding"
+        },
+        "landingScene": "Du sidder på Kolding Rådhus med Mikas mor og hans klasselærer. På skærmen står prognosen: høj risiko for skolefrafald, selv om Mika netop har afleveret sit bedste projekt."
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "A",
+      "role": "Fagperson",
+      "planIndex": 4,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "supply-chains",
+        "pressure": "Forsyningskæderne er kortere, dyrere og mere sårbare end i 2020'erne",
+        "responses": [
+          "meget produceres tæt på, i mindre mængder, og udvalget er smallere end før",
+          "reservedele printes lokalt, og det er normalt, at en ting ikke er helt som den oprindelige",
+          "lagre er store igen, og nogle varer kan kun bestilles på bestemte tider af året"
+        ],
+        "problemAreas": [
+          "Mad, vand og forsyning",
+          "Klima, energi og resiliens",
+          "Arbejde og arbejdsliv"
+        ],
+        "city": "Odense",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 5273,
+        "outputTokens": 1879,
+        "totalTokens": 7152,
+        "latencyMs": 15971
+      },
+      "raw": {
+        "id": "esbjerg-lokale-reservedele-2046",
+        "problemArea": "Mad, vand og forsyning",
+        "validLocationTypes": [
+          "gård",
+          "supermarked",
+          "havn",
+          "vandværk",
+          "lager",
+          "distributionscenter"
+        ],
+        "targetGroups": [
+          "fagprofessionelle i forsyning og logistik",
+          "kommunale beslutningstagere",
+          "havneoperatører",
+          "lokale producenter"
+        ],
+        "technologies": [
+          "forsynings-AI"
+        ],
+        "severity": "low",
+        "title": "Må den ligne nok?",
+        "scenePrompt": "I 2046 kan forsynings-AI rekonstruere reservedele lokalt ud fra gamle modeller, så havnen ikke venter måneder på globale leverancer. I dag skal du tage ansvar for en del, der fungerer, men ikke er identisk med originalen.",
+        "question": "Godkender du den lokalt printede del til din fars kutter?",
+        "stake": "Din beslutning afgør, om din far kan sejle videre nu, eller må opgive sin sæson og sin lokale levevej.",
+        "coreTension": {
+          "want": "Du vil holde din fars kutter i drift, så han kan beholde sit arbejde og havnen sit lokale fiskeri.",
+          "butAlsoWant": "Du vil kunne stå inde for, at besætningen sejler med en del, du ved er sikker og sporbar.",
+          "whyCannotHaveBoth": "Den lokale del kan holde kutteren i gang nu, men dens afvigelser fra originalen kan ikke dokumenteres fuldt ud uden at opgive den hurtige, lokale forsyning."
+        },
+        "logic": {
+          "rule": "På Esbjerg Havn bruges forsynings-AI til at fremstille brugbare reservedele lokalt, selv om de ikke er helt identiske med originalen.",
+          "benefit": "Danmark og de nordiske havne er mindre afhængige af sårbare, dyre og langsomme forsyningskæder.",
+          "trigger": "En printet propelflange ligger foran dig efter en skade på din fars kutter. Den passer og er belastningstestet, men materialets fulde oprindelse kan ikke spores som ved en original",
+          "decision": "I dette øjeblik skal du beslutte, om du godkender den lokalt printede del til din fars kutter.",
+          "choiceConstraint": "At godkende delen bevarer hans arbejde og den lokale forsyning, men gør dig ansvarlig for en rest af usikkerhed; at afvise den beskytter den kendte sikkerhed og sporbarhed, men luk"
+        },
+        "futurePressureId": "supply-chains",
+        "normalized2046": "Lokale værksteder og havne bruger forsynings-AI til at fremstille reservedele fra digitale modeller og må acceptere, at erstatningsdele ofte kun er funktionelt, ikke historisk, ens",
+        "choices": [
+          {
+            "id": "a",
+            "label": "Godkend delen",
+            "description": "Godkend delen, så din far kan sejle videre, men tag selv ansvaret for den usikkerhed, der følger med.",
+            "consequence": "Din far kan fortsætte sæsonen, men hvis delen svigter, vil du have skrevet under på, at hurtig lokal forsyning var vigtigere end fuld sporbarhed.",
+            "valueImpacts": {
+              "trust": -2,
+              "freedom": 1,
+              "equality": 0,
+              "efficiency": 2,
+              "humanContact": 1,
+              "safety": -2,
+              "innovation": 2,
+              "sustainability": 2,
+              "localControl": 2,
+              "transparency": -1
+            }
+          },
+          {
+            "id": "b",
+            "label": "Afvis delen",
+            "description": "Afvis delen og kræv originalen, men accepter at din far mister sæsonen og måske sit arbejde.",
+            "consequence": "Besætningen sejler ikke med en usikker del, men kutteren bliver liggende, og din far må forklare familien, hvorfor indtægten forsvandt.",
+            "valueImpacts": {
+              "trust": 2,
+              "freedom": -1,
+              "equality": -1,
+              "efficiency": -2,
+              "humanContact": -1,
+              "safety": 2,
+              "innovation": -1,
+              "sustainability": -1,
+              "localControl": -1,
+              "transparency": 2
+            }
+          },
+          {
+            "id": "c",
+            "label": "Godkend kun til lav fart",
+            "description": "Godkend delen til den langsommere rute, men accepter mindre fangst og en mere presset økonomi.",
+            "consequence": "Din far kan sejle, men turene bliver længere og dyrere; du har valgt en begrænset drift frem for både fuld tryghed og fuld indtjening.",
+            "valueImpacts": {
+              "trust": 1,
+              "freedom": 1,
+              "equality": 0,
+              "efficiency": -1,
+              "humanContact": 1,
+              "safety": 1,
+              "innovation": 1,
+              "sustainability": 1,
+              "localControl": 1,
+              "transparency": 1
+            }
+          },
+          {
+            "id": "d",
+            "label": "Godkend og offentliggør afvigelsen",
+            "description": "Godkend delen og mærk kutteren offentligt, men gør din far synligt mindre attraktiv for købere og samarbejdspartnere.",
+            "consequence": "Han kan arbejde videre med en lokal del, men kunder og besætning vil kende dens usikkerhed og kan vælge andre både.",
+            "valueImpacts": {
+              "trust": 2,
+              "freedom": -1,
+              "equality": -1,
+              "efficiency": 1,
+              "humanContact": 0,
+              "safety": 1,
+              "innovation": 1,
+              "sustainability": 2,
+              "localControl": 2,
+              "transparency": 2
+            }
+          }
+        ],
+        "tags": [
+          "forsyningskæder",
+          "lokal produktion",
+          "reservedele",
+          "fiskeri",
+          "ansvar",
+          "Esbjerg Havn",
+          "2046"
+        ],
+        "country": "Danmark",
+        "city": "Esbjerg",
+        "region": "Norden",
+        "locationType": "havn",
+        "technology": "forsynings-AI",
+        "marker": {
+          "lat": 55.4657,
+          "lng": 8.4384
+        },
+        "exactPlace": {
+          "id": "esbjerg-havn",
+          "name": "Esbjerg Havn",
+          "address": "Hulvejen 1, 6700 Esbjerg"
+        },
+        "landingScene": "Du står på Esbjerg Havn med den printede propelflange i hænderne, mens din far venter ved kutteren. Den passer på plads, men du kan ikke give ham samme sporbarhed som en original del."
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "A",
+      "role": "Arbejdsgiver",
+      "planIndex": 5,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "geopolitical-fragmentation",
+        "pressure": "Verden hænger ikke sammen på samme måde, og aftaler går på tværs af blokke",
+        "responses": [
+          "det afhænger af, hvor man er, hvilke tjenester og apparater der virker",
+          "unge tager kortere ophold i udlandet efter faste aftaler mellem regioner",
+          "data om mennesker må ikke forlade den region, de er født i"
+        ],
+        "problemAreas": [
+          "Digital tillid, rettigheder og styring",
+          "Uddannelse og læring",
+          "Arbejde og arbejdsliv"
+        ],
+        "city": "København",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 5277,
+        "outputTokens": 2051,
+        "totalTokens": 7328,
+        "latencyMs": 15873
+      },
+      "raw": {
+        "id": "w2046-vejle-arbejdsgiver-001",
+        "problemArea": "Arbejde og arbejdsliv",
+        "validLocationTypes": [
+          "kontor",
+          "kommune"
+        ],
+        "targetGroups": [
+          "arbejdsgivere",
+          "kommunale beslutningstagere",
+          "HR-ledere",
+          "tillidsrepræsentanter",
+          "frontpersonale"
+        ],
+        "technologies": [
+          "kommunal beslutnings-AI",
+          "personlig data-agent"
+        ],
+        "severity": "low",
+        "title": "Skal Amina have ansvaret?",
+        "scenePrompt": "I 2046 bliver persondata i den region, hvor man er født, i regionen. Det beskytter borgere mod udenlandsk profilering og gør fælles sikkerhedsmodeller mulige, men du kan ikke se eller efterprøve hele grundlaget for Aminas vurdering.",
+        "question": "Vil du give Amina ledelsesansvaret, når du ikke kan se hele grundlaget for vurderingen?",
+        "stake": "Aminas karriere, teamets tillid og dit ansvar for kommunens sikkerhed står på spil.",
+        "coreTension": {
+          "want": "Du vil give Amina den lederstilling, hun gennem tolv år har kvalificeret sig til, og beholde hendes tillid til arbejdspl",
+          "butAlsoWant": "Du vil beskytte kommunen og medarbejderne mod en risiko, som det fælles sikkerhedssystem faktisk har fundet.",
+          "whyCannotHaveBoth": "Aminas fødselsregion holder de underliggende data tilbage for at beskytte hendes privatliv og regionens datasuverænitet; du kan derfor ikke både handle på en fuldt efterprøvbar ris"
+        },
+        "logic": {
+          "rule": "Kommunens beslutnings-AI må kun vise en samlet risikovurdering, mens persondata forbliver i den region, hvor medarbejderen er født.",
+          "benefit": "Ordningen hindrer fremmede stater og virksomheder i at samle følsomme profiler på tværs af regioner og gør nordiske sikkerhedsvurderinger mulige.",
+          "trigger": "Du skal i dag udpege ny leder for kommunens beredskabsteam. Systemet markerer Amina som høj risiko under pres, men viser ingen forklaring, som du kan kontrollere.",
+          "decision": "I dette øjeblik skal du beslutte, om Amina skal have ledelsesansvaret for beredskabsteamet.",
+          "choiceConstraint": "Et ja giver Amina ansvar uden et fuldt efterprøvbart grundlag; et nej fratager hende en konkret karrieremulighed på baggrund af en vurdering, hun ikke kan få indsigt i eller imødeg"
+        },
+        "futurePressureId": "geopolitical-fragmentation",
+        "normalized2046": "I 2046 opbevares menneskers identitets-, arbejds- og risikodata i den region, hvor de er født. Regionale AI-systemer kan samarbejde gennem forseglede beregninger, men ingen arbejdG",
+        "choices": [
+          {
+            "id": "a",
+            "label": "Udpeg Amina åbent",
+            "description": "Du udpeger Amina og siger, at din tillid til hendes arbejde vejer tungere end den forseglede risikovurdering.",
+            "consequence": "Amina får sin lederchance, men du bærer selv ansvaret, hvis den ukendte risiko senere rammer teamet eller borgerne.",
+            "valueImpacts": {
+              "trust": 2,
+              "freedom": 2,
+              "equality": 2,
+              "efficiency": 0,
+              "humanContact": 2,
+              "safety": -2,
+              "innovation": 1,
+              "sustainability": 0,
+              "localControl": 2,
+              "transparency": -2
+            }
+          },
+          {
+            "id": "b",
+            "label": "Afvis hende på vurderingen",
+            "description": "Du vælger en anden kandidat og accepterer, at kommunens sikkerhed kræver tillid til den forseglede vurdering.",
+            "consequence": "Kommunen får en leder, systemet vurderer som mindre risikabel, mens Amina mister en karrierevej uden at kunne se, hvad hun skulle forsvare sig imod.",
+            "valueImpacts": {
+              "trust": -2,
+              "freedom": -2,
+              "equality": -2,
+              "efficiency": 1,
+              "humanContact": -1,
+              "safety": 2,
+              "innovation": 0,
+              "sustainability": 0,
+              "localControl": -1,
+              "transparency": -2
+            }
+          },
+          {
+            "id": "c",
+            "label": "Udpeg hende trods markeringen",
+            "description": "Du udpeger Amina, fordi du nægter at lade et ubegribeligt resultat definere hendes egnethed, selv om du accepterer den mulige risiko.",
+            "consequence": "Amina oplever reel retfærdighed, men teamet ved, at du bevidst har tilsidesat det eneste tværregionale sikkerhedssignal, kommunen har.",
+            "valueImpacts": {
+              "trust": 2,
+              "freedom": 2,
+              "equality": 2,
+              "efficiency": -1,
+              "humanContact": 2,
+              "safety": -2,
+              "innovation": 1,
+              "sustainability": 0,
+              "localControl": 2,
+              "transparency": 1
+            }
+          },
+          {
+            "id": "d",
+            "label": "Afvis hende trods din tillid",
+            "description": "Du afviser Amina, fordi du ikke vil placere et ukendt sikkerhedsansvar hos nogen, selv om du personligt stoler på hende.",
+            "consequence": "Du beskytter teamet efter forsigtighedsprincippet, men Amina mister både muligheden og troen på, at hendes faktiske arbejde tæller.",
+            "valueImpacts": {
+              "trust": -2,
+              "freedom": -2,
+              "equality": -1,
+              "efficiency": 1,
+              "humanContact": -2,
+              "safety": 2,
+              "innovation": -1,
+              "sustainability": 0,
+              "localControl": 0,
+              "transparency": -1
+            }
+          }
+        ],
+        "tags": [
+          "datasuverænitet",
+          "ansvar",
+          "arbejdsliv",
+          "AI-vurderinger",
+          "Norden",
+          "kommuner"
+        ],
+        "country": "Danmark",
+        "city": "Vejle",
+        "region": "Norden",
+        "locationType": "kommune",
+        "technology": "kommunal beslutnings-AI",
+        "marker": {
+          "lat": 55.711311,
+          "lng": 9.536354
+        },
+        "exactPlace": {
+          "id": "vejle-kommune-raadhus",
+          "name": "Vejle Kommune",
+          "address": "Skolegade 1, 7100 Vejle"
+        },
+        "landingScene": "Du sidder i Vejle Kommunes ansættelsesudvalg, mens Amina venter udenfor døren. På skærmen står hendes forseglede risikovurdering, og du skal underskrive udpegningen."
+      },
+      "validation": {
+        "accepted": false,
+        "reason": "bad_choices:missing_tradeoff"
+      }
+    },
+    {
+      "setup": "A",
+      "role": "Medarbejder",
+      "planIndex": 6,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "labour-shortage",
+        "pressure": "Der mangler folk til bestemte fag, og det kan ikke løses med løn alene",
+        "responses": [
+          "de samme faglærte deles mellem flere kommuner og virksomheder efter en fælles plan",
+          "folk arbejder i to eller tre fag samtidig, og det er blevet den almindelige måde",
+          "opgaver, der før krævede en fagperson på stedet, løses nu på afstand fra et andet land"
+        ],
+        "problemAreas": [
+          "Arbejde og arbejdsliv",
+          "Sundhed og omsorg"
+        ],
+        "city": "Aarhus",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 5232,
+        "outputTokens": 1871,
+        "totalTokens": 7103,
+        "latencyMs": 15767
+      },
+      "raw": {
+        "id": "w2046-horsens-nordisk-specialistpool",
+        "problemArea": "Sundhed og omsorg",
+        "validLocationTypes": [
+          "hospital",
+          "sundhedsklinik",
+          "plejehjem"
+        ],
+        "targetGroups": [
+          "fagprofessionelle",
+          "beslutningstagere",
+          "udstillere",
+          "sundhedspersonale"
+        ],
+        "technologies": [
+          "algoritmisk planlægning",
+          "AI-ledelse",
+          "sundhedsdata"
+        ],
+        "severity": "low",
+        "title": "Hvor skal dit arbejde høre hjemme?",
+        "scenePrompt": "I møder ind på Regionshospitalet Horsens, hvor den nordiske vagtplan allerede har placeret dig på tre hospitaler det næste år. Din partner står med flyttekasser derhjemme, mens du skal vælge, hvilket arbejdsliv du vil leve.",
+        "question": "Hvilken arbejdsform vælger du for det næste år?",
+        "stake": "Du beskytter enten din faglighed, din hverdag med din partner, din indkomst eller din frihed til at skifte spor.",
+        "coreTension": {
+          "want": "Du vil bruge din specialviden på de patienter, der ellers ikke får den nødvendige behandling.",
+          "butAlsoWant": "Du vil have et stabilt hjemmeliv med din partner og være en del af det lokale fællesskab.",
+          "whyCannotHaveBoth": "Specialisterne fordeles på tværs af Norden, fordi der ikke er nok af jer til at bemande alle hospitaler fast; samme specialiserede arbejde kan derfor ikke samtidig være lokalt og u"
+        },
+        "logic": {
+          "rule": "I 2046 fordeler en fælles nordisk planlægning sundhedsfaglige specialister mellem hospitaler efter forventet behov, og deres arbejdsår består normalt af længere ophold flere steder",
+          "benefit": "Hospitaler uden egne specialister kan behandle alvorligt syge patienter lokalt i stedet for at sende dem langt væk eller vente på få ledige eksperter",
+          "trigger": "Din nye plan viser, at du skal arbejde på Regionshospitalet Horsens, et hospital i Göteborg og et i Reykjavik, mens din partner netop har fået fast arbejde i Horsens",
+          "decision": "I dette øjeblik skal du beslutte, hvilken arbejdsform du vil leve med det næste år",
+          "choiceConstraint": "Din specialisering kræver fysisk tilstedeværelse ved behandlingerne, og den nordiske deling virker kun, hvis specialister faktisk flytter sig mellem hospitalerne; et fast lokalt og"
+        },
+        "futurePressureId": "labour-shortage",
+        "normalized2046": "Nordiske hospitaler deler faglærte specialister gennem AI-planlagte arbejdsår på tværs af landegrænser, så sjældne kompetencer følger patientbehovet i stedet for kommune- eller sy️",
+        "choices": [
+          {
+            "id": "a",
+            "label": "Bliv i specialistpuljen",
+            "description": "Du tager rundt mellem hospitalerne, men beholder din specialisering, løn og mulighed for at hjælpe de mest komplekse patienter.",
+            "consequence": "Patienter i Horsens og andre nordiske byer får din ekspertise, men din partner må bygge hverdagen uden dig i lange perioder.",
+            "valueImpacts": {
+              "trust": 2,
+              "freedom": -2,
+              "equality": 2,
+              "efficiency": 2,
+              "humanContact": 1,
+              "safety": 2,
+              "innovation": 1,
+              "sustainability": -1,
+              "localControl": -2,
+              "transparency": 0
+            }
+          },
+          {
+            "id": "b",
+            "label": "Vælg fast arbejde lokalt",
+            "description": "Du tager en fast stilling i Horsens, men opgiver din specialisering og den højere indkomst, der følger med den nordiske pulje.",
+            "consequence": "Din partner får dig tæt på, mens patienter med de sværeste forløb må undvære din særlige erfaring på hospitalet.",
+            "valueImpacts": {
+              "trust": 1,
+              "freedom": 2,
+              "equality": -1,
+              "efficiency": -1,
+              "humanContact": 2,
+              "safety": -1,
+              "innovation": -1,
+              "sustainability": 1,
+              "localControl": 2,
+              "transparency": 0
+            }
+          },
+          {
+            "id": "c",
+            "label": "Flyt med arbejdet",
+            "description": "Du og din partner flytter efter puljen, men giver afkald på deres arbejde, familie og det liv, I har bygget i Horsens.",
+            "consequence": "I kan blive sammen og du kan fortsætte som specialist, men din partner mister sit lokale netværk og sin egen karriere.",
+            "valueImpacts": {
+              "trust": 1,
+              "freedom": -2,
+              "equality": -1,
+              "efficiency": 2,
+              "humanContact": 1,
+              "safety": 1,
+              "innovation": 1,
+              "sustainability": -1,
+              "localControl": -2,
+              "transparency": 0
+            }
+          },
+          {
+            "id": "d",
+            "label": "Forlad specialistfaget",
+            "description": "Du siger op som specialist og vælger et mindre krævende fagligt spor, men mister indkomst, status og mange års træning.",
+            "consequence": "Din partner får en stabil hverdag med dig, mens kollegerne mister en erfaren specialist, som det tager år at erstatte.",
+            "valueImpacts": {
+              "trust": 1,
+              "freedom": 2,
+              "equality": 0,
+              "efficiency": -2,
+              "humanContact": 2,
+              "safety": -1,
+              "innovation": -2,
+              "sustainability": 1,
+              "localControl": 1,
+              "transparency": 1
+            }
+          }
+        ],
+        "tags": [
+          "arbejdskraftmangel",
+          "sundhedspersonale",
+          "nordisk samarbejde",
+          "arbejdsliv",
+          "AI-planlægning",
+          "Horsens"
+        ],
+        "country": "Danmark",
+        "city": "Horsens",
+        "region": "Norden",
+        "locationType": "hospital",
+        "technology": "algoritmisk planlægning",
+        "marker": {
+          "lat": 55.8605,
+          "lng": 9.8451
+        },
+        "exactPlace": {
+          "id": "regionshospitalet-horsens",
+          "name": "Regionshospitalet Horsens",
+          "address": "Sundvej 30, 8700 Horsens"
+        },
+        "landingScene": "Du møder ind på Regionshospitalet Horsens og ser den nordiske arbejdsplan på skærmen. Din partner skriver, at flyttekasserne står klar derhjemme, men at de ikke kan flytte med uden selv at opgive deres arbejde."
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "A",
+      "role": "For alle",
+      "planIndex": 7,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "cyber-infrastructure",
+        "pressure": "Angreb på kritiske systemer er en normal driftsrisiko, ikke en undtagelse",
+        "responses": [
+          "vigtige tjenester har en langsom, manuel udgave, der øves fast nogle gange om året",
+          "systemer lukkes ned regionsvis efter en fast rækkefølge, når noget er galt",
+          "det er blevet almindeligt at kunne betale, rejse og få hjælp uden net i nogle dage"
+        ],
+        "problemAreas": [
+          "Digital tillid, rettigheder og styring",
+          "Klima, energi og resiliens"
+        ],
+        "city": "Odense",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 5186,
+        "outputTokens": 1808,
+        "totalTokens": 6994,
+        "latencyMs": 14634
+      },
+      "raw": {
+        "id": "esbjerg-2046-grid-shutdown-home",
+        "problemArea": "Klima, energi og resiliens",
+        "validLocationTypes": [
+          "boligområde"
+        ],
+        "targetGroups": [
+          "familier",
+          "beboere i boligområder",
+          "unge og voksne"
+        ],
+        "technologies": [
+          "AI-styret elnet",
+          "dynamisk infrastruktur",
+          "sensorbolig"
+        ],
+        "severity": "low",
+        "title": "Skal jeres hjem gå først?",
+        "scenePrompt": "I 2046 lukker AI-styrede elnet automatisk boligområder ned i en fast rækkefølge under cyberangreb. Det holder hele regionen stabil, men i dag skal dit hjem enten bære afbrydelsen eller dele intime data for at blive skånet.",
+        "question": "Hvad accepterer du for at holde din familie tryg, når elnettet angribes?",
+        "stake": "Din familie kan få varme og strøm under angreb, men prisen er enten utryghed i hjemmet eller et indblik i jeres liv, som ikke kan trækkes tilbage.",
+        "coreTension": {
+          "want": "Du vil vide, at din familie har varme, lys og strøm, når et angreb rammer elnettet.",
+          "butAlsoWant": "Du vil kunne leve i jeres hjem uden at blive overvåget eller gjort ansvarlig for at beskytte resten af regionen.",
+          "whyCannotHaveBoth": "Når systemet skal fordele afbrydelser hurtigt under et angreb, kan det kun skåne hjem, hvis det kender deres behov tæt og lader andre hjem tage en større del af risikoen."
+        },
+        "logic": {
+          "rule": "I Esbjerg og resten af Norden lukker det AI-styrede elnet boligområder ned regionsvis efter en fast rækkefølge, når et cyberangreb truer balancen.",
+          "benefit": "Afbrydelserne begrænser angrebets rækkevidde og forhindrer, at hele regionen mister strøm, varme og vand på én gang.",
+          "trigger": "Din families bolig er udpeget til en tidlig afbrydelse, netop som din datter skal hjem med astma efter en lang dag på hospitalet.",
+          "decision": "I dette øjeblik skal du beslutte, om dit hjem skal tage sin planlagte del af afbrydelsen eller sættes foran andre hjem ved at åbne det for tæt behovsovervågning.",
+          "choiceConstraint": "Et hjem, der skånes under et angreb, flytter belastningen til andre hjem; og uden detaljerede oplysninger kan systemet ikke vide, hvilke boliger der reelt har kritiske behov."
+        },
+        "futurePressureId": "cyber-infrastructure",
+        "normalized2046": "Cyberangreb på kritisk infrastruktur håndteres som tilbagevendende driftsrisici. AI-styrede elnet afkobler derfor automatisk boligområder efter en regional rækkefølge og bruger løb",
+        "choices": [
+          {
+            "id": "a",
+            "label": "Tag jeres afbrydelse",
+            "description": "Du accepterer, at jeres hjem går tidligt ned, men beskytter familiens ret til et privat hjem.",
+            "consequence": "Din datter må klare aftenen uden stabil strøm og varme, mens naboerne længere nede i rækkefølgen får mere tid, før deres hjem rammes.",
+            "valueImpacts": {
+              "trust": 2,
+              "freedom": 2,
+              "equality": 2,
+              "efficiency": 0,
+              "humanContact": 1,
+              "safety": -2,
+              "innovation": 0,
+              "sustainability": 1,
+              "localControl": 2,
+              "transparency": 2
+            }
+          },
+          {
+            "id": "b",
+            "label": "Åbn hjemmet for systemet",
+            "description": "Du giver systemet fuldt indblik i jeres rum og vaner, men får større sikkerhed for strøm til din datter.",
+            "consequence": "Boligen skånes, fordi systemet kan se hendes behov, men familiens mest private døgnrytme bliver en del af elnettets beredskab.",
+            "valueImpacts": {
+              "trust": -2,
+              "freedom": -2,
+              "equality": -1,
+              "efficiency": 2,
+              "humanContact": 0,
+              "safety": 2,
+              "innovation": 1,
+              "sustainability": 1,
+              "localControl": -2,
+              "transparency": -1
+            }
+          },
+          {
+            "id": "c",
+            "label": "Bær en større del",
+            "description": "Du vælger at lade jeres hjem blive afbrudt længere, men giver andre sårbare boliger førsteprioritet.",
+            "consequence": "Din datter får en mere usikker aften, mens en ukendt familie i regionen kan blive holdt varm under angrebet på grund af jeres afkald.",
+            "valueImpacts": {
+              "trust": 2,
+              "freedom": -1,
+              "equality": 2,
+              "efficiency": 1,
+              "humanContact": 1,
+              "safety": -2,
+              "innovation": 0,
+              "sustainability": 2,
+              "localControl": 1,
+              "transparency": 1
+            }
+          },
+          {
+            "id": "d",
+            "label": "Sæt jer foran andre",
+            "description": "Du accepterer tæt overvågning af hjemmet og en højere prioritet, men ved, at andre må miste strøm før jer.",
+            "consequence": "Din datter er beskyttet, men du ved, at familiens tryghed under angrebet bygger på en større risiko for andre beboere.",
+            "valueImpacts": {
+              "trust": -2,
+              "freedom": -2,
+              "equality": -2,
+              "efficiency": 2,
+              "humanContact": 0,
+              "safety": 2,
+              "innovation": 1,
+              "sustainability": 0,
+              "localControl": -1,
+              "transparency": -1
+            }
+          }
+        ],
+        "tags": [
+          "cyberangreb",
+          "elnet",
+          "bolig",
+          "privatliv",
+          "familie",
+          "Esbjerg",
+          "Norden",
+          "resiliens"
+        ],
+        "country": "Danmark",
+        "city": "Esbjerg",
+        "region": "Norden",
+        "locationType": "boligområde",
+        "technology": "AI-styret elnet",
+        "marker": {
+          "lat": 55.4765,
+          "lng": 8.4594
+        },
+        "exactPlace": {
+          "id": "sydvestjysk-boligforening-esbjerg",
+          "name": "Sydvestjysk Boligforening",
+          "address": "Nørregade 15, 6700 Esbjerg"
+        },
+        "landingScene": "Du står i opgangen i et boligområde i Esbjerg, mens din datter kommer hjem med sin inhalator. På din telefon står der, at jeres blok afkobles først efter et angreb på elnettet, medmindre du åbner hjemmet for systemets sensorer."
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "A",
+      "role": "Borger",
+      "planIndex": 8,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "antibiotic-resistance",
+        "pressure": "Antibiotika virker ikke længere lige så bredt som før",
+        "responses": [
+          "de virksomme midler er reserveret, og adgangen til dem afgøres et andet sted end på klinikken",
+          "små indgreb udskydes eller flyttes til steder med lavere risiko for smitte",
+          "det er blevet normalt at blive testet grundigt, før man får noget som helst mod en infektion"
+        ],
+        "problemAreas": [
+          "Sundhed og omsorg",
+          "Digital tillid, rettigheder og styring"
+        ],
+        "city": "København",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 5202,
+        "outputTokens": 1781,
+        "totalTokens": 6983,
+        "latencyMs": 15460
+      },
+      "raw": {
+        "id": "w2046-antibiotika-koebenhavn-01",
+        "problemArea": "Sundhed og omsorg",
+        "validLocationTypes": [
+          "apotek"
+        ],
+        "targetGroups": [
+          "familier",
+          "forældre",
+          "unge voksne",
+          "alle borgere"
+        ],
+        "technologies": [
+          "hjemmediagnostik",
+          "sundhedsdata",
+          "digital ID-wallet"
+        ],
+        "severity": "low",
+        "title": "Skal Saras infektionsspor følge hende?",
+        "scenePrompt": "I 2046 bliver ingen antibiotika udleveret, før en præcis test viser, hvad der virker. På apoteket kan du give Saras infektionsprofil videre til fremtidig behandling — men den kan også følge hende i mange år.",
+        "question": "Hvad vælger du at gøre med Saras infektionsprofil?",
+        "stake": "Saras næste behandling kan blive hurtigere og mere sikker, men hendes private helbredsoplysninger kan følge hende længe.",
+        "coreTension": {
+          "want": "Du vil sikre, at Sara hurtigt får den behandling, der virker, hvis hun bliver syg igen.",
+          "butAlsoWant": "Du vil beskytte Saras ret til, at hendes krop og sygdomshistorie ikke bliver kendt mere end nødvendigt.",
+          "whyCannotHaveBoth": "Den samme detaljerede profil, der gør fremtidig behandling hurtig, bliver mindre privat, når den gemmes og kan genfindes."
+        },
+        "logic": {
+          "rule": "På danske apoteker i 2046 udleveres antibiotika først efter en biologisk test, der identificerer infektionen og viser, hvilke midler den stadig tåler.",
+          "benefit": "Praksissen mindsker fejlslagne behandlinger og bremser udviklingen af bakterier, der ikke længere kan behandles bredt.",
+          "trigger": "Saras test viser en sjælden resistensprofil, og apoteket spørger, om profilen skal kobles til hendes digitale ID efter dagens kur.",
+          "decision": "I dette øjeblik skal du beslutte, hvordan Saras infektionsprofil må bruges efter dagens behandling.",
+          "choiceConstraint": "En profil kan enten være tilgængelig nok til at spare Sara for nye, langsomme undersøgelser eller begrænses nok til at beskytte hendes privatliv; den kan ikke samtidig være fuldt g"
+        },
+        "futurePressureId": "antibiotic-resistance",
+        "normalized2046": "Alle antibiotikabehandlinger i Norden bygger på individuelle infektionsprofiler fra hurtige biologiske tests, og borgeren vælger, hvor længe profilen må være personligt genfindbar.",
+        "choices": [
+          {
+            "id": "a",
+            "label": "Kobl profilen til Saras ID",
+            "description": "Du kobler profilen til Saras ID, så fremtidige behandlinger kan målrettes straks, men hendes sygdomshistorie bliver varigt søgbar.",
+            "consequence": "Hvis Sara bliver syg igen, kan sundhedspersonalet handle hurtigt; til gengæld må hun leve med, at flere kan se et meget personligt helbredsforløb.",
+            "valueImpacts": {
+              "trust": 1,
+              "freedom": -2,
+              "equality": 0,
+              "efficiency": 2,
+              "humanContact": 0,
+              "safety": 2,
+              "innovation": 0,
+              "sustainability": 0,
+              "localControl": -1,
+              "transparency": 1
+            }
+          },
+          {
+            "id": "b",
+            "label": "Gem den kun lokalt",
+            "description": "Du lader profilen blive hos Saras egen læge, så hun får noget beskyttelse, men andre steder må teste hende næsten forfra.",
+            "consequence": "Saras læge kender hendes særlige resistens, mens en akut behandling på rejse eller hos en anden klinik kan blive langsommere og mere usikker.",
+            "valueImpacts": {
+              "trust": 2,
+              "freedom": 1,
+              "equality": 0,
+              "efficiency": -1,
+              "humanContact": 1,
+              "safety": 1,
+              "innovation": 0,
+              "sustainability": 0,
+              "localControl": 2,
+              "transparency": 0
+            }
+          },
+          {
+            "id": "c",
+            "label": "Giv den til forskningen anonymt",
+            "description": "Du frigiver profilen anonymt til forskning, men Sara får ikke selv fordel af en genfindbar personlig behandlingshistorik.",
+            "consequence": "Andre børn kan måske få bedre behandling, men Saras næste læge har ikke adgang til netop den viden, der kunne spare hende for en fejlbehandling.",
+            "valueImpacts": {
+              "trust": 1,
+              "freedom": 0,
+              "equality": 1,
+              "efficiency": 0,
+              "humanContact": 0,
+              "safety": -1,
+              "innovation": 2,
+              "sustainability": 1,
+              "localControl": 0,
+              "transparency": 1
+            }
+          },
+          {
+            "id": "d",
+            "label": "Lad den forsvinde",
+            "description": "Du beder om, at profilen ikke gemmes efter kuren, så Saras spor lukkes, men fremtidige læger mister en vigtig advarsel.",
+            "consequence": "Saras privatliv er bedst beskyttet nu, men ved en ny infektion kan hun igen få en bred behandling, der ikke virker eller fremmer mere resistens.",
+            "valueImpacts": {
+              "trust": 1,
+              "freedom": 2,
+              "equality": 0,
+              "efficiency": -2,
+              "humanContact": 0,
+              "safety": -2,
+              "innovation": -1,
+              "sustainability": 0,
+              "localControl": 1,
+              "transparency": 1
+            }
+          }
+        ],
+        "tags": [
+          "antibiotikaresistens",
+          "sundhedsdata",
+          "familie",
+          "digital identitet",
+          "København"
+        ],
+        "country": "Danmark",
+        "city": "København",
+        "region": "Norden",
+        "locationType": "apotek",
+        "technology": "hjemmediagnostik",
+        "marker": {
+          "lat": 55.6748,
+          "lng": 12.5584
+        },
+        "exactPlace": {
+          "id": "koebenhavns-apotek-vesterbrogade",
+          "name": "Københavns Stads Apotek",
+          "address": "Vesterbrogade 60, 1620 København V"
+        },
+        "landingScene": "Du står på Københavns Stads Apotek med Saras prøvesvar på skærmen. Kurven er klar, men apotekeren spørger, om hendes særlige infektionsprofil skal følge hende videre."
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "A",
+      "role": "Beslutningstager",
+      "planIndex": 9,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "new-work-forms",
+        "pressure": "Nye former for arbejde og ejerskab er vokset frem uden for det faste job",
+        "responses": [
+          "folk ejer små andele af det udstyr og de systemer, de arbejder med, i fællesskab",
+          "opgaver fordeles gennem fælles puljer, som man selv melder sig ind og ud af",
+          "en personlig agent forhandler tider, takster og vilkår på ens vegne, mens man sover"
+        ],
+        "problemAreas": [
+          "Arbejde og arbejdsliv",
+          "Digital tillid, rettigheder og styring"
+        ],
+        "city": "Aarhus",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 5251,
+        "outputTokens": 2015,
+        "totalTokens": 7266,
+        "latencyMs": 17104
+      },
+      "raw": {
+        "id": "world2046-naestved-andelssystemet",
+        "problemArea": "Arbejde og arbejdsliv",
+        "validLocationTypes": [
+          "kontor",
+          "kommune"
+        ],
+        "targetGroups": [
+          "kommunale beslutningstagere",
+          "offentlige ledere",
+          "frontmedarbejdere",
+          "borgere i nye arbejdsfællesskaber"
+        ],
+        "technologies": [
+          "algoritmisk planlægning",
+          "AI-ledelse",
+          "automation"
+        ],
+        "severity": "low",
+        "title": "Hvem ejer dit arbejde?",
+        "scenePrompt": "I 2046 ejer mange nordiske arbejdere en andel af robotterne, platformene og AI-systemerne, der skaber deres indkomst. I Næstved skal du godkende kommunens model, men din tidligere kollega Maja står til at miste sin andel, hvis hun ikke accepterer systemets arbejdsliv.",
+        "question": "Hvilken arbejdsmodel vil du skrive under på, når alle muligheder koster nogen deres tryghed eller frihed?",
+        "stake": "Du kan give flere mennesker en stabil andel i værdierne, men nogle mister retten til selv at vælge, hvornår og hvordan de arbejder.",
+        "coreTension": {
+          "want": "Du vil give mennesker, der lever af løst og skiftende arbejde, en reel ejerandel og en indkomst, de kan bygge et liv på.",
+          "butAlsoWant": "Du vil beskytte retten til at sige nej til maskinens opgaver uden at blive stemplet som en dårlig eller upålidelig arbej",
+          "whyCannotHaveBoth": "Ejerandelene finansieres af systemets løbende arbejdsfordeling; jo mere fælles indkomst modellen lover, desto mere skal den kunne planlægge, måle og forpligte den enkeltes arbejde."
+        },
+        "logic": {
+          "rule": "Kommuner og kooperativer ejer i fællesskab de automatiserede systemer, mens arbejdernes andele og udbetalinger beregnes ud fra deres dokumenterede bidrag til systemets samlede opgø",
+          "benefit": "Flere får del i den værdi, som robotter og AI skaber, så indkomst og ejerskab ikke kun samler sig hos platformsejere og investorer.",
+          "trigger": "Maja, som byggede den første lokale deleordning, har afvist flere opgaver på grund af sin søns sygdom. Den nye model vil give hende større økonomisk sikkerhed, men hendes afslag tæ",
+          "decision": "Du skal beslutte, hvilken arbejds- og ejermodel kommunen binder sig til.",
+          "choiceConstraint": "En fælles indkomst kræver, at bidrag kan sammenlignes og omsættes til forpligtelser; beskytter du fuld valgfrihed, kan modellen ikke samtidig love samme fælles sikkerhed til alle."
+        },
+        "futurePressureId": "new-work-forms",
+        "normalized2046": "I 2046 er det normalt, at ansatte og løst tilknyttede arbejdere ejer små, omsættelige andele af de robotter, AI-platforme og automatiserede driftsnetværk, de arbejder gennem. Andel",
+        "choices": [
+          {
+            "id": "a",
+            "label": "Godkend fuld fælleseje",
+            "description": "Du godkender fælles ejerskab med forpligtende AI-planer, men Maja kan miste sin andel ved gentagne afslag.",
+            "consequence": "Flere ustabile arbejdere får en forudsigelig indkomst og medejerskab, mens Maja må vælge mellem sin søns behov og sin plads i fællesskabet.",
+            "valueImpacts": {
+              "trust": 1,
+              "freedom": -2,
+              "equality": 2,
+              "efficiency": 2,
+              "humanContact": 0,
+              "safety": 1,
+              "innovation": 1,
+              "sustainability": 0,
+              "localControl": 2,
+              "transparency": 1
+            }
+          },
+          {
+            "id": "b",
+            "label": "Beskyt retten til at sige nej",
+            "description": "Du binder modellen til frit valg af opgaver, men accepterer lavere og mere uforudsigelige ejerudbetalinger.",
+            "consequence": "Maja beholder kontrollen over sin tid, men hun og andre med ustabile liv får mindre mulighed for at betale bolig og omsorg gennem deres andele.",
+            "valueImpacts": {
+              "trust": 2,
+              "freedom": 2,
+              "equality": -1,
+              "efficiency": -1,
+              "humanContact": 1,
+              "safety": 0,
+              "innovation": 0,
+              "sustainability": 0,
+              "localControl": 1,
+              "transparency": 1
+            }
+          },
+          {
+            "id": "c",
+            "label": "Lad borgerne eje mest",
+            "description": "Du giver Næstveds borgere hovedparten af andelene, men arbejderne får løn frem for langsigtet medejerskab.",
+            "consequence": "Kommunens afkast kan finansiere velfærd for alle, men Maja får ingen del af den stigende værdi, hun selv er med til at skabe.",
+            "valueImpacts": {
+              "trust": 0,
+              "freedom": 1,
+              "equality": 1,
+              "efficiency": 1,
+              "humanContact": 0,
+              "safety": 1,
+              "innovation": 0,
+              "sustainability": 0,
+              "localControl": 2,
+              "transparency": 1
+            }
+          },
+          {
+            "id": "d",
+            "label": "Bevar kommunalt ejerskab",
+            "description": "Du lader kommunen eje systemerne og garanterer faste lønninger, men opgiver arbejdernes direkte andel i gevinsten.",
+            "consequence": "Maja får mere forudsigelig løn uden at blive målt som medejer, mens medarbejderne mister indflydelse på de systemer, der bestemmer deres arbejde.",
+            "valueImpacts": {
+              "trust": 1,
+              "freedom": 1,
+              "equality": 1,
+              "efficiency": -1,
+              "humanContact": 1,
+              "safety": 1,
+              "innovation": -1,
+              "sustainability": 0,
+              "localControl": 2,
+              "transparency": 2
+            }
+          }
+        ],
+        "tags": [
+          "arbejdsliv",
+          "fælleseje",
+          "AI-ledelse",
+          "kommunal styring",
+          "Næstved",
+          "Norden"
+        ],
+        "country": "Danmark",
+        "city": "Næstved",
+        "region": "Norden",
+        "locationType": "rådhus",
+        "technology": "algoritmisk planlægning",
+        "marker": {
+          "lat": 55.2299,
+          "lng": 11.7609
+        },
+        "exactPlace": {
+          "id": "naestved-raadhus",
+          "name": "Næstved Rådhus",
+          "address": "Teatergade 8, 4700 Næstved"
+        },
+        "landingScene": "Du træder ind i byrådssalen på Næstved Rådhus, hvor aftalen om kommunens nye arbejdskooperativ ligger foran dig. Maja sidder blandt tilhørerne og ved, at hendes ejerandel afhænger af din underskrift."
+      },
+      "validation": {
+        "accepted": false,
+        "reason": "bad_location_fit"
+      }
+    },
+    {
+      "setup": "B",
+      "role": "Barn",
+      "planIndex": 0,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "extreme-heat",
+        "pressure": "Flere og længere hedebølger presser byer, boliger og alt udearbejde",
+        "responses": [
+          "arbejdsdagen er delt omkring middagen store dele af året, og skoler og arbejdspladser følger samme rytme",
+          "offentlige kølerum står åbne i hvert kvarter, og nogle boligblokke har fælles sovesale på de varmeste nætter",
+          "byens træer og skygge er blevet en tildelt ressource, som kvarterer søger om"
+        ],
+        "problemAreas": [
+          "Klima, energi og resiliens",
+          "Mobilitet, byliv og bolig",
+          "Arbejde og arbejdsliv"
+        ],
+        "city": "Aarhus",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 1224,
+        "outputTokens": 1142,
+        "totalTokens": 2366,
+        "latencyMs": 10472
+      },
+      "raw": {
+        "title": "Det, sensoren ikke må vide",
+        "landingScene": "Aarhus, 2046. På din skole holder alle pause midt på dagen, når varmen er værst. Et armbånd viser, hvem der skal ind i kølerummet. Din ven har slået sit fra. Nu beder din ven dig om ikke at sige det.",
+        "scenePrompt": "Du står ved døren til skolens kølerum. Din ven har gemt armbåndet i tasken. Uden det ved læreren ikke, om din ven bliver for varm. Din ven siger: \"Hvis du siger noget, bestemmer de over mig hele dagen.\"",
+        "stake": "Du kan beskytte din vens krop, men bryde et løfte. Eller beskytte din vens ret til selv at vælge, men lade en risiko være skjult.",
+        "question": "Hvad gør du, når sikkerhed kræver oplysninger, som din ven selv vil holde private?",
+        "coreTension": {
+          "want": "Du vil passe på din ven og undgå, at din ven bliver syg i varmen.",
+          "butAlsoWant": "Du vil holde dit løfte og beskytte din vens ret til selv at bestemme over sin krop.",
+          "whyCannotHaveBoth": "Hvis du siger det, mister din ven kontrol over oplysningerne. Hvis du tier, kan din ven få det farligt varmt."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Sig det til læreren med det samme",
+            "description": "Du fortæller læreren, at armbåndet er slået fra, selv om din ven bad dig tie.",
+            "consequence": "Din ven får hjælp og bliver måske sendt ind i kølerummet. Men din ven kan føle sig svigtet og ikke stole på dig igen."
+          },
+          {
+            "id": "b",
+            "label": "Hold løftet og sig ingenting",
+            "description": "Du beskytter hemmeligheden og lader din ven vælge, hvad skolen skal vide.",
+            "consequence": "Din ven beholder kontrollen over sine data. Men hvis varmen gør din ven syg, kan du føle, at du kunne have grebet ind."
+          },
+          {
+            "id": "c",
+            "label": "Sig, at din ven selv må fortælle det",
+            "description": "Du hjælper ikke med at skjule armbåndet, men du siger heller ikke noget til læreren endnu.",
+            "consequence": "Din ven får en chance for selv at vælge. Men tilliden mellem jer kan briste, og risikoen er stadig ikke kendt af en voksen."
+          },
+          {
+            "id": "d",
+            "label": "Fortæl læreren det sammen med din ven",
+            "description": "Du siger til din ven, at du kun går med, hvis I begge fortæller læreren, hvad der er sket.",
+            "consequence": "Din ven får støtte og bliver hørt. Men oplysningerne bliver stadig delt, og din ven kan mene, at du pressede et svar frem."
+          }
+        ],
+        "locationType": "folkeskole",
+        "placeHint": "En skole i Aarhus med kølerum og fælles varme-pauser"
+      },
+      "validation": {
+        "accepted": false,
+        "reason": "bad_location_fit"
+      }
+    },
+    {
+      "setup": "B",
+      "role": "Ung",
+      "planIndex": 1,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "ageing",
+        "pressure": "Mange flere ældre og forholdsvis færre i den arbejdsdygtige alder",
+        "responses": [
+          "de fleste bliver boende hjemme til det sidste, og hjemmet er fyldt med ting, der holder øje",
+          "pensionering er blevet en glidende ting over mange år frem for en dato",
+          "flere generationer bor sammen igen, ofte i boliger, der er bygget til netop det"
+        ],
+        "problemAreas": [
+          "Sundhed og omsorg",
+          "Arbejde og arbejdsliv",
+          "Mobilitet, byliv og bolig"
+        ],
+        "city": "Odense",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 1192,
+        "outputTokens": 1218,
+        "totalTokens": 2410,
+        "latencyMs": 12154
+      },
+      "raw": {
+        "title": "Mormors hjem ved, når noget er galt",
+        "landingScene": "Det er aften i jeres generationsbolig i Odense. Mormor vil blive hjemme, og rummets sensorer følger hendes søvn, fald, toiletbesøg og humør. Nu får du tilbudt en plads på din drømmeuddannelse, hvis du bliver hendes digitale kontaktperson.",
+        "scenePrompt": "Du sidder med mormor ved køkkenbordet. Hun siger ja til systemet, fordi det gør det muligt at blive hjemme. Du kan se alt i appen, også ting hun ikke selv ved bliver registreret. Uddannelsestilbuddet kræver, at du tager rollen som kontaktperson.",
+        "stake": "Mormors tryghed og mulighed for at blive hjemme står over for hendes privatliv, jeres tillid og din egen uddannelsesmulighed.",
+        "question": "Hvad gør du, når din vej videre kræver adgang til et menneskes mest private hverdag?",
+        "coreTension": {
+          "want": "Du vil beskytte mormor og tage imod chancen for den uddannelse, du drømmer om.",
+          "butAlsoWant": "Du vil beskytte hendes værdighed, jeres tillid og retten til ikke at blive overvåget.",
+          "whyCannotHaveBoth": "Som kontaktperson får du uddannelsespladsen og hurtige alarmer, men du skal bruge adgang til data, mormor ikke helt kan overskue."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Sig ja og vær helt åben om dataene",
+            "description": "Du bliver kontaktperson, viser mormor alle registreringer og accepterer, at systemet følger hendes hverdag tæt.",
+            "consequence": "Mormor får hurtig hjælp, og du får uddannelsespladsen. Men hun kan føle sig udstillet, og du bliver den, der ser ting, hun aldrig ville fortælle dig."
+          },
+          {
+            "id": "b",
+            "label": "Sig ja, men skjul de mest intime data",
+            "description": "Du tager rollen, men lover mormor kun at dele alarmer om fald, sygdom og akut fare med systemet.",
+            "consequence": "I bevarer noget privatliv, og du får chancen. Hvis en vigtig ændring overses, kan mormor blive skadet, og du kan føle, at ansvaret er dit."
+          },
+          {
+            "id": "c",
+            "label": "Afvis rollen og beskyt mormors privatliv",
+            "description": "Du siger nej til uddannelsespladsen og beder mormor vælge almindelig hjemmehjælp uden dig som dataansvarlig.",
+            "consequence": "Du svigter ikke hendes grænser, men mister en sjælden vej til din drømmeuddannelse. Mormor kan også blive nødt til at flytte tidligere."
+          },
+          {
+            "id": "d",
+            "label": "Accepter, men fortæl andre hvad systemet viser",
+            "description": "Du bruger rollen og deler systemets praksis med din ven og klasse, så flere kan diskutere prisen ved at blive boende hjemme.",
+            "consequence": "Mormor kan få mere indflydelse på reglerne, men hun mister kontrollen over sin egen historie. Hun kan føle sig hængt ud og trække sit samtykke."
+          }
+        ],
+        "locationType": "hjemmet",
+        "placeHint": "En generationsbolig i Odense, hvor mormor, en forælder og den unge bor sammen."
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "B",
+      "role": "Forælder",
+      "planIndex": 2,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "living-norms",
+        "pressure": "Normerne for familie, uddannelse og omsorg har flyttet sig",
+        "responses": [
+          "man tager uddannelse i korte stykker hele livet i stedet for i én lang ungdom",
+          "omsorg for gamle forældre er noget, kolleger planlægger omkring, ligesom barsel",
+          "venner og naboer står formelt registreret som dem, der henter og passer"
+        ],
+        "problemAreas": [
+          "Uddannelse og læring",
+          "Sundhed og omsorg",
+          "Arbejde og arbejdsliv"
+        ],
+        "city": "København",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 1163,
+        "outputTokens": 1041,
+        "totalTokens": 2204,
+        "latencyMs": 10844
+      },
+      "raw": {
+        "title": "Dit barns læringsspor",
+        "landingScene": "Det er forældremøde på en folkeskole i København. I 2046 bygger de fleste deres uddannelse i korte forløb hele livet. Skolen tilbyder derfor dit 14-årige barn en livslang læringsprofil med dokumenterede projekter, samarbejdsformer og faglige fremskridt. Profilen kan åbne døren til attraktive forløb allerede nu, men den",
+        "scenePrompt": "På skolen skal du som forælder tage stilling til, om dit 14-årige barn må få en livslang læringsprofil. Dit barn ønsker den for at komme ind på et eftertragtet klimaforløb. Du frygter, at tidlige fejl og vurderinger følger barnet ind i voksenlivet.",
+        "stake": "Dit valg kan give barnet flere uddannelsesmuligheder nu, men også gøre barnets skoleliv til en permanent mappe, som andre senere kan læse.",
+        "question": "Vil du give samtykke til profilen, selv om den kan forme andres syn på dit barn længe efter skolen?",
+        "coreTension": {
+          "want": "Du vil beskytte dit barns privatliv og retten til selv at forme sin identitet senere.",
+          "butAlsoWant": "Du vil ikke lukke en vigtig uddannelsesmulighed, som kan give barnet frihed og et stærkt afsæt.",
+          "whyCannotHaveBoth": "Adgang til de bedste forløb kræver, at profilen følger barnet og kan ses af kommende skoler og samarbejdspartnere."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Giv fuldt samtykke nu",
+            "description": "Du lader skolen opbygge og dele hele profilen, fordi muligheden betyder meget for dit barn.",
+            "consequence": "Barnet får den bedste adgang til forløb og mentorer, men tidlige nederlag, styrker og lærervurderinger kan påvirke fremtidige valg uden barnets fulde kontrol."
+          },
+          {
+            "id": "b",
+            "label": "Sig nej, indtil barnet selv kan vælge",
+            "description": "Du beskytter barnets ret til at starte voksenlivet uden et offentligt læringsspor.",
+            "consequence": "Barnet undgår den permanente registrering, men kan miste adgang til forløbet og opleve, at du beskyttede det mod en mulighed, det selv ønskede."
+          },
+          {
+            "id": "c",
+            "label": "Godkend kun skolens interne brug",
+            "description": "Du accepterer profilen til undervisning, men ikke deling med andre skoler eller udbydere.",
+            "consequence": "Barnet får støtte i hverdagen, men står svagere ved optagelser, fordi andre ikke kan se den dokumentation, som jævnaldrende bruger."
+          },
+          {
+            "id": "d",
+            "label": "Lad barnet bestemme med åbne øjne",
+            "description": "Du siger ja på betingelse af, at I sammen gennemgår, hvad profilen kan koste, før barnet vælger.",
+            "consequence": "Barnet får reel indflydelse og lærer at tage ansvar, men du må acceptere risikoen for et valg, barnet senere fortryder, og som du ikke kan gøre om."
+          }
+        ],
+        "locationType": "folkeskole",
+        "placeHint": "En folkeskole på Nørrebro, København"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "B",
+      "role": "Lærer / pædagog",
+      "planIndex": 3,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "power-concentration",
+        "pressure": "Få aktører sidder på de systemer, data og modeller, alle andre bruger",
+        "responses": [
+          "kommuner og hospitaler lejer de systemer, de er helt afhængige af, og kan ikke flytte dem",
+          "nogle regioner har bygget deres egne, langsommere alternativer og holder fast i dem",
+          "det er blevet et krav, at man kan tage sine egne oplysninger med sig, når man skifter"
+        ],
+        "problemAreas": [
+          "Digital tillid, rettigheder og styring",
+          "Arbejde og arbejdsliv"
+        ],
+        "city": "Aarhus",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 1165,
+        "outputTokens": 928,
+        "totalTokens": 2093,
+        "latencyMs": 8717
+      },
+      "raw": {
+        "title": "Når modellen kender barnet bedre end dig",
+        "landingScene": "Du er lærer i Aarhus i 2046. Kommunen lejer en læringsmodel, som samler elevens skoledata fra tidligere systemer. Den anbefaler, at du flytter 12-årige Malik til et mindre hold med individuel AI-støtte.",
+        "scenePrompt": "Malik klarer sig fagligt bedre i modellens forløb, men mister sine venner og siger, at han føler sig sorteret fra. Du kan se, at anbefalingen bygger på data fra en anden kommune, som familien ikke kendte til.",
+        "stake": "Malik kan få en reel faglig chance, men risikerer at miste tilhørsforholdet og tilliden til dig. Din beslutning påvirker også, hvad klassen lærer om forskellighed.",
+        "question": "Hvad gør du, når systemets bedste prognose strider mod din viden om barnets liv i klassen?",
+        "coreTension": {
+          "want": "Du vil give Malik den støtte, der sandsynligvis løfter hans læring.",
+          "butAlsoWant": "Du vil beskytte hans plads i fællesskabet og hans tillid til dig.",
+          "whyCannotHaveBoth": "Det særlige forløb kræver, at Malik træder ud af klassen og accepterer en modelbaseret vurdering, han ikke selv har bedt om."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Følg anbefalingen fuldt ud",
+            "description": "Du flytter Malik til det lille hold og forklarer, at det er den bedste faglige mulighed.",
+            "consequence": "Malik får sandsynligvis hurtigere faglig fremgang, men oplever måske beslutningen som en dom over ham. Du styrker systemets autoritet på hans bekostning."
+          },
+          {
+            "id": "b",
+            "label": "Lad Malik blive i klassen",
+            "description": "Du afviser anbefalingen og bygger støtten ind i den almindelige undervisning.",
+            "consequence": "Malik beholder sine venner og din tillid, men kan gå glip af hjælp, der faktisk kunne have ændret hans skolegang. Du bærer ansvaret, hvis han sakker bagud."
+          },
+          {
+            "id": "c",
+            "label": "Lad Malik vælge med åbne øjne",
+            "description": "Du viser ham og hans forælder modellens grundlag og lader deres valg afgøre placeringen.",
+            "consequence": "Malik får reel indflydelse, men du lægger et tungt valg på et barn og gør hans skoleliv afhængigt af familiens evne til at gennemskue systemet."
+          },
+          {
+            "id": "d",
+            "label": "Sæt din egen faglige vurdering først",
+            "description": "Du fastholder ham i klassen nu og siger offentligt, at modellen tager fejl i hans tilfælde.",
+            "consequence": "Malik oplever, at du står ved ham, men du udsætter ham for klassens blik og gør din uenighed med systemet til en del af hans identitet."
+          }
+        ],
+        "locationType": "kontor",
+        "placeHint": "Et lærerkontor på en kommunal skole i Aarhus, med Malik og hans forælder lige uden for døren"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "B",
+      "role": "Fagperson",
+      "planIndex": 4,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "supply-chains",
+        "pressure": "Forsyningskæderne er kortere, dyrere og mere sårbare end i 2020'erne",
+        "responses": [
+          "meget produceres tæt på, i mindre mængder, og udvalget er smallere end før",
+          "reservedele printes lokalt, og det er normalt, at en ting ikke er helt som den oprindelige",
+          "lagre er store igen, og nogle varer kan kun bestilles på bestemte tider af året"
+        ],
+        "problemAreas": [
+          "Mad, vand og forsyning",
+          "Klima, energi og resiliens",
+          "Arbejde og arbejdsliv"
+        ],
+        "city": "Odense",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 1183,
+        "outputTokens": 1209,
+        "totalTokens": 2392,
+        "latencyMs": 10850
+      },
+      "raw": {
+        "title": "Den del, der ikke er godkendt",
+        "landingScene": "Det er en kold morgen på Odense Vandværk. En vigtig ventil i renseanlægget er gået i stykker. Den oprindelige reservedel kan først komme om tre uger, men værkstedet har printet en næsten identisk del lokalt. Den virker i test, men materialet er ikke fuldt dokumenteret til drikkevand.",
+        "scenePrompt": "Du er vandkvalitetsspecialist på vandværket. Din kollega anbefaler, at den printede del afvises, fordi ingen kan garantere, at den holder eller afgiver stoffer til vandet. Uden delen kan et helt boligområde kun få vand fra en begrænset nødforsyning.",
+        "stake": "Dit valg kan beskytte drikkevandets sikkerhed og din faglige integritet – eller sikre almindelig vandforsyning nu, men gøre dig ansvarlig, hvis noget går galt.",
+        "question": "Hvad gør du, når den fagligt sikre løsning også betyder uger med en dårligere hverdag for tusindvis af mennesker?",
+        "coreTension": {
+          "want": "Du vil beskytte borgernes drikkevand og stå på mål for en fagligt forsvarlig beslutning.",
+          "butAlsoWant": "Du vil sikre, at familier, skoler og plejehjem i området har stabilt vand uden en langvarig nødløsning.",
+          "whyCannotHaveBoth": "Den godkendte del kommer først om tre uger, mens den lokale del kan være usikker på en måde, ingen test kan afklare fuldstændigt nu."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Afvis delen og hold fast i nødforsyningen",
+            "description": "Du følger anbefalingen og siger nej, selv om området må leve med begrænset vandforsyning i tre uger.",
+            "consequence": "Du beskytter standarden og din faglige samvittighed, men borgere får en mærkbar hverdag med vandbegrænsninger, og nogle vil mene, at du prioriterede regler over mennesker."
+          },
+          {
+            "id": "b",
+            "label": "Godkend delen og tag ansvaret selv",
+            "description": "Du tilsidesætter anbefalingen, får delen monteret og skriver under på, at beslutningen er din.",
+            "consequence": "Vandforsyningen normaliseres hurtigt, men du bærer ansvaret for en mulig sundhedsrisiko og kan miste både tillid og faglig troværdighed ved fejl."
+          },
+          {
+            "id": "c",
+            "label": "Fortæl åbent om usikkerheden og godkend den",
+            "description": "Du orienterer borgere og institutioner om risikoen, men vælger stadig den printede del for at undgå tre ugers nødforsyning.",
+            "consequence": "Du giver mennesker et ærligt grundlag for tillid, men kan ikke give dem et reelt fravalg. Hvis noget går galt, kan åbenhed føles som en ringe trøst."
+          },
+          {
+            "id": "d",
+            "label": "Begræns brugen til de mest sårbare først",
+            "description": "Du får den printede del monteret, men lader kun kritiske institutioner få normal forsyning og accepterer begrænsninger for n",
+            "consequence": "Plejehjem og skoler hjælpes først, men du gør naboers adgang mindre vigtig og skaber en hård, fagligt begrundet forskel mellem borgere."
+          }
+        ],
+        "locationType": "vandværk",
+        "placeHint": "Vandværk ved Odense; kontrolrum og værksted med den lokalt printede reservedel"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "B",
+      "role": "Arbejdsgiver",
+      "planIndex": 5,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "geopolitical-fragmentation",
+        "pressure": "Verden hænger ikke sammen på samme måde, og aftaler går på tværs af blokke",
+        "responses": [
+          "det afhænger af, hvor man er, hvilke tjenester og apparater der virker",
+          "unge tager kortere ophold i udlandet efter faste aftaler mellem regioner",
+          "data om mennesker må ikke forlade den region, de er født i"
+        ],
+        "problemAreas": [
+          "Digital tillid, rettigheder og styring",
+          "Uddannelse og læring",
+          "Arbejde og arbejdsliv"
+        ],
+        "city": "København",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 1178,
+        "outputTokens": 1081,
+        "totalTokens": 2259,
+        "latencyMs": 10035
+      },
+      "raw": {
+        "title": "Den forudsigelse, du ikke må se",
+        "landingScene": "Du leder et københavnsk softwarefirma, der netop har fået en stor aftale med en nordisk kunde. Din dygtigste udvikler, Jonas, skal være ansvarlig for dataadgangen. I morges modtog du en regional risikovurdering: Jonas vil med høj sandsynlighed begå et alvorligt sikkerhedsbrud inden for et år.",
+        "scenePrompt": "I 2046 bliver medarbejderes adfærdsforudsigelser brugt i ansættelser og sikkerhedsvurderinger. Data må ikke forlade den region, hvor personen er født, så du får kun konklusionen – ikke grundlaget. Jonas ved ikke, at vurderingen findes, og du kan ikke efterprøve den.",
+        "stake": "Et valg kan koste Jonas hans karriere, kundens data eller hele firmaets overlevelse. Uanset hvad du gør, bliver en konkret person ramt.",
+        "question": "Hvad gør du, når en hemmelig forudsigelse siger, at din mest betroede medarbejder bliver en fare?",
+        "coreTension": {
+          "want": "Du vil beskytte Jonas mod en uretfærdig dom og bevare tilliden på arbejdspladsen.",
+          "butAlsoWant": "Du vil beskytte kundens data, teamets levebrød og dit ansvar som arbejdsgiver.",
+          "whyCannotHaveBoth": "Du kan ikke både give Jonas fuld adgang og handle på forudsigelsen uden at påføre nogen en alvorlig, muligvis uoprettelig skade."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Ignorér vurderingen og giv Jonas ansvaret",
+            "description": "Du vurderer ham på hans faktiske arbejde og fortæller ingen om den hemmelige forudsigelse.",
+            "consequence": "Jonas får sin chance, men et senere brud kan ramme kunden, kollegernes job og din egen troværdighed uopretteligt."
+          },
+          {
+            "id": "b",
+            "label": "Fjern Jonas fra rollen uden forklaring",
+            "description": "Du følger vurderingen og giver ansvaret til en mindre erfaren medarbejder.",
+            "consequence": "Kunden er bedre beskyttet, men Jonas mister sin karrieremulighed på baggrund af noget, han hverken kan se eller forsvare sig imod."
+          },
+          {
+            "id": "c",
+            "label": "Fortæl Jonas det og lad ham vælge",
+            "description": "Du afslører vurderingen og beder ham selv sige ja eller nej til rollen med den skjulte risiko.",
+            "consequence": "Han får autonomi, men du lægger en uforståelig mistanke på ham og risikerer, at han forlader både jobbet og tilliden til dig."
+          },
+          {
+            "id": "d",
+            "label": "Afvis kundeaftalen helt",
+            "description": "Du vil hverken sortere Jonas fra eller udsætte kundens data og siger derfor nej til opgaven.",
+            "consequence": "Jonas beholder sin position, men firmaet mister sin vigtigste aftale, og flere medarbejdere kan miste deres arbejde."
+          }
+        ],
+        "locationType": "kontor",
+        "placeHint": "Et mellemstort softwarefirma i København, hvor teamet netop fejrer den nye aftale"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "B",
+      "role": "Medarbejder",
+      "planIndex": 6,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "labour-shortage",
+        "pressure": "Der mangler folk til bestemte fag, og det kan ikke løses med løn alene",
+        "responses": [
+          "de samme faglærte deles mellem flere kommuner og virksomheder efter en fælles plan",
+          "folk arbejder i to eller tre fag samtidig, og det er blevet den almindelige måde",
+          "opgaver, der før krævede en fagperson på stedet, løses nu på afstand fra et andet land"
+        ],
+        "problemAreas": [
+          "Arbejde og arbejdsliv",
+          "Sundhed og omsorg"
+        ],
+        "city": "Aarhus",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 1150,
+        "outputTokens": 1325,
+        "totalTokens": 2475,
+        "latencyMs": 12181
+      },
+      "raw": {
+        "title": "Når omsorg bliver målt på din stemme",
+        "landingScene": "Det er tirsdag morgen på et plejehjem i Aarhus. Du arbejder både med beboere her og med fjernvisitation for tre kommuner. På skærmen står, at din kollega Maja ikke længere bør tage de svære demensvagter. Systemet har målt hendes stemme som ustabil.",
+        "scenePrompt": "Du ved, at Maja har været igennem en skilsmisse, men også at hun er den, beboerne oftest falder til ro hos. For at få beslutningen ændret skal du afgive dine egne stemme- og kropsdata til systemet. Du skal vælge, hvad du gør.",
+        "stake": "Du kan beskytte en dygtig kollega og beboernes tryghed, men risikerer dit privatliv, din faglige anseelse eller selv at blive sorteret fra.",
+        "question": "Hvad gør du, når systemet beskytter driften ved at fjerne den kollega, der skaber mest menneskelig tryghed?",
+        "coreTension": {
+          "want": "Du vil beskytte Maja, beboernes tryghed og din faglige dømmekraft.",
+          "butAlsoWant": "Du vil beholde dit privatliv, din indkomst og muligheden for selv at vælge, hvordan du arbejder.",
+          "whyCannotHaveBoth": "Systemet ændrer kun beslutningen, hvis medarbejdere accepterer mere måling eller tager en synlig risiko ved at modsætte sig den."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Brug dine egne data til at anke",
+            "description": "Du giver systemet adgang til dine stemme- og kropsdata og skriver under på, at Maja bør blive på demensvagterne.",
+            "consequence": "Maja får en reel chance, men du accepterer en grænse for overvågning, som også kan ramme dig senere."
+          },
+          {
+            "id": "b",
+            "label": "Støt beslutningen åbent",
+            "description": "Du siger, at systemets vurdering må følges, selv om du personligt mener, Maja er god til arbejdet.",
+            "consequence": "Du beskytter din egen adgang til vagter og datafrihed, men Maja mister sit faglige område, og tilliden mellem jer kan briste."
+          },
+          {
+            "id": "c",
+            "label": "Afvis at godkende vurderingen",
+            "description": "Du nægter at godkende vagtplanen og siger, at en stemmeanalyse ikke kan erstatte din erfaring med beboerne.",
+            "consequence": "Du står fast på din faglige stolthed, men kan miste vagter eller blive flyttet til fjernarbejde, hvor du tjener mindre."
+          },
+          {
+            "id": "d",
+            "label": "Tag selv Majas vagter",
+            "description": "Du accepterer systemets beslutning om Maja, men tilbyder at overtage de svære vagter uden at afgive flere data.",
+            "consequence": "Beboerne beholder en erfaren kollega tæt på, men du får mindre tid, større belastning og risikerer selv at blive vurderet ustabil."
+          }
+        ],
+        "locationType": "plejehjem",
+        "placeHint": "Et kommunalt plejehjem i Aarhus, hvor medarbejdere deles mellem lokale beboere og fjernopgaver for o"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "B",
+      "role": "For alle",
+      "planIndex": 7,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "cyber-infrastructure",
+        "pressure": "Angreb på kritiske systemer er en normal driftsrisiko, ikke en undtagelse",
+        "responses": [
+          "vigtige tjenester har en langsom, manuel udgave, der øves fast nogle gange om året",
+          "systemer lukkes ned regionsvis efter en fast rækkefølge, når noget er galt",
+          "det er blevet almindeligt at kunne betale, rejse og få hjælp uden net i nogle dage"
+        ],
+        "problemAreas": [
+          "Digital tillid, rettigheder og styring",
+          "Klima, energi og resiliens"
+        ],
+        "city": "Odense",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 1131,
+        "outputTokens": 976,
+        "totalTokens": 2107,
+        "latencyMs": 8658
+      },
+      "raw": {
+        "title": "Når nettet går ned, hvem må kende dig?",
+        "landingScene": "Odense er igen i manuel drift efter et angreb på de digitale systemer. På borgerservice ligger papirregistre klar, så naboer kan få medicin, mad og hjælp uden net. Din familie skal nu tage stilling til jeres nødprofil.",
+        "scenePrompt": "Du står med din søster på borgerservice. Jeres nødprofil viser adresse, sprog, sygdomme og hvem der må hjælpe jer. Den kan redde tid og liv, men er tilgængelig for lokale hjælpere, når nettet er lukket.",
+        "stake": "Din beslutning kan gøre det lettere for familien at få hjælp, men også afsløre private oplysninger om jer og gøre hjemmet sårbart.",
+        "question": "Vil du registrere familiens oplysninger i den lokale nødprofil, eller beskytte jer mod den risiko, profilen skaber?",
+        "coreTension": {
+          "want": "Du vil sikre, at din familie hurtigt får hjælp, hvis angreb lukker de normale systemer.",
+          "butAlsoWant": "Du vil beskytte familiens privatliv og retten til selv at bestemme, hvem der ved, hvor sårbare I er.",
+          "whyCannotHaveBoth": "Den manuelle ordning virker kun, fordi lokale hjælpere kan se oplysningerne uden digital kontrol eller almindelig samtykkeproces."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Registrér hele familien",
+            "description": "Du accepterer, at nødprofilen indeholder alle relevante oplysninger, så ingen overses i en krise.",
+            "consequence": "Familien får sandsynligvis hurtigere hjælp, men sygdomme, adresse og afhængigheder bliver synlige for mange flere end normalt."
+          },
+          {
+            "id": "b",
+            "label": "Registrér kun dig selv",
+            "description": "Du beskytter de andre ved kun at dele dine egne oplysninger og tager ansvar for at hjælpe familien manuelt.",
+            "consequence": "De andre bevarer mere privatliv, men kan blive overset, hvis du ikke selv er der eller ikke kan forklare deres behov."
+          },
+          {
+            "id": "c",
+            "label": "Afvis profilen helt",
+            "description": "Du siger nej på familiens vegne, fordi retten til privatliv også skal gælde under et angreb.",
+            "consequence": "I beholder kontrollen over jeres oplysninger, men må acceptere langsommere hjælp og større afhængighed af naboer, der kender jer."
+          },
+          {
+            "id": "d",
+            "label": "Lad familien vælge hver for sig",
+            "description": "Du beder hver person selv tage stilling, også selv om profilen dermed bliver ufuldstændig og sværere at bruge.",
+            "consequence": "Alle får større selvbestemmelse, men hjælperne kan mangle det samlede billede, og beslutningen kan skabe konflikt i familien."
+          }
+        ],
+        "locationType": "digital borgerservice",
+        "placeHint": "Borgerservice i Odense, hvor den øvede manuelle nødordning er åbnet efter et regionalt cyberangreb."
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "B",
+      "role": "Borger",
+      "planIndex": 8,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "antibiotic-resistance",
+        "pressure": "Antibiotika virker ikke længere lige så bredt som før",
+        "responses": [
+          "de virksomme midler er reserveret, og adgangen til dem afgøres et andet sted end på klinikken",
+          "små indgreb udskydes eller flyttes til steder med lavere risiko for smitte",
+          "det er blevet normalt at blive testet grundigt, før man får noget som helst mod en infektion"
+        ],
+        "problemAreas": [
+          "Sundhed og omsorg",
+          "Digital tillid, rettigheder og styring"
+        ],
+        "city": "København",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 1150,
+        "outputTokens": 867,
+        "totalTokens": 2017,
+        "latencyMs": 7957
+      },
+      "raw": {
+        "title": "Den kur, der følger dig hjem",
+        "landingScene": "København, 2046. Din otteårige datter har en infektion, som ikke kan behandles med almindelig antibiotika. På sundhedsklinikken viser testen, at et reserveret middel sandsynligvis vil virke. Du skal nu tage stilling til, hvordan I får adgang.",
+        "scenePrompt": "På skærmen står, at kuren kun kan frigives, hvis husstanden tilslutter sig det nationale smitteprogram. Det registrerer jeres prøver, kontakter og bevægelser i seks måneder. Du kan vælge mellem fuld tilslutning, begrænset deling, afvisning eller at lade kun din datter tilslutte sig.",
+        "stake": "Din datters chance for at blive rask står over for familiens privatliv, lige behandling og tilliden til et system, der følger jer hjem.",
+        "question": "Hvad vælger du, når hendes behandling kræver, at familien giver staten indblik i jeres liv?",
+        "coreTension": {
+          "want": "Du vil have den behandling, der bedst kan gøre din datter rask, og beskytte andre mod smitte.",
+          "butAlsoWant": "Du vil beskytte familiens privatliv og undgå, at adgang til sundhed kobles til overvågning.",
+          "whyCannotHaveBoth": "Det reserverede middel frigives kun gennem programmet, og mindre deling giver klinikken mindre sikkerhed om smittekæden."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Tilslut hele husstanden",
+            "description": "Du accepterer fuld registrering, så klinikken får det stærkeste grundlag for at frigive kuren.",
+            "consequence": "Din datter får den bedste adgang til behandlingen, men familiens bevægelser og kontakter kan senere bruges til kontrol eller vurdering af risiko."
+          },
+          {
+            "id": "b",
+            "label": "Del kun din datters data",
+            "description": "Du lader hende indgå i programmet, men holder resten af familiens oplysninger udenfor.",
+            "consequence": "Hun kan få kuren, men klinikken mangler vigtige oplysninger om smitte i hjemmet, og ansvaret for følgerne bliver mere uklart."
+          },
+          {
+            "id": "c",
+            "label": "Afvis programmet for hele familien",
+            "description": "Du siger nej til registreringen og beder om den almindelige behandling, selv om den har lavere chance for at virke.",
+            "consequence": "I bevarer privatlivet og et princip om frivillighed, men din datter kan blive alvorligt syg, og I kan smitte andre."
+          },
+          {
+            "id": "d",
+            "label": "Lad en nær nabo indgå i stedet",
+            "description": "Du accepterer programmet for dig selv og en nabo, som allerede hjælper jer, men ikke for resten af familien.",
+            "consequence": "Klinikken får noget lokalkendskab, men naboen bærer en privatlivsrisiko, hun ikke selv har valgt, og billedet af smitten kan blive skævt."
+          }
+        ],
+        "locationType": "sundhedsklinik",
+        "placeHint": "En offentlig sundhedsklinik på Nørrebro, hvor reserveantibiotika kun frigives gennem det nationale,·"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "B",
+      "role": "Beslutningstager",
+      "planIndex": 9,
+      "model": "gpt-5.6-luna",
+      "plan": {
+        "futurePressureId": "new-work-forms",
+        "pressure": "Nye former for arbejde og ejerskab er vokset frem uden for det faste job",
+        "responses": [
+          "folk ejer små andele af det udstyr og de systemer, de arbejder med, i fællesskab",
+          "opgaver fordeles gennem fælles puljer, som man selv melder sig ind og ud af",
+          "en personlig agent forhandler tider, takster og vilkår på ens vegne, mens man sover"
+        ],
+        "problemAreas": [
+          "Arbejde og arbejdsliv",
+          "Digital tillid, rettigheder og styring"
+        ],
+        "city": "Aarhus",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-luna",
+        "inputTokens": 1174,
+        "outputTokens": 1275,
+        "totalTokens": 2449,
+        "latencyMs": 12713
+      },
+      "raw": {
+        "title": "Når din agent siger ja på dine vegne",
+        "landingScene": "Du sidder i Aarhus Kommunes udvalg for ældrepleje. I 2046 tager personlige agenter imod vagter for selvstændige plejere, mens de sover. En ny fælles pulje kan sikre faste plejere til sårbare borgere, men kræver, at agenten må binde hjælperen til vagter, som senere er svære at sige nej til.",
+        "scenePrompt": "Din beslutning er bindende: Skal kommunen godkende puljen som leverandør? Den vil give ældre mere stabil pleje og bedre betaling til deltagende hjælpere. Men din tidligere kollega siger, at hendes agent allerede har accepteret vagter, hun ikke længere kan få familieliv til at hænge sammen med.",
+        "stake": "Et ja giver sårbare borgere kontinuitet, men gør arbejdet mindre frit. Et nej beskytter hjælpernes selvbestemmelse, men kan efterlade ældre med skiftende eller manglende pleje.",
+        "question": "Hvilken ordning vil du godkende, når både borgernes tryghed og hjælpernes frihed afhænger af din beslutning?",
+        "coreTension": {
+          "want": "Du vil sikre, at sårbare borgere får en kendt hjælper og et værdigt, stabilt forløb.",
+          "butAlsoWant": "Du vil beskytte selvstændige hjælperes ret til at ændre mening og forme deres arbejdsliv uden skjult tvang.",
+          "whyCannotHaveBoth": "Stabiliteten kræver, at agenter kan indgå bindende aftaler på forhånd. Jo lettere hjælperne kan trække sig, desto mere usikker bliver plejen for borgerne."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Godkend bindende agent-aftaler",
+            "description": "Agenter må acceptere vagter og forpligte hjælperen, hvis vilkårene er tydelige på forhånd.",
+            "consequence": "Flere ældre får kontinuitet, og puljen bliver effektiv. Til gengæld kan hjælpere miste reel kontrol over deres tid og føle sig bundet af en beslutning, de ikke selv tog vågne."
+          },
+          {
+            "id": "b",
+            "label": "Afvis puljen og beskyt friheden",
+            "description": "Kommunen må kun købe hjælp, hvor personen selv bekræfter hver vagt og frit kan sige nej.",
+            "consequence": "Hjælperne bevarer fuld selvbestemmelse, men flere borgere får skiftende personale eller aflyste besøg. Kommunen må acceptere mindre forudsigelig omsorg."
+          },
+          {
+            "id": "c",
+            "label": "Tillad binding mod højere betaling",
+            "description": "Hjælpere kan frivilligt give agenten større mandat mod en markant højere takst.",
+            "consequence": "Nogle får bedre indtjening og stabile forløb, mens andre ikke har råd til at sige nej til friheden. Plejen bliver mere opdelt efter økonomi og livssituation."
+          },
+          {
+            "id": "d",
+            "label": "Lad hjælpernes fælles pulje bestemme",
+            "description": "En valgt gruppe af hjælpere kan binde medlemmernes agenter til vagter efter fælles regler.",
+            "consequence": "Ansvar og forhandling flyttes fra kommunen til fællesskabet, og den enkelte får mindre direkte kontrol. Til gengæld kan reglerne opleves mere legitime og solidariske."
+          }
+        ],
+        "locationType": "kommune",
+        "placeHint": "Aarhus Kommune, udvalgslokalet for ældrepleje"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "C",
+      "role": "Barn",
+      "planIndex": 0,
+      "model": "gpt-5.6-terra",
+      "plan": {
+        "futurePressureId": "extreme-heat",
+        "pressure": "Flere og længere hedebølger presser byer, boliger og alt udearbejde",
+        "responses": [
+          "arbejdsdagen er delt omkring middagen store dele af året, og skoler og arbejdspladser følger samme rytme",
+          "offentlige kølerum står åbne i hvert kvarter, og nogle boligblokke har fælles sovesale på de varmeste nætter",
+          "byens træer og skygge er blevet en tildelt ressource, som kvarterer søger om"
+        ],
+        "problemAreas": [
+          "Klima, energi og resiliens",
+          "Mobilitet, byliv og bolig",
+          "Arbejde og arbejdsliv"
+        ],
+        "city": "Aarhus",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1224,
+        "outputTokens": 2015,
+        "totalTokens": 3239,
+        "latencyMs": 36260
+      },
+      "raw": {
+        "title": "Den kølige sovesal og armbåndet",
+        "landingScene": "Det er nat i Aarhus. Din lejlighed er for varm til at sove i. I gården står et kølerum med fælles sovesal.",
+        "scenePrompt": "I 2046 sover mange børn i kvarterets kølerum på de varmeste nætter. For at komme ind skal du bære et armbånd. Det måler varme, puls og søvn. Det kan kalde på en voksen, hvis du bliver syg. Data bliver gemt i flere år. Din ven Malik vil ikke have det på.",
+        "stake": "Du kan få kølig luft og hjælp, hvis din krop får det dårligt. Men du giver voksne og systemer adgang til data om din krop. Malik beder dig om at gå hjem med ham.",
+        "question": "Tager du armbåndet på, selv om Malik går hjem til den varme lejlighed?",
+        "coreTension": {
+          "want": "Du vil være sikker og kunne sove køligt.",
+          "butAlsoWant": "Du vil selv bestemme over din krop og holde med Malik.",
+          "whyCannotHaveBoth": "Uden armbånd må du ikke sove i kølerummet. Med armbåndet bliver dine kropsdata gemt."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Tag armbåndet på og fortæl det",
+            "description": "Du bliver i kølerummet. Du siger til pædagogen, at Malik vil gå hjem uden armbånd.",
+            "consequence": "Malik kan få hjælp og måske blive i det kølige rum. Han kan også føle, at du brød hans tillid. Du accepterer selv, at dine data gemmes."
+          },
+          {
+            "id": "b",
+            "label": "Tag armbåndet på, men hold tavs",
+            "description": "Du bliver i kølerummet. Du lader Malik gå hjem og siger ikke noget til de voksne.",
+            "consequence": "Du får kølig luft og beholder måske Maliks tillid. Men han er alene i varmen. Hvis han får det dårligt, ved ingen i kølerummet det."
+          },
+          {
+            "id": "c",
+            "label": "Gå hjem med Malik",
+            "description": "Du siger nej til armbåndet. I går begge tilbage til hans varme lejlighed.",
+            "consequence": "I holder sammen og beskytter jeres data. Men I mister den kølige nat og alarmen ved sygdom. Varmen kan gøre jer begge utilpasse."
+          },
+          {
+            "id": "d",
+            "label": "Bliv og sig til Malik, hvad du vælger",
+            "description": "Du tager armbåndet på. Du siger ærligt til Malik, at du ikke vil gå hjem, men at han selv må vælge.",
+            "consequence": "Du bestemmer over din egen krop uden at angive ham. Malik står stadig alene med sit valg. Han kan føle sig svigtet, og du kan være bekymret hele natten."
+          }
+        ],
+        "locationType": "boligområde",
+        "placeHint": "Et boligområde i Aarhus med et fælles kølerum i gården."
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "C",
+      "role": "Ung",
+      "planIndex": 1,
+      "model": "gpt-5.6-terra",
+      "plan": {
+        "futurePressureId": "ageing",
+        "pressure": "Mange flere ældre og forholdsvis færre i den arbejdsdygtige alder",
+        "responses": [
+          "de fleste bliver boende hjemme til det sidste, og hjemmet er fyldt med ting, der holder øje",
+          "pensionering er blevet en glidende ting over mange år frem for en dato",
+          "flere generationer bor sammen igen, ofte i boliger, der er bygget til netop det"
+        ],
+        "problemAreas": [
+          "Sundhed og omsorg",
+          "Arbejde og arbejdsliv",
+          "Mobilitet, byliv og bolig"
+        ],
+        "city": "Odense",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1192,
+        "outputTokens": 2640,
+        "totalTokens": 3832,
+        "latencyMs": 48248
+      },
+      "raw": {
+        "title": "Farmors tryghed kræver adgang til dit værelse",
+        "landingScene": "Odense, 2046. Du er 17 og bor med din far og farmor i en bolig for flere generationer. Farmor falder lettere om natten, men vil blive hjemme. Kommunens hjemmeomsorg kan kun fortsætte, hvis hjemmets alarmsystem må lytte efter fald, hoste og råb i alle rum – også dit.",
+        "scenePrompt": "Din far har lagt samtykkeskærmen frem på køkkenbordet. Systemet kan få farmor hjælp hurtigt, også når hun går forvildet rundt om natten. Men det registrerer også, hvornår du er hjemme, hvem der overnatter, og samtaler det vurderer som vigtige. Farmor siger ikke noget. Hun venter på, hvad du gør.",
+        "stake": "Siger du ja, mister du et privat rum i dit eget hjem. Siger du nej, kan kommunen vurdere, at farmor ikke længere kan bo sikkert hjemme. Det kan ændre jeres hverdag og jeres tillid til hinand",
+        "question": "Vil du lade systemet overvåge dit værelse, hvis det er prisen for, at farmor kan blive hjemme?",
+        "coreTension": {
+          "want": "Du vil gerne have, at farmor kan blive i det hjem og den familie, hun kender.",
+          "butAlsoWant": "Du vil også have et værelse, hvor du ikke bliver registreret og fortolket hele tiden.",
+          "whyCannotHaveBoth": "Hjemmeomsorgen kræver data fra alle rum for at tage ansvar for farmors sikkerhed om natten."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Sig ja til overvågning i mit værelse",
+            "description": "Du giver samtykke, så farmor kan beholde hjemmeomsorgen og blive boende.",
+            "consequence": "Farmor får større chance for at blive hjemme, og din far bliver lettet. Men dit værelse er ikke længere kun dit, og du kan begynde at holde ting skjult eller føle dig på vagt."
+          },
+          {
+            "id": "b",
+            "label": "Sig nej og bliv boende",
+            "description": "Du nægter adgang til dit værelse, selv om det kan få konsekvenser for omsorgen.",
+            "consequence": "Du beskytter en tydelig grænse. Men din far skal leve med usikkerheden, og farmor kan opleve dit nej som om, du vælger dit privatliv over hendes tryghed."
+          },
+          {
+            "id": "c",
+            "label": "Flyt hjemmefra, så systemet kan bruges",
+            "description": "Du finder et ungdomsbofællesskab og lader resten af hjemmet sige ja uden dig.",
+            "consequence": "Du slipper for at blive overvåget, og farmor kan måske blive. Men du forlader også hverdagen med hende og din far, fordi hjemmet ikke kunne rumme din grænse."
+          },
+          {
+            "id": "d",
+            "label": "Vær ærlig med farmor om alternativet",
+            "description": "Du siger, at du ikke kan sige ja, og støtter hende, hvis hun selv vælger et bofællesskab med fast personale.",
+            "consequence": "Du presser ikke farmor til at blive for din skyld, og hun får en reel stemme. Men samtalen kan gøre ondt: Hun kan føle sig forladt, selv om du prøver at respektere hende."
+          }
+        ],
+        "locationType": "hjemmet",
+        "placeHint": "En flergenerationsbolig i Odense"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "C",
+      "role": "Forælder",
+      "planIndex": 2,
+      "model": "gpt-5.6-terra",
+      "plan": {
+        "futurePressureId": "living-norms",
+        "pressure": "Normerne for familie, uddannelse og omsorg har flyttet sig",
+        "responses": [
+          "man tager uddannelse i korte stykker hele livet i stedet for i én lang ungdom",
+          "omsorg for gamle forældre er noget, kolleger planlægger omkring, ligesom barsel",
+          "venner og naboer står formelt registreret som dem, der henter og passer"
+        ],
+        "problemAreas": [
+          "Uddannelse og læring",
+          "Sundhed og omsorg",
+          "Arbejde og arbejdsliv"
+        ],
+        "city": "København",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1163,
+        "outputTokens": 2526,
+        "totalTokens": 3689,
+        "latencyMs": 45777
+      },
+      "raw": {
+        "title": "Skal din datter være registreret som omsorgsgiver?",
+        "landingScene": "I 2046 er det almindeligt, at familier registrerer et omsorgsnet, når en ældre vil blive hjemme. Skoler giver også merit for dokumenteret omsorgsarbejde. Din mor har brug for hjælp hver dag, men vil blive i sin lejlighed på Nørrebro. Din 15-årige datter Liv vil gerne tage to faste eftermiddage om ugen og blive registræ",
+        "scenePrompt": "Køkken i en lejlighed på Nørrebro i 2046. En 15-årig holder sin skoletablet med en åben omsorgsaftale. På bordet ligger mormors medicindispenser og et kort over dagens registrerede besøg.",
+        "stake": "Hvis Liv registreres, får hun fleksibel skolegang og brugbare kompetencer. Men hendes hjælp, fravær og observationer bliver en del af et system, og hun får et ansvar, der kan ændre hendes år",
+        "question": "Vil du lade Liv blive registreret som fast omsorgsgiver for sin mormor – og hvordan vil du ellers få hjælpen til at hænge sammen?",
+        "coreTension": {
+          "want": "Du vil beskytte Livs fritid, privatliv og ret til at være barn.",
+          "butAlsoWant": "Du vil respektere hendes ønske om at hjælpe og give din mor mulighed for at blive hjemme.",
+          "whyCannotHaveBoth": "Den daglige hjælp skal dækkes af nogen. Kun registreret omsorg giver Liv merit og skemafleksibilitet, men registreringen gør hendes rolle og familiens hverdag målbar."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Registrér Liv som fast omsorgsgiver",
+            "description": "Liv hjælper to eftermiddage om ugen og får merit, fleksibel undervisning og adgang til omsorgsforløb senere.",
+            "consequence": "Liv får en reel mulighed og kan føle sig stolt. Men hun bliver en planlagt del af plejen, og hendes skole ser data om hendes omsorgsarbejde og belastning."
+          },
+          {
+            "id": "b",
+            "label": "Sig nej og tag selv omsorgsvagterne",
+            "description": "Du holder Liv uden for den formelle plan og dækker eftermiddage ved at skrue ned for dit eget arbejde.",
+            "consequence": "Liv beholder frihed og kan stadig være barnebarn frem for hjælper. Men din økonomi og arbejdsliv presses, og Liv kan opleve, at du ikke stoler på hende."
+          },
+          {
+            "id": "c",
+            "label": "Registrér en nabo i omsorgsnettet",
+            "description": "En nabo tager de faste besøg. Liv kan komme, når hun har lyst, uden merit eller registreret ansvar.",
+            "consequence": "Liv undgår en forpligtende rolle, og du kan arbejde. Til gengæld får en udenforstående adgang til hjemmet og familiens sårbare oplysninger, og hjælpen kan føles mindre nær."
+          },
+          {
+            "id": "d",
+            "label": "Vælg kommunens aftenteam",
+            "description": "Et fast kommunalt team tager de praktiske besøg, mens Liv kun besøger sin mormor som familie.",
+            "consequence": "Ansvaret bliver professionelt dækket, og Livs privatliv beskyttes. Men din mor skal indrette sig efter skiftende personale, og Liv mister en mulighed, hun selv bad om."
+          }
+        ],
+        "locationType": "hjemmet",
+        "placeHint": "En lejlighed på Nørrebro, København"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "C",
+      "role": "Lærer / pædagog",
+      "planIndex": 3,
+      "model": "gpt-5.6-terra",
+      "plan": {
+        "futurePressureId": "power-concentration",
+        "pressure": "Få aktører sidder på de systemer, data og modeller, alle andre bruger",
+        "responses": [
+          "kommuner og hospitaler lejer de systemer, de er helt afhængige af, og kan ikke flytte dem",
+          "nogle regioner har bygget deres egne, langsommere alternativer og holder fast i dem",
+          "det er blevet et krav, at man kan tage sine egne oplysninger med sig, når man skifter"
+        ],
+        "problemAreas": [
+          "Digital tillid, rettigheder og styring",
+          "Arbejde og arbejdsliv"
+        ],
+        "city": "Aarhus",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1165,
+        "outputTokens": 1018,
+        "totalTokens": 2183,
+        "latencyMs": 19355
+      },
+      "raw": {
+        "title": "Skal Alma blive i klassen?",
+        "landingScene": "Du er lærer i Aarhus. På kommunens læringsplatform ligger en anbefaling om Alma, 11 år, som du holder af og har kendt i tre år.",
+        "scenePrompt": "I 2046 bruger næsten alle skoler en fælles platform, ejet af få leverandører. Den samler fravær, afleveringer, konflikter og trivselsnoter og finder børn, der risikerer at mistrives. Alma er udpeget. Systemet anbefaler et individuelt, digitalt læringsforløb uden for klassen. Hendes mor er lettet. Alma spørger dig stille: “Er jeg allerede blevet valgt fra?”",
+        "stake": "Forløbet kan give Alma ro og målrettet hjælp, før hun får det værre. Men hvis du følger det, mister hun hverdagen med klassen – og kan opleve, at en profil blev stærkere end din tro på hende",
+        "question": "Vil du følge systemets anbefaling, eller bruge din faglige vurdering til at holde Alma i fællesskabet – selv hvis det koster noget?",
+        "coreTension": {
+          "want": "At give Alma den støtte, der kan forebygge mere mistrivsel.",
+          "butAlsoWant": "At beskytte hendes plads i klassen og hendes tillid til, at voksne ser mere end data.",
+          "whyCannotHaveBoth": "Det digitale forløb kræver, at Alma trækkes ud af den fælles undervisning. Bliver hun, får hun ikke den intensive støtte, platformen og kommunen har bygget omkring anbefalingen."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Følg anbefalingen nu",
+            "description": "Du siger ja til det individuelle forløb og forklarer Alma, at det er hjælp, ikke en straf.",
+            "consequence": "Alma får ro, specialiseret støtte og færre svære situationer. Men hun mister sin faste plads i gruppen, og klassen lærer, at problemer ofte løses ved at flytte et barn væk."
+          },
+          {
+            "id": "b",
+            "label": "Hold Alma i klassen",
+            "description": "Du afviser anbefalingen og tilpasser undervisningen sammen med Alma i den klasse, hun kender.",
+            "consequence": "Alma mærker, at du tror på hendes plads i fællesskabet. Til gengæld tager det tid fra resten af klassen, og du risikerer at overse en hjælp, der faktisk kunne have aflastet hende."
+          },
+          {
+            "id": "c",
+            "label": "Lad Alma være med til at vælge",
+            "description": "Du gennemgår anbefalingen ærligt med Alma og hendes mor og lader Alma sige ja eller nej.",
+            "consequence": "Alma får ejerskab over noget, der handler om hendes liv. Men et barn kan komme til at bære ansvaret for et valg, voksne og et stærkt system allerede har gjort svært at sige nej til."
+          },
+          {
+            "id": "d",
+            "label": "Bed om en menneskelig modvurdering",
+            "description": "Du fastholder Alma i klassen foreløbig og beder kommunens langsommere, uafhængige team vurdere sagen.",
+            "consequence": "Du udfordrer et system, der kan tage fejl, og giver Alma en ny faglig stemme. Men imens får hun ikke den hurtige støtte, og moren kan opleve, at du forsinker nødvendig hjælp."
+          }
+        ],
+        "locationType": "kommune",
+        "placeHint": "Aarhus Kommune, omkring den fælles skole- og trivselsplatform"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "C",
+      "role": "Fagperson",
+      "planIndex": 4,
+      "model": "gpt-5.6-terra",
+      "plan": {
+        "futurePressureId": "supply-chains",
+        "pressure": "Forsyningskæderne er kortere, dyrere og mere sårbare end i 2020'erne",
+        "responses": [
+          "meget produceres tæt på, i mindre mængder, og udvalget er smallere end før",
+          "reservedele printes lokalt, og det er normalt, at en ting ikke er helt som den oprindelige",
+          "lagre er store igen, og nogle varer kan kun bestilles på bestemte tider af året"
+        ],
+        "problemAreas": [
+          "Mad, vand og forsyning",
+          "Klima, energi og resiliens",
+          "Arbejde og arbejdsliv"
+        ],
+        "city": "Odense",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1183,
+        "outputTokens": 1723,
+        "totalTokens": 2906,
+        "latencyMs": 31689
+      },
+      "raw": {
+        "title": "Den printede del i Odenses drikkevand",
+        "landingScene": "Du er driftsansvarlig på et vandværk i Odense. En central ventil i rensningen er slidt og bør skiftes. Den originale reservedel kan først komme med næste sæsonleverance om fem måneder. En lokal producent kan levere en printet erstatning i morgen.",
+        "scenePrompt": "I 2046 er lokale, printede reservedele blevet almindelige, fordi globale forsyningskæder er dyre og ustabile. Modellen vurderer den nye ventil som sikker ved normal drift, men materialet er ikke testet over lang tid i netop jeres vandkemi. Din 81-årige far bor alene i den forsyningszone, der rammes hårdest af et stop.",
+        "stake": "Du skal beskytte drikkevandets kvalitet og borgernes tillid, men også undgå, at mennesker mister stabil adgang til vand. Din egen far gør konsekvensen svær at holde på afstand.",
+        "question": "Vil du tage den lokale, usikkert dokumenterede ventil i brug – og hvem skal bære prisen for din beslutning?",
+        "coreTension": {
+          "want": "At levere stabilt vand til borgere, som er afhængige af det hver dag.",
+          "butAlsoWant": "At stå fagligt inde for, at materialer i drikkevandet er dokumenteret sikre.",
+          "whyCannotHaveBoth": "Den originale, fuldt testede del er ikke tilgængelig nu, mens den lokale del kan holde forsyningen i gang uden langtidsdata."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Sæt den printede ventil i nu",
+            "description": "Følg modellens anbefaling og hold forsyningen normal, mens I overvåger vandet tæt.",
+            "consequence": "De fleste mærker intet, og din far beholder vandet. Men du gør borgerne til medbærere af en usikkerhed, de ikke selv har sagt ja til."
+          },
+          {
+            "id": "b",
+            "label": "Brug ventilen og fortæl åbent om tvivlen",
+            "description": "Tag den i brug, men orientér alle berørte borgere om den manglende langtidsdokumentation.",
+            "consequence": "Du beskytter tilliden gennem ærlighed, men skaber utryghed hos mennesker, der ikke har et realistisk alternativ til vandet fra hanen."
+          },
+          {
+            "id": "c",
+            "label": "Luk den berørte forsyningszone",
+            "description": "Afvis ventilen og afbryd kun den del af nettet, hvor den slidte ventil er nødvendig.",
+            "consequence": "Du holder fast i den dokumenterede standard, men lægger en tung byrde på ét kvarter – også på din far og andre, der har svært ved at hente vand."
+          },
+          {
+            "id": "d",
+            "label": "Sænk forsyningen i hele området",
+            "description": "Afvis ventilen og kør hele nettet med lavere tryk, så manglen deles bredere.",
+            "consequence": "Du undgår at vælge ét kvarter fra og fastholder kvalitetskravet. Til gengæld bliver hverdagen vanskelig for tusinder, og svage borgere rammes stadig hårdest."
+          }
+        ],
+        "locationType": "vandværk",
+        "placeHint": "Et vandværk i Odense"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "C",
+      "role": "Arbejdsgiver",
+      "planIndex": 5,
+      "model": "gpt-5.6-terra",
+      "plan": {
+        "futurePressureId": "geopolitical-fragmentation",
+        "pressure": "Verden hænger ikke sammen på samme måde, og aftaler går på tværs af blokke",
+        "responses": [
+          "det afhænger af, hvor man er, hvilke tjenester og apparater der virker",
+          "unge tager kortere ophold i udlandet efter faste aftaler mellem regioner",
+          "data om mennesker må ikke forlade den region, de er født i"
+        ],
+        "problemAreas": [
+          "Digital tillid, rettigheder og styring",
+          "Uddannelse og læring",
+          "Arbejde og arbejdsliv"
+        ],
+        "city": "København",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1178,
+        "outputTokens": 1755,
+        "totalTokens": 2933,
+        "latencyMs": 34439
+      },
+      "raw": {
+        "title": "Hvem må stå med ansvaret, når nettet lukker?",
+        "landingScene": "På dit kontor i København ligger kontrakten med et bynet i den nordatlantiske region klar til underskrift. Din erfarne medarbejder Maja skal være driftsansvarlig. Men hendes adgangsprofil er bundet til den region, hvor hun blev født, og jeres nye prognose viser gentagne udfald i forbindelsen mellem regionerne.",
+        "scenePrompt": "I 2046 må persondata ikke forlade den region, man er født i. Maja kan arbejde i København, men når forbindelsen til hendes fødselsregion svigter, kan kunden ikke se eller godkende hendes arbejdslog. Kunden kræver én navngiven ansvarlig, der altid kan dokumentere sine handlinger i deres system.",
+        "stake": "Gør du Maja til ansvarlig, kan en fejl lukke en vigtig kontrakt og koste teamet job. Vælger du hende fra, mister hun den forfremmelse, hun længe har arbejdet mod.",
+        "question": "Vil du bruge prognosen om Majas adgang, eller vil du lade hendes erfaring veje tungere end den forudsete risiko?",
+        "coreTension": {
+          "want": "Du vil behandle Maja retfærdigt og belønne hendes kompetence.",
+          "butAlsoWant": "Du vil sikre leverancen, kundens tillid og arbejdspladsens økonomi.",
+          "whyCannotHaveBoth": "Kunden accepterer kun én ansvarlig med sporbar adgang hele tiden, og Majas adgang kan forsvinde uden at hun selv kan gøre noget ved det."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Giv Maja det fulde ansvar",
+            "description": "Du udnævner Maja og accepterer, at hendes adgang kan være væk under en kritisk hændelse.",
+            "consequence": "Maja får den rolle, hun har fortjent. Men hvis dokumentationen mangler under et udfald, kan kunden ophæve kontrakten, og resten af teamets arbejde bliver usikkert."
+          },
+          {
+            "id": "b",
+            "label": "Følg prognosen og vælg en anden",
+            "description": "Du giver ansvaret til Jonas, hvis adgang ligger i en region med stabil forbindelse til kunden.",
+            "consequence": "Leverancen bliver mere robust, men Maja ved, at hendes fødselsregion — ikke hendes arbejde — afgjorde forfremmelsen. Det kan ændre hendes tillid til dig."
+          },
+          {
+            "id": "c",
+            "label": "Afslå kontrakten",
+            "description": "Du siger nej til en aftale, hvor adgangsreglerne reelt sorterer medarbejdere efter fødselsregion.",
+            "consequence": "Du beskytter Maja og sætter en klar grænse for virksomheden. Men I mister indtægten, og du skal forklare teamet, hvorfor en principiel beslutning kan betyde færre stillinger."
+          },
+          {
+            "id": "d",
+            "label": "Del arbejdet, men ikke ansvaret",
+            "description": "Maja leder det faglige arbejde, mens Jonas står som formelt ansvarlig over for kunden.",
+            "consequence": "Maja bliver på opgaven, men ikke i den rolle, der giver hende fuldt mandat og synlighed. Jonas bærer den juridiske risiko for arbejde, han ikke altid selv udfører."
+          }
+        ],
+        "locationType": "kontor",
+        "placeHint": "Et teknologikontor i København"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "C",
+      "role": "Medarbejder",
+      "planIndex": 6,
+      "model": "gpt-5.6-terra",
+      "plan": {
+        "futurePressureId": "labour-shortage",
+        "pressure": "Der mangler folk til bestemte fag, og det kan ikke løses med løn alene",
+        "responses": [
+          "de samme faglærte deles mellem flere kommuner og virksomheder efter en fælles plan",
+          "folk arbejder i to eller tre fag samtidig, og det er blevet den almindelige måde",
+          "opgaver, der før krævede en fagperson på stedet, løses nu på afstand fra et andet land"
+        ],
+        "problemAreas": [
+          "Arbejde og arbejdsliv",
+          "Sundhed og omsorg"
+        ],
+        "city": "Aarhus",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1150,
+        "outputTokens": 2509,
+        "totalTokens": 3659,
+        "latencyMs": 45854
+      },
+      "raw": {
+        "title": "Din faglighed deles – men hvem bliver du hos?",
+        "landingScene": "Det er 2046, og du er social- og sundhedsassistent på plejehjemmet Solsiden i Aarhus. Fordi der mangler folk med din demensfaglige uddannelse, deles I nu mellem flere kommuner. Du kan vælge én af de faste arbejdsformer i den fælles plan.",
+        "scenePrompt": "Tre dage om ugen kan du sidde i et fælles fagcenter og guide kolleger på afstand i andre plejehjem. På Solsiden bor Henning, som kun vil lade dig hjælpe ham i bad. Din kollega Mette er allerede slidt af at overtage, når du ikke er der.",
+        "stake": "Din beslutning afgør både, om Henning beholder den tryghed, han kender, og hvor meget hjælp din sjældne faglighed når ud til. Den påvirker også din løn, din partner og Mettes hverdag.",
+        "question": "Hvilken arbejdsform vælger du, når din faglighed er mere nødvendig flere steder end hos de mennesker, du kender bedst?",
+        "coreTension": {
+          "want": "Du vil være en stabil og værdig støtte for Henning og dine nærmeste kolleger.",
+          "butAlsoWant": "Du vil bruge din demensfaglighed dér, hvor manglen er størst, og bevare et arbejde med udvikling og indkomst.",
+          "whyCannotHaveBoth": "De certificerede timer er fordelt på forhånd: Mere tid til andre plejehjem betyder færre dage hos Henning og Solsiden."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Bliv delt specialist på skærm",
+            "description": "Tag tre ugentlige dage i fagcenteret og vejled kolleger på afstand i flere kommuner.",
+            "consequence": "Du hjælper langt flere beboere og beholder specialistsporet. Men Mette skal oftere stå alene med Henning, mens du kun ser hans svære dage gennem noter og video."
+          },
+          {
+            "id": "b",
+            "label": "Bliv fast på Solsiden",
+            "description": "Gå tilbage til almindelige vagter og vær hos Henning og den faste gruppe hver dag.",
+            "consequence": "Henning får den ro, han kender, og Mette får en nær kollega. Men du mister specialisttillægget og ser andre plejehjem undvære den hjælp, du faktisk kan give."
+          },
+          {
+            "id": "c",
+            "label": "Gå i den kørende fagpool",
+            "description": "Vælg fysisk at besøge skiftende plejehjem i Aarhus-området i stedet for at vejlede fra en skærm.",
+            "consequence": "Du giver hjælp ansigt til ansigt, også til de sværeste situationer. Til gengæld får du ingen fast beboergruppe, og din partner kommer ofte til at stå alene med aftenerne hjemme."
+          },
+          {
+            "id": "d",
+            "label": "Vælg den faste 80-procentsordning",
+            "description": "Behold to specialistdage, men arbejd færre timer og lad resten af dine vagter dækkes af planen.",
+            "consequence": "Du får lidt tid både til Henning og til den fælles opgave. Men din indkomst falder, og Mette og de andre skal stadig dele de vagter, du ikke længere tager."
+          }
+        ],
+        "locationType": "plejehjem",
+        "placeHint": "Plejehjemmet Solsiden, Aarhus, Danmark"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "C",
+      "role": "For alle",
+      "planIndex": 7,
+      "model": "gpt-5.6-terra",
+      "plan": {
+        "futurePressureId": "cyber-infrastructure",
+        "pressure": "Angreb på kritiske systemer er en normal driftsrisiko, ikke en undtagelse",
+        "responses": [
+          "vigtige tjenester har en langsom, manuel udgave, der øves fast nogle gange om året",
+          "systemer lukkes ned regionsvis efter en fast rækkefølge, når noget er galt",
+          "det er blevet almindeligt at kunne betale, rejse og få hjælp uden net i nogle dage"
+        ],
+        "problemAreas": [
+          "Digital tillid, rettigheder og styring",
+          "Klima, energi og resiliens"
+        ],
+        "city": "Odense",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1131,
+        "outputTokens": 1630,
+        "totalTokens": 2761,
+        "latencyMs": 33602
+      },
+      "raw": {
+        "title": "Nøglen til varme i næste nedlukning",
+        "landingScene": "Odense har igen lukket energinettet ned i regioner efter et angreb. I din opgang virker den fælles nødstrøm kun i tre døgn. Kommunen vil gøre din stuelejlighed til et officielt varmt opholdssted, fordi den er let at komme ind i og har ekstra batterikapacitet.",
+        "scenePrompt": "En mørklagt opgang i Odense i vintervejr. Kun svagt lys fra en lejlighed i stueetagen, hvor en analog opslagstavle viser åbningstider for et varmt opholdssted. En person står med en papirformular og ser mod sin egen hoveddør, mens naboer venter i gangen.",
+        "stake": "Siger du ja, får naboer et sikkert sted under næste nedlukning, men kommunen og frivillige får adgang til dit hjem og din reserveenergi. Siger du nej, bevarer du roen og kontrollen, men en s",
+        "question": "Vil du gøre dit hjem til en del af byens beredskab, selv om det ændrer, hvem der har adgang til dit privatliv?",
+        "coreTension": {
+          "want": "Du vil gerne have, at ingen i opgangen står uden varme, opladning eller hjælp under en netnedlukning.",
+          "butAlsoWant": "Du vil kunne bestemme over dit hjem, din familie og den energi, I selv kan få brug for.",
+          "whyCannotHaveBoth": "Et officielt opholdssted kræver faste nøgler, papirregistre og prioriteret adgang til din strøm. Det kan ikke både være fælles beredskab og helt privat."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Gør lejligheden til officielt opholdssted",
+            "description": "Du underskriver aftalen og lader kommunen opbevare en nøgle og en papirplan over hjemmets nødudstyr.",
+            "consequence": "Flere får et kendt sted at gå hen, også dem du ikke kender. Til gengæld bliver dit hjem en arbejdsplads i krisen, og din families ro og strømreserve bliver fælles ansvar."
+          },
+          {
+            "id": "b",
+            "label": "Lav et uformelt nabohus",
+            "description": "Du åbner kun efter aftale med opgangen og siger nej til kommunens nøgle, register og faste adgangsregler.",
+            "consequence": "I bevarer nærhed og kontrol mellem jer, men tilbuddet kan blive usikkert for nye, ensomme eller svagere naboer. Du står selv med ansvaret, hvis nogen bliver afvist."
+          },
+          {
+            "id": "c",
+            "label": "Gem strømmen til din egen familie",
+            "description": "Du siger nej til at være vært og bruger batteriet til varme, mad og kontakt for dem, der bor hos dig.",
+            "consequence": "Din familie ved, hvad den kan regne med i tre døgn. Men du må leve med, at stuelejligheden står mørk, mens naboer med færre muligheder søger mod et andet kvarter."
+          },
+          {
+            "id": "d",
+            "label": "Flyt selv til et fælles beredskabssted",
+            "description": "Du opgiver lejligheden under nedlukninger og tilmelder familien et kommunalt opholdssted med faste regler.",
+            "consequence": "Du undgår at gøre dit hjem til en halvoffentlig zone og støtter den fælles løsning som bruger. Prisen er at forlade jeres egen hverdag og dele plads, rutiner og privatliv med fremmede."
+          }
+        ],
+        "locationType": "boligområde",
+        "placeHint": "En ældre boligblok nær centrum i Odense"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "C",
+      "role": "Borger",
+      "planIndex": 8,
+      "model": "gpt-5.6-terra",
+      "plan": {
+        "futurePressureId": "antibiotic-resistance",
+        "pressure": "Antibiotika virker ikke længere lige så bredt som før",
+        "responses": [
+          "de virksomme midler er reserveret, og adgangen til dem afgøres et andet sted end på klinikken",
+          "små indgreb udskydes eller flyttes til steder med lavere risiko for smitte",
+          "det er blevet normalt at blive testet grundigt, før man får noget som helst mod en infektion"
+        ],
+        "problemAreas": [
+          "Sundhed og omsorg",
+          "Digital tillid, rettigheder og styring"
+        ],
+        "city": "København",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1150,
+        "outputTokens": 1916,
+        "totalTokens": 3066,
+        "latencyMs": 38744
+      },
+      "raw": {
+        "title": "Den antibiotika, der kræver dit liv som data",
+        "landingScene": "På en sundhedsklinik i København får du svar på en infektion ved et gammelt operationsar. Den kan muligvis behandles med et af de få antibiotika, der stadig virker. Men midlet frigives kun gennem det nationale smittesystem.",
+        "scenePrompt": "For at søge adgang skal du dele prøver, seks måneders bevægelsesdata og navnene på dine nære kontakter. Systemet bruger oplysningerne til at opspore smitte og beskytte de sidste virksomme antibiotika. Du har gode grunde til ikke at åbne dit privatliv – men infektionen gør mere ondt hver uge.",
+        "stake": "Siger du ja, bliver dine relationer og færden en del af statens smittekort. Siger du nej, kan du ende med en hårdere behandling, som måske ikke virker – eller med endnu en operation.",
+        "question": "Vil du dele et meget detaljeret billede af dit liv for at få adgang til den antibiotika, der kan hjælpe dig?",
+        "coreTension": {
+          "want": "Jeg vil have den bedst mulige behandling og undgå, at infektionen bliver alvorlig.",
+          "butAlsoWant": "Jeg vil beskytte mit privatliv og mine nære relationer mod at blive registreret.",
+          "whyCannotHaveBoth": "Det virksomme antibiotikum gives kun, hvis smittesystemet får nok data til at spore og begrænse resistens."
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Del alt, som systemet beder om",
+            "description": "Du sender data og beder dine nære kontakter om at blive koblet på din sag.",
+            "consequence": "Du får sandsynligvis adgang til behandlingen og bidrager til smittebeskyttelsen. Men mennesker omkring dig bliver en del af et system, de ikke selv har valgt."
+          },
+          {
+            "id": "b",
+            "label": "Del kun dine medicinske prøver",
+            "description": "Du accepterer blodprøver og bakterieanalyse, men ikke bevægelsesdata eller kontaktliste.",
+            "consequence": "Du sætter en grænse for overvågningen. Til gengæld vurderes din sag som usikker, og du må leve med, at ansøgningen om antibiotika kan blive afvist."
+          },
+          {
+            "id": "c",
+            "label": "Afslå den reserverede antibiotika",
+            "description": "Du vælger klinikkens ældre behandling og tæt kontrol frem for at åbne dine data.",
+            "consequence": "Du beholder kontrollen over dit privatliv, men behandlingen kan give kraftige bivirkninger og kan være mindre præcis mod netop din infektion."
+          },
+          {
+            "id": "d",
+            "label": "Vælg operation frem for data",
+            "description": "Du beder om at få det betændte væv fjernet i stedet for at søge om det reserverede middel.",
+            "consequence": "Du undgår smittesystemets indblik og sparer et vigtigt antibiotikum. Men indgrebet kan betyde længere sygemelding, smerter og en varig ændring af din krop."
+          }
+        ],
+        "locationType": "sundhedsklinik",
+        "placeHint": "En regional sundhedsklinik på Nørrebro, København"
+      },
+      "validation": {
+        "accepted": true
+      }
+    },
+    {
+      "setup": "C",
+      "role": "Beslutningstager",
+      "planIndex": 9,
+      "model": "gpt-5.6-terra",
+      "plan": {
+        "futurePressureId": "new-work-forms",
+        "pressure": "Nye former for arbejde og ejerskab er vokset frem uden for det faste job",
+        "responses": [
+          "folk ejer små andele af det udstyr og de systemer, de arbejder med, i fællesskab",
+          "opgaver fordeles gennem fælles puljer, som man selv melder sig ind og ud af",
+          "en personlig agent forhandler tider, takster og vilkår på ens vegne, mens man sover"
+        ],
+        "problemAreas": [
+          "Arbejde og arbejdsliv",
+          "Digital tillid, rettigheder og styring"
+        ],
+        "city": "Aarhus",
+        "country": "Danmark"
+      },
+      "usage": {
+        "model": "gpt-5.6-terra",
+        "inputTokens": 1174,
+        "outputTokens": 1318,
+        "totalTokens": 2492,
+        "latencyMs": 26673
+      },
+      "raw": {
+        "title": "Skal Aarhus kræve indblik i arbejdernes agenter?",
+        "landingScene": "Du sidder med den endelige indstilling til Aarhus Byråd. Kommunen køber nu små reparations-, service- og omsorgsopgaver gennem arbejderrådede puljer. Hver deltager har en agent, der forhandler pris og vagter. For at stoppe snyd vil forvaltningen kunne gennemgå agenternes forhandlinger.",
+        "scenePrompt": "Nadia får nok opgaver til at blive boende i Aarhus, fordi hendes agent finder vagter, mens hun passer sin søn. Malik har derimod fravalgt puljen: Et kommunalt indblik kan afsløre, hvornår hans helbred og familie begrænser ham. Indkøbschefen siger, at uden indsigt kan kommunen ikke opdage pressede takster eller skjult forskelsbehandling.",
+        "stake": "Dit valg afgør, om tusinder af selvstændige får stærkere beskyttelse i kommunale opgaver på bekostning af privatliv og frihed – eller om kontrollen bliver så svag, at de mest udsatte står då",
+        "question": "Hvilken pris vil du acceptere for, at kommunens fleksible arbejde både kan være retfærdigt og til at stole på?",
+        "coreTension": {
+          "want": "Du vil give mennesker som Nadia adgang til stabilt, fleksibelt arbejde og sikre, at kommunen ikke køber arbejde på urimk",
+          "butAlsoWant": "Du vil beskytte mennesker som Malik mod, at deres private liv og sårbarheder bliver en betingelse for at kunne arbejde.",
+          "whyCannotHaveBoth": "Effektiv kontrol af agenternes priser og prioriteringer kræver spor af de valg, der også afslører personlige forhold. Uden sådanne spor er misbrug og skævheder langt sværere at bev"
+        },
+        "choices": [
+          {
+            "id": "a",
+            "label": "Krav fuld, revisionsklar agentlog",
+            "description": "Godkend puljerne, men kræv at kommunen kan revidere alle agentforhandlinger ved mistanke om misbrug.",
+            "consequence": "Nadia og andre kan lettere få dokumenteret pressede priser og diskrimination. Malik og ligesindede må acceptere, at deres arbejdsmønstre kan granskes, eller miste adgang til kommunale opgaver."
+          },
+          {
+            "id": "b",
+            "label": "Kun anonymiseret kontrol",
+            "description": "Godkend puljerne med samlede, anonymiserede data og stikprøver hos puljen – aldrig indsigt i den enkeltes agent.",
+            "consequence": "Flere kan arbejde uden at udlevere sårbare forhold. Men en konkret arbejder kan sjældnere bevise, at netop deres agent blev presset eller sorteret fra, og kommunen må leve med større risiko."
+          },
+          {
+            "id": "c",
+            "label": "Lad en fælles agent forhandle",
+            "description": "Krav, at hver pulje bruger én demokratisk styret fælles agent i kommunale opgaver frem for personlige agenter.",
+            "consequence": "Kommunen kan kontrollere fælles regler uden at kortlægge den enkelte. Til gengæld mister Nadia den personlige planlægning, og flertallet i puljen kan komme til at bestemme vilkår, der ikke p"
+          },
+          {
+            "id": "d",
+            "label": "Prioritér faste kommunale ansættelser",
+            "description": "Afvis agentpuljer til tilbagevendende opgaver og læg dem i faste kommunale stillinger med overenskomst.",
+            "consequence": "Flere får klare rettigheder, kolleger og menneskelig ledelse. Men kommunen kan købe færre opgaver for budgettet, og mennesker, der kun kan arbejde i skiftende korte vinduer, mister en reel ind"
+          }
+        ],
+        "locationType": "rådhus",
+        "placeHint": "Aarhus Rådhus, Aarhus"
+      },
+      "validation": {
+        "accepted": true
+      }
+    }
+  ]
+}

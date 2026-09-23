@@ -17,11 +17,71 @@ function decodePng(value: unknown) {
     : undefined;
 }
 
+function setPrintDensity(imagePath: string) {
+  return new Promise<void>((resolve, reject) => {
+    // Canvas PNGs do not carry the printer's native density. macOS ignores the
+    // lp `ppi` option for this driver and otherwise treats them as 72 DPI,
+    // creating an oversized intermediate raster that is clipped and can make
+    // the printer lose command synchronisation.
+    const child = spawn("sips", [
+      "--setProperty", "dpiWidth", "203",
+      "--setProperty", "dpiHeight", "203",
+      imagePath,
+    ], { stdio: ["ignore", "ignore", "pipe"] });
+    let stderr = "";
+    child.stderr.on("data", (chunk: Buffer) => { stderr += chunk.toString(); });
+    child.on("error", reject);
+    child.on("close", (code) => code === 0 ? resolve() : reject(new Error(stderr || `sips exited with ${code}`)));
+  });
+}
+
+function ensurePrinterIsOnline(printer: string) {
+  return new Promise<void>((resolve, reject) => {
+    const child = spawn("lpoptions", ["-p", printer], { stdio: ["ignore", "pipe", "pipe"] });
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (chunk: Buffer) => { stdout += chunk.toString(); });
+    child.stderr.on("data", (chunk: Buffer) => { stderr += chunk.toString(); });
+    child.on("error", reject);
+    child.on("close", (code) => {
+      if (code !== 0) {
+        reject(new Error(stderr || `lpoptions exited with ${code}`));
+        return;
+      }
+
+      const isOffline = /printer-state-reasons=[^\n]*(offline|connecting-to-device)/i.test(stdout);
+      const isUsableState = /\bprinter-state=[34]\b/.test(stdout);
+      if (isOffline || !isUsableState) {
+        reject(new Error("thermal printer is offline"));
+        return;
+      }
+
+      resolve();
+    });
+  });
+}
+
 function printValueCard(printer: string, imagePath: string) {
   return new Promise<void>((resolve, reject) => {
     // Use the installed Rongta/GEZHI driver. Its Bluetooth transport is reliable
     // for images; sending raw ESC/POS bytes to this queue drops data.
-    const child = spawn("lp", ["-d", printer, "-o", "media=X58mmY210mm", "-o", "fit-to-page", imagePath], { stdio: ["ignore", "ignore", "pipe"] });
+    const child = spawn("lp", [
+      "-d", printer,
+      "-o", "media=X58mmY210mm",
+      // The file itself is tagged as 203 DPI above. Avoid fit-to-page: the
+      // driver's 58 mm page width is wider than the 384-dot print head and can
+      // otherwise scale, centre and clip the value card.
+      "-o", "position=top-left",
+      "-o", "BlankSpace=0Print",
+      "-o", "FeedDist=0feed3mm",
+      // The generic driver enables cash-drawer, cutter and beeper commands by
+      // default. This portable printer has none of those peripherals and may
+      // render unsupported command bytes as stray glyphs before the image.
+      "-o", "CashDrawer=0NoCashDrawer",
+      "-o", "Cutting=0NoCutting",
+      "-o", "Beeper=0NoBeeping",
+      imagePath,
+    ], { stdio: ["ignore", "ignore", "pipe"] });
     let stderr = "";
     child.stderr.on("data", (chunk: Buffer) => { stderr += chunk.toString(); });
     child.on("error", reject);
@@ -42,10 +102,17 @@ export async function POST(request: Request) {
   const image = decodePng(typeof body === "object" && body !== null ? (body as { image?: unknown }).image : undefined);
   if (!image) return NextResponse.json({ error: "invalid_value_card" }, { status: 400 });
 
+  try {
+    await ensurePrinterIsOnline(printer);
+  } catch {
+    return NextResponse.json({ error: "thermal_printer_offline" }, { status: 503 });
+  }
+
   const directory = await mkdtemp(join(tmpdir(), "world2046-value-card-"));
   const imagePath = join(directory, "value-card.png");
   try {
     await writeFile(imagePath, image);
+    await setPrintDensity(imagePath);
     await printValueCard(printer, imagePath);
     return NextResponse.json({ printed: true });
   } catch {

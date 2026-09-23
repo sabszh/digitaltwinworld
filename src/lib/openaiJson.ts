@@ -1,6 +1,17 @@
 import type { Language } from "@/lib/i18n";
 
-export const DEFAULT_MODEL = "gpt-5.6-luna";
+export const DEFAULT_UTILITY_MODEL = "gpt-5.6-luna";
+export const DEFAULT_DILEMMA_MODEL = "gpt-5.6-terra";
+/** Backwards-compatible default for report and other utility calls. */
+export const DEFAULT_MODEL = DEFAULT_UTILITY_MODEL;
+
+export function utilityModel() {
+  return process.env.UTILITY_MODEL ?? process.env.OPENAI_MODEL ?? DEFAULT_UTILITY_MODEL;
+}
+
+export function dilemmaModel() {
+  return process.env.DILEMMA_MODEL ?? DEFAULT_DILEMMA_MODEL;
+}
 
 /**
  * Per-family sampling. The two families take mutually exclusive knobs, and
@@ -32,9 +43,23 @@ export type JsonRequest = {
   /** Avoid a stalled provider request holding an interaction or an evaluation
    * forever. Callers already have fallback/retry behaviour for an error. */
   timeoutMs?: number;
+  /** Different jobs have different quality/cost needs. */
+  model?: string;
+  reasoningEffort?: "low" | "medium" | "high";
+  /** Chat Completions output ceiling. This includes visible output and hidden
+   * reasoning tokens for reasoning models. */
+  maxCompletionTokens?: number;
 };
 
-export type JsonResult<T> = { data: T } | { error: string };
+export type JsonUsage = {
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+  latencyMs: number;
+};
+
+export type JsonResult<T> = { data: T; usage: JsonUsage } | { error: string; usage?: JsonUsage };
 
 /**
  * One JSON-schema chat completion.
@@ -54,16 +79,21 @@ export async function requestJson<T>({
   systemNote,
   temperature,
   timeoutMs = 20_000,
+  model: requestedModel,
+  reasoningEffort,
+  maxCompletionTokens,
 }: JsonRequest): Promise<JsonResult<T>> {
-  const model = process.env.OPENAI_MODEL ?? DEFAULT_MODEL;
+  const model = requestedModel ?? utilityModel();
   const system = [
     `Return only valid JSON matching the schema. Write all audience-facing text in ${language === "da" ? "Danish" : "English"}. No markdown.`,
+    "Use plain, honest, easy-to-understand language. State the meaning directly with familiar words and concrete sentences. Avoid jargon, bureaucratic language, abstractions, metaphors, and cryptic or polished-sounding phrasing. Never hide a consequence behind vague or euphemistic wording.",
     systemNote,
   ]
     .filter(Boolean)
     .join(" ");
 
   let response: Response;
+  const startedAt = Date.now();
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -77,6 +107,8 @@ export async function requestJson<T>({
       body: JSON.stringify({
         model,
         ...samplingFor(model, temperature),
+        ...(!/^gpt-(4|3)/.test(model) && reasoningEffort ? { reasoning_effort: reasoningEffort } : {}),
+        ...(maxCompletionTokens ? { max_completion_tokens: maxCompletionTokens } : {}),
         messages: [
           { role: "system", content: system },
           { role: "user", content: prompt },
@@ -96,12 +128,19 @@ export async function requestJson<T>({
   if (!response.ok) return { error: `openai_${response.status}` };
 
   const body = await response.json();
+  const usage: JsonUsage = {
+    model: typeof body?.model === "string" ? body.model : model,
+    inputTokens: Number(body?.usage?.prompt_tokens) || 0,
+    outputTokens: Number(body?.usage?.completion_tokens) || 0,
+    totalTokens: Number(body?.usage?.total_tokens) || 0,
+    latencyMs: Date.now() - startedAt,
+  };
   const content = body?.choices?.[0]?.message?.content;
-  if (typeof content !== "string" || content.trim().length === 0) return { error: "empty_openai_response" };
+  if (typeof content !== "string" || content.trim().length === 0) return { error: "empty_openai_response", usage };
 
   try {
-    return { data: JSON.parse(content) as T };
+    return { data: JSON.parse(content) as T, usage };
   } catch {
-    return { error: "unparseable_openai_response" };
+    return { error: "unparseable_openai_response", usage };
   }
 }

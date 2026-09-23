@@ -1,119 +1,126 @@
-import { locationTypesByProblemArea } from "@/data/taxonomies";
-import { getAudienceProfile } from "@/lib/audience";
-import { planRound } from "@/lib/roundPlan";
+import type { DilemmaExample } from "@/data/dilemmaExamples";
+import { selectDilemmaSeed } from "@/lib/roundPlan";
 import type { DilemmaGenerationRequest } from "@/lib/dilemmaGenerationTypes";
-import type { FutureTechnology, LocationType, ValueProfile } from "@/types/world2046";
 
+/** Legacy structured-output diagnostics still import this list. */
 export const valueKeys = [
   "trust", "freedom", "equality", "efficiency", "humanContact", "safety",
   "innovation", "sustainability", "localControl", "transparency",
-] as const satisfies Array<keyof ValueProfile>;
-
-const DANISH_TOWNS = [
-  "København", "Aarhus", "Odense", "Aalborg", "Esbjerg", "Randers", "Kolding",
-  "Horsens", "Vejle", "Roskilde", "Herning", "Silkeborg", "Næstved", "Viborg",
 ] as const;
 
-const WORLD_REGIONS = [
-  "Norden", "Europa", "Nordamerika", "Sydamerika", "Afrika", "Asien", "Mellemøsten", "Oceanien",
-] as const;
+function renderExample(example: DilemmaExample) {
+  const { dilemma } = example;
+  return [
+    `Rolle: ${example.role}`,
+    `Fremtidens normal: ${dilemma.futureNormal}`,
+    `Menneskelig pris: ${dilemma.humanCost}`,
+    `Beslutning: ${dilemma.decision}`,
+    `Titel: ${dilemma.title}`,
+    `Scene: ${dilemma.scene}`,
+    `Det står på spil: ${dilemma.stake}`,
+    `Spørgsmål: ${dilemma.question}`,
+    ...dilemma.choices.map((choice) => `${choice.id.toUpperCase()}. ${choice.label} — ${choice.consequence}`),
+  ].join("\n");
+}
 
-type BuildDilemmaPromptOptions = {
-  technologies: FutureTechnology[];
-  locationTypes: LocationType[];
-};
+export function buildDilemmaPrompt(input: DilemmaGenerationRequest) {
+  const seed = input.generationPlan ?? selectDilemmaSeed(input.previousDilemmas, input.role);
+  const childGuidance = input.role === "Barn" ? `
+SÆRLIGE KRAV TIL BØRN
+Barnet er ca. 7-11 år og skal forstå både situationen og valget ved første gennemlæsning.
 
-export function buildDilemmaPrompt(input: DilemmaGenerationRequest, options: BuildDilemmaPromptOptions) {
-  const audience = getAudienceProfile(input.role);
-  const plan = input.generationPlan ?? planRound(input.previousDilemmas, undefined, undefined, audience.preferredProblemAreas);
-  const round = input.previousDilemmas.length;
-  const usedCountries = [...new Set(input.previousDilemmas.map((item) => item.country))];
-  const usedRegions = new Set(input.previousDilemmas.map((item) => item.region));
-  const openRegions = WORLD_REGIONS.filter((region) => !usedRegions.has(region));
-  const geography = round === 0
-    ? `Brug Danmark, region Norden og byen ${DANISH_TOWNS[Math.floor(Math.random() * DANISH_TOWNS.length)]}.`
-    : `Brug ikke Danmark eller tidligere lande (${usedCountries.join(", ")}). Vælg helst en ubrugt region: ${(openRegions.length ? openRegions : WORLD_REGIONS).join(", ")}.`;
-  const previous = input.previousDilemmas.length
-    ? input.previousDilemmas.map((item) => `${item.city}: ${item.problemArea} — ${item.question}`).join("\n")
-    : "Ingen.";
-  const languageName = input.language === "da" ? "dansk" : "English";
-  const allowedLocationsByArea = Object.fromEntries(
-    plan.problemAreas.map((area) => {
-      const audienceLocations = locationTypesByProblemArea[area].filter((location) =>
-        audience.preferredLocationTypes.includes(location),
-      );
-      return [area, audienceLocations.length ? audienceLocations : locationTypesByProblemArea[area]];
-    }),
-  );
+MENING OG ÅRSAG
+- Byg én enkel kæde: Noget sker. Det giver barnet ét problem. Barnet gør eller siger én ting. En direkte følge opstår.
+- Alle personer, regler og oplysninger, som et choice bygger på, skal allerede være tydelige i scenen.
+- Hvert choice skal være muligt for barnet at gøre lige nu og skal svare direkte på spørgsmålet.
+- Hver consequence skal være en sandsynlig, direkte følge af netop den handling. Opfind ikke en ny hændelse for at gøre valget svært.
+- Hvis en consequence ikke kan forklares med "det sker, fordi barnet valgte at ...", skal den skrives om.
+- Konflikten må ikke bero på en misforståelse, en kunstig mangel, en skjult regel eller en person, der uden grund opfører sig mærkeligt.
 
-  return `Skriv ét menneskeligt World 2046-dilemma på ${languageName}.
+BARNETS ROLLE
+- Brug en kendt hverdag: skole, hjem, ven, søskende, leg, fritid, transport eller online liv.
+- Vis fremtiden gennem én ting, barnet kan se, høre eller mærke. Forklar ikke systemet bag.
+- Barnet må kun vælge over sin egen handling, sine egne ord eller sine egne oplysninger.
+- Barnet må ikke fordele strøm, penge eller offentlige goder, træffe en medicinsk beslutning, løse en nødsituation alene eller tage ansvar, som naturligt tilhører en voksen.
+- Hvis fremtidsudviklingen handler om et voksensystem, så vis kun, hvordan det ændrer barnets egen dag eller en nær relation.
 
-DU FÅR KUN FIRE BYGGESTEN
-- En virkelig lokation, der kan findes på et kort.
-- En spiller i rollen ${input.role}.
-- Én ny hverdagsting, som er normal i 2046.
-- Ét valg, spilleren selv skal træffe nu.
+NATURLIGT SPROG
+- Skriv enkelt, ærligt og direkte, så en 10-årig kan forstå hvert ord og hele situationen uden hjælp fra en voksen.
+- Tal til barnet i øjenhøjde. Skriv ikke voksensprog med kortere sætninger; forklar selve tanken på en enkel måde.
+- Sig tydeligt, hvad der sker, og hvad hvert valg koster. Skjul ikke konsekvensen bag pæne, uklare eller forsigtige ord.
+- Læs teksten som en 10-årig: Hvis barnet ikke straks kan fortælle med egne ord, hvad problemet er, og hvad det kan gøre, skal teksten skrives om.
+- Skriv som et menneske ville forklare situationen højt til et barn. Brug almindeligt, mundret dansk.
+- Brug konkrete navneord og verber. Undgå fagord, systemord, engelske termer, billedsprog og abstrakte formuleringer.
+- Ét choice er én tydelig handling. Label siger handlingen; consequence siger kun den vigtigste pris og gentager ikke gevinsten.
+- Undgå sygdom, død, savnede personer, alvorlige ulykker og andre skræmmende konflikter.
+` : "";
+  const lengthGuidance = input.role === "Barn" ? `
+SÆRLIGE TEKSTGRÆNSER TIL BØRN
+- title: højst 6 ord.
+- scene: 2-3 sætninger, højst 30 ord i alt og højst 12 ord pr. sætning. Første sætning skal kunne stå alene som ankomst.
+- stake: 1 sætning på højst 12 ord.
+- question: 1 direkte spørgsmål på højst 8 ord.
+- hver choice label: højst 4 ord.
+- hver choice consequence: højst 10 ord og kun én direkte pris.
+- Brug aldrig en afbrudt sætning eller en label med "..." eller "…".
+- Undgå at gentage samme oplysning i scene, stake, question og choices.
+` : `
+Skriv kort og konkret:
+- scene: højst 3 korte sætninger og 460 tegn; første sætning skal kunne stå alene som ankomst.
+- stake: 1 kort sætning, højst 125 tegn.
+- question: 1 direkte sætning, højst 105 tegn.
+- hver choice consequence: 1 kort sætning, højst 105 tegn.
+- undgå at gentage samme oplysning i scene, stake og question.
+`;
 
-Målgruppen er: ${input.role}. ${audience.promptContext}
+  return `Skriv ét nyt dilemma om livet i 2046 på ${input.language === "da" ? "dansk" : "engelsk"}.
 
-Begynd med dette enkle øjeblik: "Du er [en almindelig rolle] på [stedet]. Du prøver at [et konkret mål inden for de næste ti minutter]. I 2046 er [én ny ordning eller teknologi] blevet normal. Nu rammer den dig og [en anden person] på hver sin måde." Skriv ikke denne skabelon ordret i svaret; brug den til at finde scenen.
+Rolle:
+${input.role}
 
-Stedet skal kunne mærkes i handlingen. En skole handler om en time, en ven eller en opgave; et supermarked om noget, man skal købe; en station om en rejse; et hospital om et møde med behandling eller omsorg. Hvis scenen kan flyttes til et tilfældigt kontor uden at ændre sig, er stedet forkert.
+Sted:
+${seed.location.city}, ${seed.location.country}
 
-Spilleren må kun vælge noget, rollen reelt kan gøre eller sige. Et barn driver ikke en butik, fordeler ikke strøm, bestemmer ikke over en skole og giver ikke andre medicinske råd eller vælger deres behandling. På et hospital kan barnet vælge over eget samtykke, hvem det spørger om hjælp, eller hvad det selv gør. En ung, forælder eller medarbejder bliver heller ikke pludselig leder eller myndighed.
+Fremtidsudvikling:
+${seed.development.development}
 
-RÅMATERIALE FRA FREMTIDEN
-- Pres frem mod 2046: ${plan.pressure.pressure}
-- En mulig samfundsløsning, som nu er hverdag: ${plan.response}
-- Vælg ét problemområde: ${plan.problemAreas.join(", ")}
-- ${geography}
+Her er to redaktionelt godkendte eksempler på det kvalitetsniveau, den konkrethed og den type menneskelige konflikt vi søger.
 
-Råmaterialet er baggrund, ikke tekst der skal gentages. Oversæt det til en følge, man kan se eller mærke i hverdagen. 2046-tingen skal både hjælpe og skabe dagens konflikt. Hvis dilemmaet næsten kan ske på samme måde i 2026, skal det skrives om.
+Eksemplerne er inspiration. Kopiér ikke deres personer, relationer, steder, situationer, formuleringer eller konkrete choices.
 
-Konflikten skal ligge mellem to forståelige menneskelige ønsker. Den må ikke være et kunstigt problem om at fordele hylder, maskiner, reservedele, kapacitet eller "ressourcer", medmindre spillerens almindelige job faktisk er at gøre netop det. For børn og unge skal teknologien ændre noget i et venskab, et løfte, en skoleopgave, privatliv, retfærdighed, tid, familie eller muligheden for selv at vælge.
+EKSEMPEL 1 — SAMME ROLLE
+${renderExample(seed.examples.sameRole)}
 
-Udfyld logic som en kort intern skitse af de samme fire ting:
-- rule: Den praksis, som er normal på stedet i 2046.
-- benefit: Den konkrete gevinst eller risiko, praksissen håndterer.
-- trigger: Dagens hændelse, hvor prisen bliver tydelig.
-- decision: Det konkrete valg, brugeren selv kan træffe nu.
+EKSEMPEL 2 — BESLÆGTET FREMTIDSSPØRGSMÅL
+${renderExample(seed.examples.relatedQuestion)}
 
-DEN SYNLIGE TEKST
-- landingScene er to korte sætninger: spilleren gør noget genkendeligt, og problemet opstår.
-- scenePrompt forklarer med almindelige ord, hvad der er normalt i 2046, hvorfor det hjælper, og hvorfor det giver et svært valg netop i dag.
-- stake handler altid om mennesker. Skriv hvem der får eller mister hvad i dag. Ting må ikke være hovedpersoner: skriv aldrig fx "mælken må vente", "reservedelen kan kun bruges ét sted" eller "kapaciteten skal fordeles".
-- question spørger direkte "Hvad gør du?", "Hvad vælger du?" eller "Hvad siger du ja til?" — aldrig hvordan samfundet bør indrettes.
+Skab nu et helt nyt dilemma ud fra den angivne fremtidsudvikling.
 
-Læs den synlige tekst højt. Hvis den lyder som en rapport, en kommunal plan, en manual eller en forklaring fra en konsulent, så skriv den om, som et menneske på stedet ville fortælle den til en ven. Forklar én årsag ad gangen. Brug kendte ord frem for sammensatte fremtidsord.
+Vis fremtidsudviklingen gennem en konkret situation, som rollen selv oplever.
 
-DE FIRE SVAR
-Skriv først den menneskelige scene. Skriv derefter fire forskellige handlinger, der alle svarer direkte på samme spørgsmål. Scor først de færdige handlinger med valueImpacts; værdierne må aldrig forme den synlige tekst.
+Dilemmaet handler om én beslutning.
 
-Hver handling begynder med et konkret udsagnsord og gør én ting nu. description skal være én naturlig sætning med både gevinst og pris, bundet sammen med "men" på dansk eller "but" på engelsk. Et svar uden en tydelig pris bliver afvist. consequence fortæller, hvad valget betyder for de mennesker, scenen allerede har introduceret. Ingen nye regler, personer eller problemer må dukke op i svarene.
+SPROG FOR ALLE MÅLGRUPPER
+- Skriv enkelt, ærligt og forståeligt. Deltageren skal forstå situationen og valget ved første gennemlæsning.
+- Brug almindelige, konkrete ord og korte, naturlige sætninger. Skriv som et menneske, der forklarer situationen højt.
+- Sig direkte, hvad der sker, hvem det rammer, og hvad hvert valg koster.
+- Undgå fagord, myndighedssprog, systemord, abstraktioner, metaforer og kryptiske eller højtidelige formuleringer.
+- Skjul aldrig en konsekvens bag vage, pæne eller forsigtige ord. Hvis en sætning kan siges enklere uden at miste mening, så gør det.
 
-Svarene skal konkurrere i øjeblikket. Test alle seks par: Hvis spilleren kan vælge A og straks bagefter også gøre B uden at miste gevinsten ved A, er de to svar ikke alternativer og skal skrives om. Når ét svar er valgt, skal de tre andre reelt være lukket i det konkrete øjeblik. Hvis ét svar er tydeligt bedst uden en reel pris, er det ikke et dilemma. Hvis ét svar bare er "spørg en voksen/medarbejder", og det opløser hele konflikten, skal scenen skrives om. Ingen fire grader af samme handling.
+Alle fire choices skal besvare den samme beslutning og have en forskellig menneskelig pris.
 
-coreTension er want, butAlsoWant og whyCannotHaveBoth med menneskelige ønsker og uden værdiord.
+Choices må ikke ændre reglerne, bede om en ny vurdering, udskyde valget eller løse problemet teknisk.
+${childGuidance}
+${lengthGuidance}
 
-SPROG OG FORMAT
-- Skriv kort, mundret og konkret. Brug "du" eller "I" konsekvent.
-- Brug målgruppekonteksten ovenfor, men nævn ikke målgruppen som en etiket.
-- title må gerne være et spørgsmål, men må ikke navngive en abstrakt værdikonflikt.
-- title højst 52 tegn; landingScene og scenePrompt højst 280 tegn; stake højst 150 tegn; question højst 150 tegn.
-- choice.label højst 6 ord; description højst 120 tegn; consequence højst 180 tegn.
-- exactPlace.name og address skal tilhøre en virkelig institution på det valgte sted.
+Kontrollér lydløst før du svarer, at scenen, spørgsmålet, alle fire handlinger og deres følger hænger direkte sammen.
 
-Tidligere stop, som ikke må gentages:
-${previous}
+Skriv kun det dilemma deltageren skal opleve.
 
-JSON-KRAV
-- futurePressureId er præcis "${plan.pressure.id}".
-- severity er "${plan.severity}".
-- problemArea er ét af de angivne områder, og locationType skal være tilladt for netop det område.
-- Hvert choice.valueImpacts skal have alle ti værdinøgler; kun 3-5 må være forskellige fra 0. Skriv 0 for resten.
-- Tilladte lokationstyper for det valgte område: ${JSON.stringify(allowedLocationsByArea)}
-- Tilladte teknologier: ${options.technologies.join(", ")}
-- Værdinøgler: ${valueKeys.join(", ")}
+Returnér det krævede JSON.`;
+}
 
-Returnér kun JSON.`;
+/** @deprecated Frozen legacy diagnostics are data artifacts, not production authoring. */
+export function buildLegacyDilemmaPrompt() {
+  throw new Error("legacy_dilemma_prompt_is_not_available_in_production");
 }

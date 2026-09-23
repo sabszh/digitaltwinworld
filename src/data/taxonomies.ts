@@ -1,6 +1,6 @@
 import type { LocationType, ProblemArea, UserRole, ValueProfile } from "@/types/world2046";
 
-export const SESSION_DILEMMA_COUNT = 5;
+export const SESSION_DILEMMA_COUNT = 3;
 
 export const userRoles: UserRole[] = [
   "Barn",

@@ -1,4 +1,4 @@
-import type { ProblemArea } from "@/types/world2046";
+import type { FutureTechnology, ProblemArea } from "@/types/world2046";
 
 /**
  * The stable future space World 2046 is built on.
@@ -26,6 +26,8 @@ export type PressureFamily =
 export type FuturePressure = {
   id: string;
   family: PressureFamily;
+  /** The primary mechanism that makes this pressure tangible in product metadata. */
+  technology: FutureTechnology;
   /** The pressure itself. Never the dilemma — only the reason the world looks different. */
   pressure: string;
   /** Twenty years of societal response, already normal by 2046. One of these
@@ -40,6 +42,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "extreme-heat",
     family: "klima og natur",
+    technology: "klimatvilling",
     pressure: "Flere og længere hedebølger presser byer, boliger og alt udearbejde",
     responses: [
       "arbejdsdagen er delt omkring middagen store dele af året, og skoler og arbejdspladser følger samme rytme",
@@ -51,6 +54,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "flooding",
     family: "klima og natur",
+    technology: "bydigital tvilling",
     pressure: "Gentagne oversvømmelser og stigende havniveau gør nogle områder svære at forsikre",
     responses: [
       "boliger tæt på vandet kan kun forsikres gennem fælles ordninger, og huslejen afhænger af, hvor tit området lukkes",
@@ -62,6 +66,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "drought",
     family: "klima og natur",
+    technology: "vandbudgettering",
     pressure: "Tørke og vandmangel rammer også egne, der før havde vand nok",
     responses: [
       "hver husstand har et vandbudget, der kan flyttes mellem husstande og gemmes fra måned til måned",
@@ -73,6 +78,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "food-systems",
     family: "klima og natur",
+    technology: "vertikale farme",
     pressure: "Fødevaresystemerne er pressede af vejr, jord og transportomkostninger",
     responses: [
       "en stor del af grøntsagerne dyrkes inde i byen, og sæsonvarer er blevet dyrere end det, der vokser under lys",
@@ -84,6 +90,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "biodiversity",
     family: "klima og natur",
+    technology: "klimatvilling",
     pressure: "Pladsen skal deles mellem natur, energi, boliger og landbrug",
     responses: [
       "store områder er lagt tilbage til natur, og adgangen til dem er begrænset til bestemte dage",
@@ -95,6 +102,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "climate-migration",
     family: "mennesker og bevægelse",
+    technology: "bydigital tvilling",
     pressure: "Klima og ressourcer flytter mennesker — inden for lande og mellem dem",
     responses: [
       "byer har fået nye kvarterer, hvor to og tre sprog er hverdag i skolen og på arbejdspladsen",
@@ -106,6 +114,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "ageing",
     family: "mennesker og bevægelse",
+    technology: "sensorbolig",
     pressure: "Mange flere ældre og forholdsvis færre i den arbejdsdygtige alder",
     responses: [
       "de fleste bliver boende hjemme til det sidste, og hjemmet er fyldt med ting, der holder øje",
@@ -117,6 +126,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "living-norms",
     family: "mennesker og bevægelse",
+    technology: "algoritmisk planlægning",
     pressure: "Normerne for familie, uddannelse og omsorg har flyttet sig",
     responses: [
       "man tager uddannelse i korte stykker hele livet i stedet for i én lang ungdom",
@@ -128,6 +138,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "housing-patterns",
     family: "mennesker og bevægelse",
+    technology: "sensorbolig",
     pressure: "Hvor og hvordan folk bor har ændret sig med priser, klima og arbejde",
     responses: [
       "boliger deles i højere grad, og fælles køkkener og værksteder er normale i nybyggeri",
@@ -139,6 +150,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "care-workforce",
     family: "sundhed og omsorg",
+    technology: "omsorgsrobot",
     pressure: "Der er ikke hænder nok til omsorg, og de findes ikke ved at ansætte flere",
     responses: [
       "en del af omsorgen ligger hos pårørende, der får den skrevet ind i deres arbejdsuge",
@@ -150,6 +162,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "pandemic-readiness",
     family: "sundhed og omsorg",
+    technology: "sundhedsdata",
     pressure: "Beredskabet mod smitte er blevet en permanent del af hverdagen",
     responses: [
       "skoler, kontorer og transport skifter mellem normal og forsigtig tilstand nogle uger om året",
@@ -161,6 +174,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "antibiotic-resistance",
     family: "sundhed og omsorg",
+    technology: "AI-triage",
     pressure: "Antibiotika virker ikke længere lige så bredt som før",
     responses: [
       "de virksomme midler er reserveret, og adgangen til dem afgøres et andet sted end på klinikken",
@@ -172,6 +186,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "automation",
     family: "arbejde og økonomi",
+    technology: "automation",
     pressure: "En stor del af det, folk før blev betalt for, gøres nu af systemer",
     responses: [
       "mange job er blevet til at holde øje med, rette op på og tage ansvar for noget, der kører selv",
@@ -183,6 +198,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "labour-shortage",
     family: "arbejde og økonomi",
+    technology: "omskolings-AI",
     pressure: "Der mangler folk til bestemte fag, og det kan ikke løses med løn alene",
     responses: [
       "de samme faglærte deles mellem flere kommuner og virksomheder efter en fælles plan",
@@ -194,6 +210,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "inequality",
     family: "arbejde og økonomi",
+    technology: "kommunal beslutnings-AI",
     pressure: "Forskellen mellem dem, der har, og dem, der ikke har, er blevet mere synlig i hverdagen",
     responses: [
       "de samme tjenester findes i en hurtig og en langsom udgave, og alle kan se hvilken kø de står i",
@@ -205,6 +222,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "power-concentration",
     family: "arbejde og økonomi",
+    technology: "personlig data-agent",
     pressure: "Få aktører sidder på de systemer, data og modeller, alle andre bruger",
     responses: [
       "kommuner og hospitaler lejer de systemer, de er helt afhængige af, og kan ikke flytte dem",
@@ -216,6 +234,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "new-work-forms",
     family: "arbejde og økonomi",
+    technology: "AI-ledelse",
     pressure: "Nye former for arbejde og ejerskab er vokset frem uden for det faste job",
     responses: [
       "folk ejer små andele af det udstyr og de systemer, de arbejder med, i fællesskab",
@@ -227,6 +246,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "synthetic-media",
     family: "tillid og information",
+    technology: "deepfake-detektion",
     pressure: "Billeder, stemmer og video kan laves af hvem som helst og ligner virkeligheden",
     responses: [
       "det er blevet normalt at bede om bevis for, at man taler med et menneske",
@@ -238,6 +258,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "institutional-trust",
     family: "tillid og information",
+    technology: "kommunal beslutnings-AI",
     pressure: "Tilliden til institutioner er ujævn og skal genvindes lokalt",
     responses: [
       "afgørelser følges af en åben begrundelse, som alle kan slå op og gå videre med",
@@ -249,6 +270,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "digital-identity",
     family: "tillid og information",
+    technology: "digital ID-wallet",
     pressure: "Man skal kunne bevise, hvem man er, og at man er et menneske",
     responses: [
       "en personlig legitimation åbner det meste, fra transport til sundhed til skolens systemer",
@@ -260,6 +282,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "surveillance",
     family: "tillid og information",
+    technology: "personlig data-agent",
     pressure: "Der findes flere spor efter almindelige mennesker, end nogen kan overskue",
     responses: [
       "det er normalt at kunne se, hvem der har set på ens egne oplysninger, og hvornår",
@@ -271,6 +294,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "cyber-infrastructure",
     family: "systemer og forsyning",
+    technology: "dynamisk infrastruktur",
     pressure: "Angreb på kritiske systemer er en normal driftsrisiko, ikke en undtagelse",
     responses: [
       "vigtige tjenester har en langsom, manuel udgave, der øves fast nogle gange om året",
@@ -282,6 +306,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "grid-capacity",
     family: "systemer og forsyning",
+    technology: "AI-styret elnet",
     pressure: "Der er strøm nok over året, men ikke altid nok på samme tid",
     responses: [
       "priser og adgang skifter i løbet af dagen, og apparater i hjemmet venter selv på de billige timer",
@@ -293,6 +318,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "ai-infrastructure",
     family: "systemer og forsyning",
+    technology: "datacenter-varme",
     pressure: "AI-modeller og de tjenester, de driver, kræver enorme mængder strøm, køling og fysisk infrastruktur",
     responses: [
       "datacentre er koblet til byers varme- og elnet, så deres overskudsvarme er blevet en vigtig del af den lokale forsyning",
@@ -304,6 +330,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "critical-minerals",
     family: "systemer og forsyning",
+    technology: "forsynings-AI",
     pressure: "De materialer, alt elektronik bygger på, er svære at få fat i",
     responses: [
       "apparater skal kunne repareres og skilles ad, og de holder meget længere end før",
@@ -315,6 +342,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "supply-chains",
     family: "systemer og forsyning",
+    technology: "forsynings-AI",
     pressure: "Forsyningskæderne er kortere, dyrere og mere sårbare end i 2020'erne",
     responses: [
       "meget produceres tæt på, i mindre mængder, og udvalget er smallere end før",
@@ -326,6 +354,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "geopolitical-fragmentation",
     family: "systemer og forsyning",
+    technology: "personlig data-agent",
     pressure: "Verden hænger ikke sammen på samme måde, og aftaler går på tværs af blokke",
     responses: [
       "det afhænger af, hvor man er, hvilke tjenester og apparater der virker",
@@ -337,6 +366,7 @@ export const futurePressures: FuturePressure[] = [
   {
     id: "tech-fragmentation",
     family: "systemer og forsyning",
+    technology: "personlig data-agent",
     pressure: "Regionerne har bygget teknologi, der ikke taler ordentligt sammen",
     responses: [
       "en tilflytters papirer, prøver og eksamener skal oversættes af mennesker, før de gælder",
@@ -359,3 +389,4 @@ export const pressureFamilies: PressureFamily[] = [
 ];
 
 export const pressuresById = new Map(futurePressures.map((pressure) => [pressure.id, pressure]));
+/** @deprecated Research/provenance data; production authoring uses futureDevelopments. */

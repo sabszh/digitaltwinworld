@@ -25,11 +25,11 @@ type SessionStore = {
   activeDilemma?: GeneratedDilemma;
   lastChoice?: Choice;
   lastCustomAnswer?: string;
+  customAnswerDraft?: { dilemmaId: string; text: string; viaVoice: boolean };
   completedDilemmas: CompletedDilemma[];
   valueProfile: ValueProfile;
   futureReport?: FutureProfileReport;
   reportLoading: boolean;
-  journeyError?: string;
   reportError?: string;
   consentStatus: "idle" | "saving" | "saved" | "error" | "declined";
   sessionId: string;
@@ -45,7 +45,7 @@ type SessionStore = {
   backToDilemma: () => void;
   continueJourney: () => void;
   finishJourney: () => Promise<void>;
-  reviewConsent: () => void;
+  completeJourney: () => void;
   saveConsentedSession: () => Promise<void>;
   declineConsent: () => void;
   restart: () => void;
@@ -53,6 +53,98 @@ type SessionStore = {
 };
 
 const createSessionId = () => `world2046-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+let dilemmaGenerationRun = 0;
+let activeDilemmaController: AbortController | undefined;
+let prefetchedDilemmaController: AbortController | undefined;
+
+type DilemmaPrefetch = {
+  sessionId: string;
+  language: Language;
+  currentDilemmaId: string;
+  completedCount: number;
+  promise: Promise<GeneratedDilemma | undefined>;
+};
+
+let dilemmaPrefetch: DilemmaPrefetch | undefined;
+
+function projectedCompletion(dilemma: GeneratedDilemma): CompletedDilemma {
+  return {
+    dilemmaId: dilemma.id,
+    problemArea: dilemma.problemArea,
+    region: dilemma.region,
+    country: dilemma.country,
+    city: dilemma.city,
+    exactPlaceName: dilemma.exactPlace?.name,
+    locationType: dilemma.locationType,
+    technology: dilemma.technology,
+    question: dilemma.question,
+    presented: {
+      title: dilemma.title,
+      scene: dilemma.scenePrompt,
+      stake: dilemma.stake,
+      landingScene: dilemma.landingScene,
+      landingDetail: dilemma.landingDetail,
+      choices: dilemma.choices.map(({ id, label, description }) => ({ id, label, description })),
+    },
+    coreTension: dilemma.coreTension,
+    futurePressureId: dilemma.futurePressureId,
+    selectedChoiceId: "__prefetch__",
+    selectedChoiceLabel: "__prefetch__",
+    valueImpacts: { ...emptyValueProfile },
+  };
+}
+
+function startNextDilemmaPrefetch(input: {
+  role: UserRole;
+  personaAnswers?: PersonaAnswers;
+  completedDilemmas: CompletedDilemma[];
+  activeDilemma: GeneratedDilemma;
+  sessionId: string;
+  language: Language;
+}) {
+  if (input.completedDilemmas.length + 1 >= SESSION_DILEMMA_COUNT) return;
+  // Production dilemmas always have these fields. The guard keeps incomplete
+  // fixtures and legacy stored data from starting an invalid background call.
+  if (!input.activeDilemma.problemArea || !input.activeDilemma.country || !input.activeDilemma.futurePressureId) return;
+
+  prefetchedDilemmaController?.abort();
+  const controller = new AbortController();
+  prefetchedDilemmaController = controller;
+  const previousDilemmas = [...input.completedDilemmas, projectedCompletion(input.activeDilemma)];
+  const promise = (async () => {
+    const timeout = window.setTimeout(() => controller.abort(), UX_TIMING.dilemmaFetchTimeoutMs);
+    try {
+      const response = await fetch("/api/dilemma", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          role: input.role,
+          answers: input.personaAnswers,
+          previousDilemmas,
+          preferredSeverity: "medium",
+          language: input.language,
+        }),
+        signal: controller.signal,
+      });
+      if (!response.ok) return undefined;
+      const data = (await response.json()) as { dilemma?: GeneratedDilemma };
+      return data.dilemma;
+    } catch {
+      return undefined;
+    } finally {
+      window.clearTimeout(timeout);
+      if (prefetchedDilemmaController === controller) prefetchedDilemmaController = undefined;
+    }
+  })();
+
+  dilemmaPrefetch = {
+    sessionId: input.sessionId,
+    language: input.language,
+    currentDilemmaId: input.activeDilemma.id,
+    completedCount: input.completedDilemmas.length,
+    promise,
+  };
+}
 
 export const useSessionStore = create<SessionStore>((set, get) => ({
   phase: "intro",
@@ -64,7 +156,12 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   sessionId: createSessionId(),
   createdAt: new Date().toISOString(),
   start: () => set({ phase: "persona" }),
-  setLanguage: (language) => set({ language }),
+  setLanguage: (language) => {
+    prefetchedDilemmaController?.abort();
+    prefetchedDilemmaController = undefined;
+    dilemmaPrefetch = undefined;
+    set({ language });
+  },
   // The traveller's own answers go straight to the generator. There is no
   // character in between: nothing summarises them, so nothing can get them wrong.
   checkIn: async (answers) => {
@@ -75,42 +172,87 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     const { role, personaAnswers, completedDilemmas, sessionId, language } = get();
     if (!role) return;
     if (completedDilemmas.length >= SESSION_DILEMMA_COUNT) {
-      set({ phase: "report", activeDilemma: undefined });
-      void get().finishJourney();
+      set({ phase: "consent", activeDilemma: undefined, consentStatus: "idle" });
       return;
     }
     const preferredSeverity = completedDilemmas.length === 0 ? "low" : "medium";
     const travelStartedAt = Date.now();
+    const runId = ++dilemmaGenerationRun;
+    activeDilemmaController?.abort();
 
-    set({ activeDilemma: undefined, journeyError: undefined, phase: "traveling" });
+    const lastCompleted = completedDilemmas.at(-1);
+    const matchingPrefetch = dilemmaPrefetch &&
+      dilemmaPrefetch.sessionId === sessionId &&
+      dilemmaPrefetch.language === language &&
+      dilemmaPrefetch.completedCount + 1 === completedDilemmas.length &&
+      dilemmaPrefetch.currentDilemmaId === lastCompleted?.dilemmaId
+      ? dilemmaPrefetch
+      : undefined;
+    if (dilemmaPrefetch && !matchingPrefetch) prefetchedDilemmaController?.abort();
+    dilemmaPrefetch = undefined;
 
-    let nextDilemma: GeneratedDilemma | undefined;
-    try {
+    set({ activeDilemma: undefined, customAnswerDraft: undefined, phase: "traveling" });
+
+    let nextDilemma = await matchingPrefetch?.promise;
+    let attempt = 0;
+    const isCurrentRun = () =>
+      dilemmaGenerationRun === runId &&
+      get().sessionId === sessionId &&
+      get().phase === "traveling";
+
+    while (!nextDilemma && isCurrentRun()) {
       const controller = new AbortController();
+      activeDilemmaController = controller;
       const timeout = window.setTimeout(() => controller.abort(), UX_TIMING.dilemmaFetchTimeoutMs);
-      const response = await fetch("/api/dilemma", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role, answers: personaAnswers, previousDilemmas: completedDilemmas, preferredSeverity, language }),
-        signal: controller.signal,
-      }).finally(() => window.clearTimeout(timeout));
-      if (!response.ok) throw new Error((await response.json() as { error?: string }).error ?? "Failed to generate dilemma");
-      const data = (await response.json()) as { dilemma?: GeneratedDilemma };
-      if (!data.dilemma) throw new Error("Missing generated dilemma");
-      nextDilemma = data.dilemma;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to generate dilemma";
-      if (get().sessionId === sessionId) set({ journeyError: message });
-      return;
+      let retryDelay = 0;
+
+      try {
+        const response = await fetch("/api/dilemma", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ role, answers: personaAnswers, previousDilemmas: completedDilemmas, preferredSeverity, language }),
+          signal: controller.signal,
+        });
+        if (!response.ok) throw new Error((await response.json() as { error?: string }).error ?? "Failed to generate dilemma");
+        const data = (await response.json()) as { dilemma?: GeneratedDilemma };
+        if (!data.dilemma) throw new Error("Missing generated dilemma");
+        nextDilemma = data.dilemma;
+      } catch (error) {
+        if (!isCurrentRun()) return;
+        attempt += 1;
+        const message = error instanceof Error ? error.message : "Failed to generate dilemma";
+        retryDelay = Math.min(
+          UX_TIMING.dilemmaRetryMaxMs,
+          UX_TIMING.dilemmaRetryBaseMs * 2 ** Math.min(attempt - 1, 3),
+        );
+        console.warn(`[journey] destination attempt ${attempt} failed; retrying in background`, message);
+      } finally {
+        window.clearTimeout(timeout);
+        if (activeDilemmaController === controller) activeDilemmaController = undefined;
+      }
+
+      if (retryDelay > 0) {
+        await new Promise((resolve) => window.setTimeout(resolve, retryDelay));
+      }
     }
+
+    if (!nextDilemma || !isCurrentRun()) return;
 
     const elapsed = Date.now() - travelStartedAt;
     if (elapsed < UX_TIMING.minimumTravelLoadingMs) {
       await new Promise((resolve) => window.setTimeout(resolve, UX_TIMING.minimumTravelLoadingMs - elapsed));
     }
 
-    if (get().sessionId !== sessionId || get().phase !== "traveling") return;
+    if (!isCurrentRun()) return;
     set({ activeDilemma: nextDilemma });
+    startNextDilemmaPrefetch({
+      role,
+      personaAnswers,
+      completedDilemmas,
+      activeDilemma: nextDilemma,
+      sessionId,
+      language,
+    });
   },
   enterLanding: () => {
     if (get().phase === "traveling" && get().activeDilemma) set({ phase: "landing" });
@@ -163,6 +305,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       valueProfile: addProfiles(valueProfile, impacts),
       lastChoice: choice,
       lastCustomAnswer: customAnswer,
+      customAnswerDraft: undefined,
       phase: "consequence",
     });
   },
@@ -192,14 +335,20 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       valueProfile: addProfiles(valueProfile, revertedImpacts),
       lastChoice: undefined,
       lastCustomAnswer: undefined,
+      customAnswerDraft: previous.customAnswer
+        ? {
+            dilemmaId: previous.dilemmaId,
+            text: previous.customAnswer,
+            viaVoice: previous.answeredByVoice ?? false,
+          }
+        : undefined,
       phase: "dilemma",
     });
   },
   continueJourney: () => {
     const { completedDilemmas } = get();
     if (completedDilemmas.length >= SESSION_DILEMMA_COUNT) {
-      set({ phase: "report" });
-      void get().finishJourney();
+      set({ phase: "consent", consentStatus: "idle" });
     } else {
       void get().generateNext();
     }
@@ -231,24 +380,40 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     if (get().sessionId !== sessionId) return;
     set({ futureReport: report, reportError: undefined, reportLoading: false, valueProfile: scoredProfile });
   },
-  reviewConsent: () => set({ phase: "consent", consentStatus: "idle" }),
+  completeJourney: () => get().restart(),
   saveConsentedSession: async () => {
     if (get().consentStatus === "saving" || get().consentStatus === "saved") return;
-    set({ consentStatus: "saving" });
+    const sessionId = get().sessionId;
+    // Consent is the user's last decision, not a loading screen. Show the report
+    // immediately and finish report generation + persistence in the background.
+    set({ consentStatus: "saving", phase: "report" });
     try {
+      await get().finishJourney();
+      if (get().sessionId !== sessionId) return;
+      if (get().reportError || !get().futureReport) throw new Error("Failed to build report");
+      const session = get().getResult();
       const response = await fetch("/api/sessions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session: get().getResult() }),
+        body: JSON.stringify({ session }),
       });
       if (!response.ok) throw new Error("Failed to save session");
-      set({ consentStatus: "saved", phase: "goodbye" });
+      if (get().sessionId === sessionId) set({ consentStatus: "saved" });
     } catch {
-      set({ consentStatus: "error" });
+      if (get().sessionId === sessionId) set({ consentStatus: "error" });
     }
   },
-  declineConsent: () => set({ consentStatus: "declined", phase: "goodbye" }),
-  restart: () =>
+  declineConsent: () => {
+    set({ consentStatus: "declined", phase: "report" });
+    void get().finishJourney();
+  },
+  restart: () => {
+    dilemmaGenerationRun += 1;
+    activeDilemmaController?.abort();
+    activeDilemmaController = undefined;
+    prefetchedDilemmaController?.abort();
+    prefetchedDilemmaController = undefined;
+    dilemmaPrefetch = undefined;
     set({
       phase: "intro",
       language: get().language,
@@ -257,16 +422,17 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       activeDilemma: undefined,
       lastChoice: undefined,
       lastCustomAnswer: undefined,
+      customAnswerDraft: undefined,
       completedDilemmas: [],
       valueProfile: emptyValueProfile,
       futureReport: undefined,
       reportLoading: false,
-      journeyError: undefined,
       reportError: undefined,
       consentStatus: "idle",
       sessionId: createSessionId(),
       createdAt: new Date().toISOString(),
-    }),
+    });
+  },
   getResult: () => {
     const { sessionId, createdAt, role, personaAnswers, completedDilemmas, valueProfile, futureReport, language } = get();
     return {

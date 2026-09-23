@@ -11,15 +11,12 @@ export function SoundEffects({ activeDilemma, phase }: { activeDilemma?: Generat
   const lastLandingIdRef = useRef<string | undefined>(undefined);
   const lastConsequenceIdRef = useRef<string | undefined>(undefined);
 
-  // The landing page has no field recording behind it, so the drone is the only
-  // thing holding the room. Browsers refuse to start an AudioContext before a
-  // gesture, hence the one-shot listeners: the drone is armed on mount and
-  // becomes audible the moment the visitor moves, scrolls or types.
+  // Browsers refuse to start an AudioContext before a gesture, hence the
+  // one-shot listeners: the intro drone is armed on mount and becomes audible
+  // the moment the visitor moves, scrolls or types. Destination fallback is
+  // managed separately by FieldRecordingAmbience.
   useEffect(() => {
-    if (phase !== "intro") {
-      worldSound.stopAmbientDrone();
-      return;
-    }
+    if (phase !== "intro") return;
 
     let welcomed = false;
     let introActive = true;

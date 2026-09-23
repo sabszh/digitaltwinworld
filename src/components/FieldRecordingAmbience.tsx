@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useAmbienceStore } from "@/lib/ambienceStore";
 import type { FieldRecording } from "@/lib/aporee";
+import { worldSound } from "@/lib/sound";
 import type { AppPhase, GeneratedDilemma } from "@/types/world2046";
 
 const TARGET_VOLUME = 0.16;
@@ -168,7 +169,8 @@ function createAmbiencePlayer(src: string): Player {
 export function FieldRecordingAmbience({ activeDilemma, phase }: { activeDilemma?: GeneratedDilemma; phase: AppPhase }) {
   const playerRef = useRef<Player | null>(null);
   const playingForRef = useRef<string | undefined>(undefined);
-  const resolvedRef = useRef<{ dilemmaId: string; recording: FieldRecording } | null>(null);
+  const droneForRef = useRef<string | undefined>(undefined);
+  const resolvedRef = useRef<{ dilemmaId: string; recording: FieldRecording | null } | null>(null);
   const phaseRef = useRef(phase);
   const setRecording = useAmbienceStore((state) => state.setRecording);
   const dilemmaId = activeDilemma?.id;
@@ -190,7 +192,9 @@ export function FieldRecordingAmbience({ activeDilemma, phase }: { activeDilemma
       playerRef.current?.stop();
       playerRef.current = null;
       playingForRef.current = undefined;
-      resolvedRef.current = null;
+      worldSound.stopAmbientDrone();
+      droneForRef.current = undefined;
+      resolvedRef.current = dilemmaId ? { dilemmaId, recording: null } : null;
       setRecording(null);
       return;
     }
@@ -198,10 +202,22 @@ export function FieldRecordingAmbience({ activeDilemma, phase }: { activeDilemma
     playerRef.current?.stop();
     playerRef.current = null;
     playingForRef.current = undefined;
+    worldSound.stopAmbientDrone();
+    droneForRef.current = undefined;
     resolvedRef.current = null;
     setRecording(null);
 
     let cancelled = false;
+    const startDroneFallback = () => {
+      if (cancelled) return;
+      resolvedRef.current = { dilemmaId, recording: null };
+      setRecording(null);
+      if (AUDIBLE_PHASES.includes(phaseRef.current) && droneForRef.current !== dilemmaId) {
+        worldSound.startAmbientDrone();
+        droneForRef.current = dilemmaId;
+      }
+    };
+
     (async () => {
       try {
         const query = new URLSearchParams({
@@ -212,18 +228,27 @@ export function FieldRecordingAmbience({ activeDilemma, phase }: { activeDilemma
           type: locationType,
         });
         const response = await fetch(`/api/ambience?${query}`);
-        if (!response.ok) return;
+        if (!response.ok) {
+          startDroneFallback();
+          return;
+        }
         const data = (await response.json()) as { recording?: FieldRecording | null };
         const recording = data.recording;
-        if (cancelled || !recording?.url) return;
+        if (!recording?.url) {
+          startDroneFallback();
+          return;
+        }
+        if (cancelled) return;
         resolvedRef.current = { dilemmaId, recording };
         setRecording(recording);
         if (AUDIBLE_PHASES.includes(phaseRef.current) && playingForRef.current !== dilemmaId) {
+          worldSound.stopAmbientDrone();
+          droneForRef.current = undefined;
           playerRef.current = createAmbiencePlayer(recording.url);
           playingForRef.current = dilemmaId;
         }
       } catch {
-        /* ambience is optional — a failure here leaves the journey silent */
+        startDroneFallback();
       }
     })();
 
@@ -240,11 +265,30 @@ export function FieldRecordingAmbience({ activeDilemma, phase }: { activeDilemma
       playerRef.current?.stop();
       playerRef.current = null;
       playingForRef.current = undefined;
+      worldSound.stopAmbientDrone();
+      droneForRef.current = undefined;
       return;
     }
     const resolved = resolvedRef.current;
-    if (!resolved || resolved.dilemmaId !== dilemmaId || playingForRef.current === dilemmaId) return;
+    if (!resolved || resolved.dilemmaId !== dilemmaId) {
+      if (droneForRef.current !== dilemmaId) {
+        worldSound.startAmbientDrone();
+        droneForRef.current = dilemmaId;
+      }
+      return;
+    }
 
+    if (!resolved.recording) {
+      if (droneForRef.current !== dilemmaId) {
+        worldSound.startAmbientDrone();
+        droneForRef.current = dilemmaId;
+      }
+      return;
+    }
+    if (playingForRef.current === dilemmaId) return;
+
+    worldSound.stopAmbientDrone();
+    droneForRef.current = undefined;
     playerRef.current = createAmbiencePlayer(resolved.recording.url);
     playingForRef.current = dilemmaId;
   }, [dilemmaId, phase]);
@@ -253,6 +297,8 @@ export function FieldRecordingAmbience({ activeDilemma, phase }: { activeDilemma
     return () => {
       playerRef.current?.stop(400);
       playerRef.current = null;
+      worldSound.stopAmbientDrone();
+      droneForRef.current = undefined;
       useAmbienceStore.getState().setRecording(null);
     };
   }, []);

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en" style="color-scheme: dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>World 2046 — Project Walkthrough</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: { colors: {
+      wt: {
+        bg: '#000000', surface: '#0a0a0a', raised: '#141414',
+        border: '#2a2a2a', fg: '#ffffff', muted: '#a0a0a0',
+        accent: '#a855f7', file: '#c084fc', red: '#ef4444',
+      },
+      node: {
+        component: '#a855f7', composable: '#7c3aed', utility: '#6d28d9',
+        external: '#525252', event: '#d8b4fe', data: '#9333ea',
+      },
+    }}},
+  };
+</script>
+<style>
+  .mermaid-wrap svg { max-width: none !important; height: auto !important; }
+  .mermaid-wrap .node { cursor: pointer; }
+  .mermaid-wrap .node:hover rect,
+  .mermaid-wrap .node:hover polygon,
+  .mermaid-wrap .node:hover circle,
+  .mermaid-wrap .node:hover .label-container { filter: brightness(1.3); transition: filter .15s; }
+
+  .dt-body p { color:#a0a0a0; font-size:.88rem; line-height:1.65; margin-bottom:10px; }
+  .dt-body p code {
+    background:rgba(168,85,247,.12); padding:1px 6px; border-radius:4px;
+    font-family:'SF Mono','Fira Code',monospace; font-size:.82rem; color:#c084fc;
+  }
+  .dt-body .shiki, .dt-body pre.code-fallback {
+    background: #000000; border: 1px solid #2a2a2a; border-radius: 8px;
+    padding: 14px 16px; overflow-x: auto; margin: 8px 0 14px;
+  }
+  .dt-body .shiki { background: #000000 !important; }
+  .dt-body .shiki code, .dt-body pre.code-fallback code {
+    font-family: 'SF Mono','Fira Code',monospace; font-size: .78rem; line-height: 1.55;
+    background: none; padding: 0; border-radius: 0;
+  }
+  .dt-body .shiki code { color: inherit; }
+  .dt-body pre.code-fallback code { color: #e0e0e0; }
+</style>
+</head>
+<body class="bg-wt-bg">
+<div id="root"></div>
+
+<script type="module">
+import { createHighlighter } from 'https://cdn.jsdelivr.net/npm/shiki@3.22.0/+esm';
+
+const { useState, useEffect, useRef, useCallback } = React;
+
+const SUMMARY = "World 2046 is a Next.js installation that sends a visitor on a five-stop journey into the year 2046, where each stop is a real place on a Mapbox globe holding one moral dilemma. A single zustand store drives every phase; each round is choreographed by a journey planner, written by an OpenAI model against a curated space of documented future pressures, then grounded with a geocoded building and a real field recording from that spot on earth. The five answers accumulate into a value profile that becomes a closing report.";
+
+const DIAGRAM = `graph TD
+  subgraph traveller["Who Is Travelling"]
+    checkIn["Check-In"]
+    sessionStore["Journey State"]
+  end
+
+  subgraph planning["Planning The Stop"]
+    roundPlan["Round Planner"]
+    futurePressures["Future Pressures"]
+  end
+
+  subgraph building["Building The Destination"]
+    dilemmaApi["Dilemma Generator"]
+    dilemmaGates["Content Gates"]
+    geocode["Place Lookup"]
+  end
+
+  subgraph there["Being There"]
+    homePage["Phase Renderer"]
+    globe["Globe Backdrop"]
+    ambienceApi["Field Recording Finder"]
+    ambiencePlayer["Ambience Player"]
+  end
+
+  subgraph verdict["The Verdict"]
+    reportApi["Closing Report"]
+    sessions["Consented Archive"]
+  end
+
+  checkIn -->|"hands over"| sessionStore
+  sessionStore -->|"asks for a stop"| roundPlan
+  futurePressures -.->|"supplies the future"| roundPlan
+  roundPlan -->|"briefs"| dilemmaApi
+  dilemmaApi -->|"must pass"| dilemmaGates
+  dilemmaGates ==>|"approved dilemma"| geocode
+  geocode -->|"returns real place"| sessionStore
+  sessionStore -->|"drives"| homePage
+  homePage -->|"flies to"| globe
+  homePage -->|"requests sound for"| ambienceApi
+  ambienceApi -->|"feeds"| ambiencePlayer
+  homePage ==>|"five answers"| reportApi
+  reportApi -->|"offered to"| sessions
+
+  classDef component fill:#a855f7,stroke:#c084fc,color:#fff
+  classDef composable fill:#7c3aed,stroke:#a78bfa,color:#fff
+  classDef utility fill:#6d28d9,stroke:#8b5cf6,color:#fff
+  classDef external fill:#525252,stroke:#737373,color:#fff
+  classDef event fill:#d8b4fe,stroke:#e9d5ff,color:#000
+  classDef data fill:#9333ea,stroke:#a855f7,color:#fff
+
+  class checkIn event
+  class sessionStore data
+  class roundPlan utility
+  class futurePressures data
+  class dilemmaApi composable
+  class dilemmaGates utility
+  class geocode external
+  class homePage component
+  class globe component
+  class ambienceApi external
+  class ambiencePlayer component
+  class reportApi composable
+  class sessions data
+
+  click checkIn nodeClickHandler "View details"
+  click sessionStore nodeClickHandler "View details"
+  click roundPlan nodeClickHandler "View details"
+  click futurePressures nodeClickHandler "View details"
+  click dilemmaApi nodeClickHandler "View details"
+  click dilemmaGates nodeClickHandler "View details"
+  click geocode nodeClickHandler "View details"
+  click homePage nodeClickHandler "View details"
+  click globe nodeClickHandler "View details"
+  click ambienceApi nodeClickHandler "View details"
+  click ambiencePlayer nodeClickHandler "View details"
+  click reportApi nodeClickHandler "View details"
+  click sessions nodeClickHandler "View details"
+`;
+
+const NODES = {
+  checkIn: {
+    title: "Check-In",
+    description: "The only thing the app asks before departure: a role, one hope and one fear. These raw answers go straight to the generator — nothing summarises the visitor into a character, so nothing can get them wrong.",
+    files: ["src/components/PersonaBuilder.tsx:230", "src/lib/session.ts:67"],
+    code: `checkIn: async (answers) => {
+  set({ personaAnswers: answers, role: answers.role });
+  await get().generateNext();
+},`,
+    lang: "typescript",
+  },
+  sessionStore: {
+    title: "Journey State",
+    description: "A single zustand store holding the phase machine — intro, persona, traveling, landing, dilemma, consequence, report, consent, goodbye — plus the running value profile. Every screen reads from it and nothing else owns journey state.",
+    files: ["src/lib/session.ts", "src/types/world2046.ts:3"],
+    code: `export type AppPhase = "intro" | "persona" | "traveling" | "landing"
+  | "dilemma" | "consequence" | "report" | "consent" | "goodbye";`,
+    lang: "typescript",
+  },
+  roundPlan: {
+    title: "Round Planner",
+    description: "Choreographs the five stops instead of drawing them at random, because five independent samples came out as five variations of the same scene. It picks a journey stage and then an unused pressure family, so each round lands somewhere new in the future space.",
+    files: ["src/lib/roundPlan.ts:111"],
+    code: `export function planRound(previous: CompletedDilemma[], pick: Picker = randomPick): RoundPlan {
+  const round = previous.length;
+  const stage = journeyStages[Math.min(round, journeyStages.length - 1)];
+  const usedFamilies = usedPressureFamilies(previous);`,
+    lang: "typescript",
+  },
+  futurePressures: {
+    title: "Future Pressures",
+    description: "The curated future the whole app stands on: documented pressures on the world through ~2050, grouped into six families. Each carries `responses` — societal answers that have had twenty years to become ordinary, and dilemmas are built from the response, not the crisis.",
+    files: ["src/data/futurePressures.ts:39"],
+    code: `{
+  id: "extreme-heat",
+  family: "klima og natur",
+  pressure: "Flere og længere hedebølger presser byer, boliger og alt udearbejde",
+  responses: ["arbejdsdagen er delt omkring middagen store dele af året, ..."],
+}`,
+    lang: "typescript",
+  },
+  dilemmaApi: {
+    title: "Dilemma Generator",
+    description: "Sends the planner's brief to an OpenAI model and asks for one structured dilemma. Roughly a third of first attempts fail the gates, and a rejection costs the visitor a real destination, so it retries once while the client's timeout budget allows.",
+    files: ["src/app/api/dilemma/route.ts:82"],
+    code: `for (let attempt = 0; attempt < 2; attempt += 1) {
+  const outcome = await requestDilemma(input, apiKey);
+  if ("dilemma" in outcome.result) { dilemma = outcome.result.dilemma; break; }
+  if (Date.now() - startedAt > RETRY_BUDGET_MS) break;
+}`,
+    lang: "typescript",
+  },
+  dilemmaGates: {
+    title: "Content Gates",
+    description: "Validates the model's answer beyond JSON shape: it must name a core tension between two legitimate values, place its four options along one decision axis, and not repeat a country or problem area the journey already visited.",
+    files: ["src/lib/dilemmaStructuredOutput.ts:351", "src/lib/languageQa.ts:83"],
+    code: `export function validateAiDilemmaDetailed(
+  value: unknown,
+  input: DilemmaGenerationRequest,
+): { dilemma: GeneratedDilemma } | { reason: DilemmaRejection }`,
+    lang: "typescript",
+  },
+  geocode: {
+    title: "Place Lookup",
+    description: "The model invents the building name and guesses its coordinates at city level, which once rendered an invented office as an aerial photo of a housing block. This resolves the name through Mapbox Search Box — not Geocoding, which returned a motorway for Dokk1 — and is never fatal.",
+    files: ["src/lib/geocode.ts:58"],
+    code: `const located = await locatePlace(
+  { name: place.name, city: dilemma.city, country: dilemma.country },
+  dilemma.marker,
+  process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
+  haversineKm,
+);`,
+    lang: "typescript",
+  },
+  homePage: {
+    title: "Phase Renderer",
+    description: "One client component that renders whichever screen the current phase calls for, and derives all the staging from it — whether the globe is zoomed, which backdrop is dark, which cities are already stamped on the itinerary.",
+    files: ["src/app/page.tsx:35"],
+    code: `const zoomed = store.phase === "persona" || store.phase === "traveling"
+  || store.phase === "landing" || store.phase === "dilemma"
+  || store.phase === "consequence";`,
+    lang: "typescript",
+  },
+  globe: {
+    title: "Globe Backdrop",
+    description: "A Mapbox globe living behind every screen. On departure it draws a flight-path arc that grows over the flyTo duration, then settles the camera on the geocoded building at an angle chosen from the destination's longitude.",
+    files: ["src/components/MapboxGlobeBackdrop.tsx:481"],
+    code: `map.flyTo({
+  center: [active.marker.lng, active.marker.lat],
+});`,
+    lang: "typescript",
+  },
+  ambienceApi: {
+    title: "Field Recording Finder",
+    description: "Proxies Radio Aporee, which serves no CORS headers and answers with a bare version banner unless it recognises the caller. It holds an ~8MB location index in memory, ranks nearby points against the place name and type, and returns the best one that actually plays.",
+    files: ["src/app/api/ambience/route.ts:80", "src/lib/aporee.ts"],
+    code: `const HEADERS = { Referer: "https://aporee.org/maps/", Accept: "application/json" };
+const candidates = findNearbyLocations(index, lat, lng, MAX_DISTANCE_KM, MAX_CANDIDATES);`,
+    lang: "typescript",
+  },
+  ambiencePlayer: {
+    title: "Ambience Player",
+    description: "Loops the recording softly under the landing, dilemma and consequence phases, crossfading between destinations. Volume is ramped on the media elements themselves — routing aporee's CORS-less files through an AudioContext would yield silence.",
+    files: ["src/components/FieldRecordingAmbience.tsx", "src/lib/ambienceStore.ts"],
+    code: `const AUDIBLE_PHASES: AppPhase[] = ["landing", "dilemma", "consequence"];
+const response = await fetch(\`/api/ambience?\${query}\`);`,
+    lang: "typescript",
+  },
+  reportApi: {
+    title: "Closing Report",
+    description: "Turns the five recorded answers and the accumulated value profile into a written future profile. Free-text answers and reflections are truncated before they leave the browser, and a locally computed report stands in whenever the model is unavailable.",
+    files: ["src/app/api/report/route.ts:122", "src/lib/profileScoring.ts"],
+    code: `completedDilemmas: body.completedDilemmas.map((item) => ({
+  ...item,
+  customAnswer: item.customAnswer?.slice(0, 400),
+  reflection: item.reflection?.slice(0, 400),
+})),`,
+    lang: "typescript",
+  },
+  sessions: {
+    title: "Consented Archive",
+    description: "The last step the visitor controls. Only after an explicit consent screen is the session appended to a JSONL file, guarded by a serialised write queue and a duplicate check so a re-submitted session is never written twice.",
+    files: ["src/app/api/sessions/route.ts:64"],
+    code: `const POLICY_VERSION = "2026-08-14" as const;
+let writeQueue = Promise.resolve();`,
+    lang: "typescript",
+  },
+};
+
+const LEGEND = [
+  { label: 'Screen', color: 'bg-node-component' },
+  { label: 'API Route', color: 'bg-node-composable' },
+  { label: 'Logic', color: 'bg-node-utility' },
+  { label: 'External', color: 'bg-node-external' },
+  { label: 'User Action', color: 'bg-node-event' },
+  { label: 'Data / State', color: 'bg-node-data' },
+];
+
+const langs = [...new Set(Object.values(NODES).map(n => n.lang).filter(Boolean))];
+if (langs.length === 0) langs.push('typescript');
+let highlighter = null;
+try { highlighter = await createHighlighter({ themes: ['vitesse-dark'], langs }); }
+catch (e) { console.warn('Shiki failed:', e); }
+
+const HIGHLIGHTED = {};
+for (const [id, node] of Object.entries(NODES)) {
+  if (node.code && highlighter) {
+    try {
+      HIGHLIGHTED[id] = highlighter.codeToHtml(node.code, { lang: node.lang || 'typescript', theme: 'vitesse-dark' });
+    } catch (e) { console.warn(`Highlight failed for ${id}:`, e); }
+  }
+}
+
+const h = React.createElement;
+
+function usePanZoom() {
+  const viewportRef = useRef(null), canvasRef = useRef(null), zoomDisplayRef = useRef(null);
+  const st = useRef({ zoom: 1, panX: 0, panY: 0 });
+  const drag = useRef({ on: false, lx: 0, ly: 0 });
+
+  const apply = useCallback(() => {
+    const { zoom, panX, panY } = st.current;
+    if (canvasRef.current) canvasRef.current.style.transform = `translate(${panX}px,${panY}px) scale(${zoom})`;
+    if (zoomDisplayRef.current) zoomDisplayRef.current.textContent = Math.round(zoom * 100) + '%';
+  }, []);
+
+  const fitToScreen = useCallback(() => {
+    const svg = canvasRef.current?.querySelector('svg');
+    const vp = viewportRef.current;
+    if (!svg || !vp) return;
+    const s = st.current;
+    const vw = vp.clientWidth, vh = vp.clientHeight;
+    const sw = svg.getBoundingClientRect().width / s.zoom;
+    const sh = svg.getBoundingClientRect().height / s.zoom;
+    const fit = Math.max(0.15, Math.min(2, Math.min((vw - 80) / sw, (vh - 80) / sh)));
+    s.zoom = fit; s.panX = (vw - sw * fit) / 2; s.panY = (vh - sh * fit) / 2;
+    apply();
+  }, [apply]);
+
+  useEffect(() => {
+    const vp = viewportRef.current;
+    if (!vp) return;
+    const onWheel = (e) => {
+      e.preventDefault();
+      const r = vp.getBoundingClientRect();
+      const mx = e.clientX - r.left, my = e.clientY - r.top, s = st.current;
+      const f = e.deltaY < 0 ? 1.12 : 1 / 1.12;
+      const nz = Math.min(4, Math.max(0.15, s.zoom * f)), sc = nz / s.zoom;
+      s.panX = mx - sc * (mx - s.panX); s.panY = my - sc * (my - s.panY); s.zoom = nz;
+      apply();
+    };
+    const onDown = (e) => {
+      if (e.target.closest('.node')) return;
+      drag.current = { on: true, lx: e.clientX, ly: e.clientY };
+      vp.setPointerCapture(e.pointerId);
+    };
+    const onMove = (e) => {
+      const d = drag.current; if (!d.on) return;
+      st.current.panX += e.clientX - d.lx; st.current.panY += e.clientY - d.ly;
+      d.lx = e.clientX; d.ly = e.clientY; apply();
+    };
+    const onUp = () => { drag.current.on = false; };
+    vp.addEventListener('wheel', onWheel, { passive: false });
+    vp.addEventListener('pointerdown', onDown);
+    vp.addEventListener('pointermove', onMove);
+    vp.addEventListener('pointerup', onUp);
+    vp.addEventListener('pointercancel', onUp);
+    window.addEventListener('resize', fitToScreen);
+    return () => {
+      vp.removeEventListener('wheel', onWheel);
+      vp.removeEventListener('pointerdown', onDown);
+      vp.removeEventListener('pointermove', onMove);
+      vp.removeEventListener('pointerup', onUp);
+      vp.removeEventListener('pointercancel', onUp);
+      window.removeEventListener('resize', fitToScreen);
+    };
+  }, [apply, fitToScreen]);
+
+  const zoomIn = useCallback(() => { st.current.zoom = Math.min(4, st.current.zoom * 1.25); apply(); }, [apply]);
+  const zoomOut = useCallback(() => { st.current.zoom = Math.max(0.15, st.current.zoom / 1.25); apply(); }, [apply]);
+  return { viewportRef, canvasRef, zoomDisplayRef, zoomIn, zoomOut, fitToScreen };
+}
+
+function MermaidDiagram({ onNodeClick }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    window.nodeClickHandler = onNodeClick;
+    mermaid.initialize({
+      startOnLoad: false, theme: 'dark', securityLevel: 'loose',
+      themeVariables: {
+        primaryColor: '#0a0a0a', primaryTextColor: '#ffffff', primaryBorderColor: '#2a2a2a',
+        lineColor: '#a0a0a0', background: '#000000',
+        secondaryColor: '#000000', tertiaryColor: '#000000',
+        mainBkg: '#0a0a0a', nodeBorder: '#2a2a2a',
+        clusterBkg: 'rgba(10,10,10,0.8)', clusterBorder: '#7c3aed',
+        titleColor: '#ffffff', edgeLabelBackground: 'transparent',
+      },
+      flowchart: { useMaxWidth: false, htmlLabels: true, curve: 'basis' },
+    });
+    mermaid.render('walkthrough-diagram', DIAGRAM).then(({ svg, bindFunctions }) => {
+      if (ref.current) { ref.current.innerHTML = svg; bindFunctions?.(ref.current); }
+    }).catch((e) => console.error('Mermaid render failed:', e));
+    return () => { delete window.nodeClickHandler; };
+  }, [onNodeClick]);
+  return h('div', { ref, className: 'mermaid-wrap' });
+}
+
+function Summary({ collapsed, onToggle }) {
+  if (collapsed) {
+    return h('div', {
+      onClick: onToggle,
+      className: 'fixed top-16 left-6 z-10 px-3 py-1.5 bg-wt-surface/60 backdrop-blur border border-wt-border rounded-full shadow-lg cursor-pointer hover:bg-wt-surface/80 transition-all duration-300',
+    }, h('span', { className: 'text-xs text-wt-muted font-medium' }, 'ℹ︎ Summary'));
+  }
+  return h('div', {
+    onClick: onToggle,
+    className: 'fixed top-16 left-6 z-10 max-w-lg px-4 py-3 bg-wt-surface/80 backdrop-blur border border-wt-border rounded-lg shadow-lg cursor-pointer transition-all duration-300',
+  },
+    h('p', { className: 'text-sm text-wt-muted leading-relaxed' }, SUMMARY),
+    h('p', { className: 'text-[0.65rem] text-wt-muted/50 mt-1.5' }, 'Click to dismiss'),
+  );
+}
+
+function DetailPanel({ nodeId, node, onClose }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onClose]);
+  const codeHtml = HIGHLIGHTED[nodeId];
+  return h('div', { className: 'fixed top-4 right-4 bottom-4 w-[560px] max-w-[92vw] z-30 bg-wt-surface border border-wt-border rounded-xl shadow-2xl flex flex-col overflow-hidden' },
+    h('button', {
+      onClick: onClose,
+      className: 'absolute top-3 right-3 z-10 w-7 h-7 rounded-md border border-wt-border bg-wt-raised text-wt-muted flex items-center justify-center text-lg hover:bg-wt-red hover:border-wt-red hover:text-white transition-colors',
+    }, '×'),
+    h('div', { className: 'flex-1 overflow-y-auto p-5' },
+      h('h2', { className: 'text-lg font-bold text-wt-fg mb-3 pr-9' }, node.title),
+      h('div', { className: 'dt-body' }, h('p', null, node.description)),
+      node.code && h('div', { className: 'dt-body' },
+        codeHtml
+          ? h('div', { dangerouslySetInnerHTML: { __html: codeHtml } })
+          : h('pre', { className: 'code-fallback' }, h('code', null, node.code)),
+      ),
+      node.files?.length > 0 && h('div', { className: 'mt-4 pt-3 border-t border-wt-border' },
+        h('div', { className: 'text-[0.7rem] uppercase tracking-wider text-wt-muted font-semibold mb-1.5' }, 'Files'),
+        h('code', { className: 'text-sm text-wt-file font-mono leading-relaxed' },
+          node.files.map((f, i) => h('span', { key: i }, f, h('br'))),
+        ),
+      ),
+    ),
+  );
+}
+
+function ZoomControls({ zoomDisplayRef, onZoomIn, onZoomOut, onFit }) {
+  const btn = 'w-8 h-8 rounded-md border border-wt-border bg-wt-surface text-wt-muted flex items-center justify-center text-sm hover:bg-wt-raised hover:text-wt-fg transition-colors';
+  return h('div', { className: 'fixed bottom-5 left-5 z-20 flex items-center gap-2' },
+    h('button', { className: btn, onClick: onZoomOut, title: 'Zoom out' }, '−'),
+    h('span', { ref: zoomDisplayRef, className: 'text-xs text-wt-muted font-mono w-11 text-center' }, '100%'),
+    h('button', { className: btn, onClick: onZoomIn, title: 'Zoom in' }, '+'),
+    h('button', { className: btn + ' w-auto px-2', onClick: onFit, title: 'Fit to screen' }, 'Fit'),
+  );
+}
+
+function App() {
+  const [activeId, _setActiveId] = useState(null);
+  const [summaryCollapsed, setSummaryCollapsed] = useState(true);
+  const pz = usePanZoom();
+
+  const setActiveNode = useCallback((nodeId) => {
+    _setActiveId(nodeId);
+    document.querySelectorAll('.mermaid-wrap .node').forEach(n => { n.style.opacity = nodeId ? '0.4' : '1'; });
+    if (nodeId) {
+      const el = document.querySelector(`.mermaid-wrap .node[id*="${nodeId}"]`);
+      if (el) el.style.opacity = '1';
+    }
+  }, []);
+
+  const closeDetail = useCallback(() => {
+    _setActiveId(null);
+    document.querySelectorAll('.mermaid-wrap .node').forEach(n => { n.style.opacity = '1'; });
+  }, []);
+
+  useEffect(() => { setTimeout(pz.fitToScreen, 600); }, [pz.fitToScreen]);
+
+  return h(React.Fragment, null,
+    h('header', { className: 'fixed top-0 inset-x-0 z-10 px-6 py-3.5 bg-gradient-to-b from-wt-bg to-transparent pointer-events-none' },
+      h('h1', { className: 'text-base font-semibold text-wt-fg' }, 'World 2046'),
+      h('p', { className: 'text-sm text-wt-muted mt-0.5' }, 'How a visitor gets sent five stops into the future, and what builds each stop'),
+    ),
+    h(Summary, { collapsed: summaryCollapsed, onToggle: () => setSummaryCollapsed(c => !c) }),
+    h('div', { ref: pz.viewportRef, className: 'w-full h-screen overflow-hidden cursor-grab active:cursor-grabbing' },
+      h('div', { ref: pz.canvasRef, className: 'origin-top-left will-change-transform inline-block p-[80px_60px_60px]' },
+        h(MermaidDiagram, { onNodeClick: setActiveNode }),
+      ),
+    ),
+    h(ZoomControls, { zoomDisplayRef: pz.zoomDisplayRef, onZoomIn: pz.zoomIn, onZoomOut: pz.zoomOut, onFit: pz.fitToScreen }),
+    h('div', { className: 'fixed bottom-5 left-1/2 -translate-x-1/2 z-20 flex flex-wrap justify-center gap-4 px-4 py-2 bg-wt-surface border border-wt-border rounded-lg shadow-xl' },
+      LEGEND.map(l => h('span', { key: l.label, className: 'flex items-center gap-1.5 text-xs text-wt-muted' },
+        h('span', { className: `w-2 h-2 rounded-full ${l.color}` }), l.label,
+      )),
+    ),
+    activeId && NODES[activeId] && h(DetailPanel, { nodeId: activeId, node: NODES[activeId], onClose: closeDetail }),
+    h('div', { className: 'fixed bottom-5 right-5 z-20 text-xs text-wt-muted opacity-50' },
+      h('kbd', null, 'Scroll'), ' zoom · ', h('kbd', null, 'Drag'), ' pan · Click nodes',
+    ),
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+</script>
+</body>
+</html>

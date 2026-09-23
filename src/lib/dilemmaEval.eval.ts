@@ -1,30 +1,39 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { technologies, locationTypes, responseSchema, validateAiDilemmaDetailed } from "@/lib/dilemmaStructuredOutput";
-import { buildDilemmaPrompt } from "@/lib/prompts/dilemmaPrompt";
-import type { AiDilemma, DilemmaGenerationRequest } from "@/lib/dilemmaGenerationTypes";
-import type { CompletedDilemma, GeneratedDilemma, UserRole, ValueProfile } from "@/types/world2046";
-import { planRound } from "@/lib/roundPlan";
-import { getAudienceProfile } from "@/lib/audience";
+import { userRoles } from "@/data/taxonomies";
+import { creativeDilemmaSchema, validateCreativeDilemma } from "@/lib/creativeDilemma";
+import type { CreativeDilemma, DilemmaGenerationRequest } from "@/lib/dilemmaGenerationTypes";
 import { requestJson } from "@/lib/openaiJson";
+import type { JsonUsage } from "@/lib/openaiJson";
+import { buildDilemmaPrompt } from "@/lib/prompts/dilemmaPrompt";
+import { selectDilemmaSeed } from "@/lib/roundPlan";
+import type { DilemmaSeed } from "@/lib/roundPlan";
+import type { CompletedDilemma, ValueProfile } from "@/types/world2046";
 
-/**
- * Batch generator for reviewing dilemma quality by hand.
- *
- * Not part of `npm test` — it costs money and calls a live model. Run it with
- *   npm run eval:dilemmas
- * and read the markdown it writes to dilemma-eval.md. It walks whole journeys
- * rather than single rounds, because the things most likely to be wrong now are
- * cross-round: five stops that turn out to be the same stop, or five crises in a
- * row.
- */
+type EvalCase = {
+  index: number;
+  role: DilemmaGenerationRequest["role"];
+  model: string;
+  seed: {
+    developmentId: string;
+    development: string;
+    themes: string[];
+    city: string;
+    country: string;
+    sameRoleExampleId: string;
+    relatedQuestionExampleId: string;
+  };
+  usage?: JsonUsage;
+  transportError?: string;
+  raw?: CreativeDilemma;
+  validation: { accepted: true } | { accepted: false; reason: string };
+};
 
 const zeroes: ValueProfile = {
   trust: 0, freedom: 0, equality: 0, efficiency: 0, humanContact: 0,
   safety: 0, innovation: 0, sustainability: 0, localControl: 0, transparency: 0,
 };
 
-/** vitest does not read .env.local the way next does. */
 function loadEnvLocal() {
   for (const file of [".env.local", ".env"]) {
     if (!existsSync(file)) continue;
@@ -35,173 +44,155 @@ function loadEnvLocal() {
   }
 }
 
-const JOURNEYS: Array<{ role: UserRole; hope: string; fear: string }> = [
-  {
-    role: "Barn",
-    hope: "at der er plads til at lege og være sammen",
-    fear: "at computere bestemmer for meget",
-  },
-  {
-    role: "Ung",
-    hope: "at der stadig er tid til at kede sig",
-    fear: "at man aldrig får fred for at blive målt",
-  },
-  {
-    role: "Fagperson",
-    hope: "at vi tør bruge teknologien til det, der er svært",
-    fear: "at ingen længere kan svare på hvorfor",
-  },
-  {
-    role: "Forælder",
-    hope: "at mine børn kan bo tæt på os",
-    fear: "at hverdagen bliver for dyr for almindelige familier",
-  },
-  {
-    role: "Lærer / pædagog",
-    hope: "at der er plads til de elever, der ikke passer ind",
-    fear: "at faglighed bliver noget, man køber sig til",
-  },
-  {
-    role: "For alle",
-    hope: "at teknologi gør hverdagen lettere for flere",
-    fear: "at nogen bliver glemt, når alt bliver digitalt",
-  },
-];
-
-async function generateOne(input: DilemmaGenerationRequest): Promise<{ dilemma?: GeneratedDilemma; reason?: string; detail?: string }> {
-  const outcome = await requestJson<AiDilemma>({
-    apiKey: process.env.OPENAI_API_KEY ?? "",
-    schemaName: "world2046_dilemma_eval",
-    schema: responseSchema,
-    prompt: buildDilemmaPrompt(input, { technologies, locationTypes }),
-    language: input.language,
-    timeoutMs: 27_000,
-  });
-  if ("error" in outcome) return { reason: outcome.error };
-  const parsed = outcome.data;
-  const result = validateAiDilemmaDetailed(parsed, input);
-  if ("dilemma" in result) return { dilemma: result.dilemma };
-  // Print what was thrown away: a rejection is only worth having if it is
-  // possible to tell an over-strict gate from a genuinely bad dilemma.
-  console.warn(
-    `REJECTED ${result.reason}\n  normalized2046: ${parsed.normalized2046}\n  question: ${parsed.question}\n` +
-      (parsed.choices ?? []).map((choice) => `  - ${choice.label} | ${choice.description}`).join("\n"),
-  );
+function historyEntry(seed: DilemmaSeed, index: number): CompletedDilemma {
   return {
-    reason: result.reason,
-    detail: [
-      `område/sted: ${String(parsed.problemArea)} / ${String(parsed.locationType)}`,
-      `spørgsmål: ${String(parsed.question)}`,
-      ...(Array.isArray(parsed.choices)
-        ? parsed.choices.map((choice) => `${String(choice?.id)}: ${String(choice?.label)}`)
-        : ["choices mangler eller er ikke en liste"]),
-    ].join(" · "),
+    dilemmaId: `eval-${index}`,
+    problemArea: "Digital tillid, rettigheder og styring",
+    region: seed.location.region,
+    country: seed.location.country,
+    city: seed.location.city,
+    locationType: "hjemmet",
+    technology: "personlig data-agent",
+    question: "Eval seed",
+    presented: { title: "Eval seed", scene: "Eval seed", choices: [] },
+    futurePressureId: seed.development.id,
+    selectedChoiceId: "__eval__",
+    selectedChoiceLabel: "__eval__",
+    valueImpacts: zeroes,
   };
 }
 
-function render(dilemma: GeneratedDilemma, round: number) {
+function renderCase(item: EvalCase) {
+  const raw = item.raw;
+  const status = item.validation.accepted ? "TEKNISK GODKENDT" : `AFVIST (${item.validation.reason})`;
   return [
-    `#### Stop ${round}: ${dilemma.city}, ${dilemma.country} — ${dilemma.exactPlace?.name ?? "?"}`,
-    `- **pres:** ${dilemma.futurePressureId} · **severity:** ${dilemma.severity} · **område:** ${dilemma.problemArea}`,
-    `- **2046-virkelighed:** ${dilemma.normalized2046}`,
-    `- **konflikt:** ${dilemma.coreTension?.want} · men også ${dilemma.coreTension?.butAlsoWant}`,
-    `- **kan ikke få begge:** ${dilemma.coreTension?.whyCannotHaveBoth}`,
-    ``,
-    `**${dilemma.title}**`,
-    ``,
-    `${dilemma.landingScene ?? dilemma.scenePrompt}`,
-    ``,
-    `*${dilemma.stake ?? ""}*`,
-    ``,
-    `**${dilemma.question}**`,
-    ``,
-    ...dilemma.choices.map((choice, index) => `${index + 1}. **${choice.label}** — ${choice.description}`),
-    ``,
+    `## ${item.index}. ${item.role} — ${status}`,
+    "",
+    `- Model: ${item.model}`,
+    `- Development: ${item.seed.development} (\`${item.seed.developmentId}\`)`,
+    `- Sted: ${item.seed.city}, ${item.seed.country}`,
+    `- Examples: \`${item.seed.sameRoleExampleId}\` + \`${item.seed.relatedQuestionExampleId}\``,
+    `- Latency/tokens: ${item.usage?.latencyMs ?? 0} ms · ${item.usage?.inputTokens ?? 0} input · ${item.usage?.outputTokens ?? 0} output`,
+    "",
+    ...(raw ? [
+      `### ${raw.title}`,
+      "",
+      `**Future normal:** ${raw.futureNormal}`,
+      "",
+      `**Human cost:** ${raw.humanCost}`,
+      "",
+      `**Decision:** ${raw.decision}`,
+      "",
+      raw.scene,
+      "",
+      `**Det står på spil:** ${raw.stake}`,
+      "",
+      `**${raw.question}**`,
+      "",
+      ...raw.choices.map((choice) => `${choice.id.toUpperCase()}. **${choice.label}** — ${choice.consequence}`),
+    ] : ["Intet model-JSON blev returneret."]),
+    "",
+    "### Redaktionel scoring",
+    "",
+    "Afventer uredigeret redaktionel gennemgang efter den bounded kørsel.",
+    "",
   ].join("\n");
 }
 
-describe("dilemma generator evaluation", () => {
-  it(
-    "generates whole journeys for manual review",
-    async () => {
-      loadEnvLocal();
-      if (!process.env.OPENAI_API_KEY) {
-        console.warn("No OPENAI_API_KEY — skipping.");
-        return;
+describe("bounded golden-example production diagnostic", () => {
+  it("runs exactly twenty Terra generations with no retries", async () => {
+    loadEnvLocal();
+    if (!process.env.OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is required for the bounded diagnostic");
+
+    const roles = userRoles.flatMap((role) => [role, role]);
+    expect(roles).toHaveLength(20);
+    const history: CompletedDilemma[] = [];
+    const plans = roles.map((role, index) => {
+      const seed = selectDilemmaSeed(history, role, (max) => index % max);
+      history.push(historyEntry(seed, index));
+      return { role, seed };
+    });
+    expect(new Set(plans.map(({ seed }) => seed.development.id)).size).toBe(20);
+    expect(new Set(plans.map(({ seed }) => seed.location.city)).size).toBe(20);
+
+    const results: EvalCase[] = [];
+    let calls = 0;
+    for (let index = 0; index < plans.length; index += 1) {
+      if (calls >= 20) throw new Error("Hard stop: refusing a twenty-first authoring call");
+      const { role, seed } = plans[index];
+      const input: DilemmaGenerationRequest = {
+        role,
+        previousDilemmas: [],
+        preferredSeverity: seed.severity,
+        language: "da",
+        generationPlan: seed,
+      };
+      calls += 1;
+      const outcome = await requestJson<CreativeDilemma>({
+        apiKey: process.env.OPENAI_API_KEY,
+        model: "gpt-5.6-terra",
+        reasoningEffort: "low",
+        schemaName: "world2046_golden_examples_eval",
+        schema: creativeDilemmaSchema,
+        prompt: buildDilemmaPrompt(input),
+        language: "da",
+        timeoutMs: 90_000,
+      });
+      const base = {
+        index: index + 1,
+        role,
+        model: "gpt-5.6-terra",
+        seed: {
+          developmentId: seed.development.id,
+          development: seed.development.development,
+          themes: seed.development.themes,
+          city: seed.location.city,
+          country: seed.location.country,
+          sameRoleExampleId: seed.examples.sameRole.id,
+          relatedQuestionExampleId: seed.examples.relatedQuestion.id,
+        },
+      };
+      if ("error" in outcome) {
+        results.push({ ...base, usage: outcome.usage, transportError: outcome.error, validation: { accepted: false, reason: outcome.error } });
+        continue;
       }
+      const validation = validateCreativeDilemma(outcome.data, input);
+      results.push({
+        ...base,
+        usage: outcome.usage,
+        raw: outcome.data,
+        validation: "creative" in validation
+          ? { accepted: true }
+          : { accepted: false, reason: validation.reason },
+      });
+    }
 
-      const requestedRoles = new Set(
-        (process.env.DILEMMA_EVAL_ROLES ?? "")
-          .split(",")
-          .map((role) => role.trim())
-          .filter(Boolean),
-      );
-      const journeysToRun = requestedRoles.size
-        ? JOURNEYS.filter((journey) => requestedRoles.has(journey.role))
-        : JOURNEYS;
-      const journeys = await Promise.all(journeysToRun.map(async (journey) => {
-        const lines: string[] = [`## Rejse: ${journey.role}`, ""];
-        const rejected: string[] = [];
-        const previous: CompletedDilemma[] = [];
+    const summary = {
+      calls,
+      model: "gpt-5.6-terra",
+      accepted: results.filter((item) => item.validation.accepted).length,
+      rejected: results.filter((item) => !item.validation.accepted).length,
+      inputTokens: results.reduce((sum, item) => sum + (item.usage?.inputTokens ?? 0), 0),
+      outputTokens: results.reduce((sum, item) => sum + (item.usage?.outputTokens ?? 0), 0),
+      averageLatencyMs: Math.round(results.reduce((sum, item) => sum + (item.usage?.latencyMs ?? 0), 0) / results.length),
+    };
+    writeFileSync("dilemma-golden-examples-eval-raw.json", `${JSON.stringify({ summary, cases: results }, null, 2)}\n`);
+    writeFileSync("dilemma-golden-examples-eval.md", [
+      "# World 2046 — developments + golden examples eval",
+      "",
+      "Præcis 20 Terra authoring-kald: to per rolle, ingen retries og ingen regeneration.",
+      "",
+      "## Setup",
+      "",
+      `- Model: ${summary.model}`,
+      `- Teknisk accepteret: ${summary.accepted}/20`,
+      `- Gennemsnitlig latency: ${summary.averageLatencyMs} ms`,
+      `- Tokens: ${summary.inputTokens} input · ${summary.outputTokens} output`,
+      "",
+      ...results.map(renderCase),
+    ].join("\n"));
 
-        for (let round = 0; round < 5; round += 1) {
-          const input: DilemmaGenerationRequest = {
-            role: journey.role,
-            answers: { role: journey.role, hope: journey.hope, fear: journey.fear },
-            previousDilemmas: previous,
-            preferredSeverity: round === 0 ? "low" : "medium",
-            language: "da",
-            generationPlan: planRound(previous, undefined, undefined, getAudienceProfile(journey.role).preferredProblemAreas),
-          };
-
-          // Same one-retry policy as the API route, so the numbers here are the
-          // numbers a player would actually see.
-          let { dilemma, reason, detail } = await generateOne(input);
-          if (!dilemma) ({ dilemma, reason, detail } = await generateOne(input));
-          if (!dilemma) {
-            rejected.push(`${journey.role} runde ${round + 1}: ${reason}`);
-            lines.push(`#### Stop ${round + 1}: AFVIST (${reason})`, detail ?? "", "");
-            continue;
-          }
-
-          lines.push(render(dilemma, round + 1));
-          previous.push({
-            dilemmaId: dilemma.id,
-            problemArea: dilemma.problemArea,
-            region: dilemma.region,
-            country: dilemma.country,
-            city: dilemma.city,
-            exactPlaceName: dilemma.exactPlace?.name,
-            locationType: dilemma.locationType,
-            technology: dilemma.technology,
-            question: dilemma.question,
-            presented: {
-              title: dilemma.title,
-              scene: dilemma.scenePrompt,
-              stake: dilemma.stake,
-              landingScene: dilemma.landingScene,
-              landingDetail: dilemma.landingDetail,
-              place: dilemma.exactPlace
-                ? { name: dilemma.exactPlace.name, latitude: dilemma.marker.lat, longitude: dilemma.marker.lng }
-                : undefined,
-              choices: dilemma.choices.map(({ id, label, description }) => ({ id, label, description })),
-            },
-            futurePressureId: dilemma.futurePressureId,
-            coreTension: dilemma.coreTension,
-            selectedChoiceId: dilemma.choices[0].id,
-            selectedChoiceLabel: dilemma.choices[0].label,
-            valueImpacts: zeroes,
-          });
-        }
-        return { lines, rejected };
-      }));
-
-      const lines = ["# Dilemma-evaluering", "", ...journeys.flatMap((journey) => journey.lines)];
-      const rejected = journeys.flatMap((journey) => journey.rejected);
-      lines.push("## Afvisninger", "", rejected.length ? rejected.map((item) => `- ${item}`).join("\n") : "Ingen.");
-      writeFileSync("dilemma-eval.md", lines.join("\n"));
-      expect(lines.length).toBeGreaterThan(5);
-    },
-    1_200_000,
-  );
+    expect(calls).toBe(20);
+    expect(results).toHaveLength(20);
+  }, 2_400_000);
 });

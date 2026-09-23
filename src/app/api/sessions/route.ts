@@ -2,7 +2,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
 import type { ConsentedSessionRecord, SessionResult } from "@/types/world2046";
-import { userRoles } from "@/data/taxonomies";
+import { SESSION_DILEMMA_COUNT, userRoles } from "@/data/taxonomies";
 
 export const runtime = "nodejs";
 
@@ -18,7 +18,7 @@ function isValidSession(value: unknown): value is SessionResult {
   const valueProfile = value.valueProfile;
   const dilemmas = value.completedDilemmas;
   const validProfile = isRecord(valueProfile) && ["trust", "freedom", "equality", "efficiency", "humanContact", "safety", "innovation", "sustainability", "localControl", "transparency"].every((key) => typeof valueProfile[key] === "number" && Number.isFinite(valueProfile[key]));
-  const validDilemmas = Array.isArray(dilemmas) && dilemmas.length === 5 && dilemmas.every((item) => isRecord(item)
+  const validDilemmas = Array.isArray(dilemmas) && dilemmas.length === SESSION_DILEMMA_COUNT && dilemmas.every((item) => isRecord(item)
     && typeof item.dilemmaId === "string"
     && typeof item.city === "string"
     && typeof item.country === "string"

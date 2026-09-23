@@ -16,7 +16,7 @@ export function ItineraryStrip({
   return (
     <nav
       className="itinerary-strip departure-strip fixed left-4 top-4 z-30 text-xs md:left-8 md:top-8"
-      aria-label={language === "da" ? "Rejsens fem stop" : "The five stops of the journey"}
+      aria-label={language === "da" ? `Rejsens ${SESSION_DILEMMA_COUNT} stop` : `The journey's ${SESSION_DILEMMA_COUNT} stops`}
     >
       <div className="departure-strip-label">
         <Plane className="h-3.5 w-3.5" aria-hidden="true" />

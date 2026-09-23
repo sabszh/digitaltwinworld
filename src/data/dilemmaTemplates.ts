@@ -530,3 +530,4 @@ export const dilemmaTemplates: DilemmaTemplate[] = seeds.map((seed, index) => ({
   choices: seed.choices,
   tags: [seed.problemArea, seed.technology, "2046"],
 }));
+/** @deprecated Legacy authoring templates; production uses futureDevelopments. */

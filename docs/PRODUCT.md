@@ -4,7 +4,7 @@
 
 > *How might I navigate the future I am helping create?*
 
-The user travels — via a digital time machine — to the year 2046, arrives as a **persona** built from their own values and hopes/fears, and is dropped into short, concrete dilemmas set in real cities around the world. Each dilemma is about how AI, robots, data, climate, health, work, mobility, or digital trust reshape an everyday moment. The user answers with a choice or in their own words (typed or spoken), and after five stops receives a personal **future profile**: a narrative report that reflects their values back to them, quoting their own words.
+The user travels — via a digital time machine — to the year 2046, arrives as a **persona** built from their own values and hopes/fears, and is dropped into short, concrete dilemmas set in real cities around the world. Each dilemma is about how AI, robots, data, climate, health, work, mobility, or digital trust reshape an everyday moment. The user answers with a choice or in their own words (typed or spoken), and after three stops receives a personal **future profile**: a narrative report that reflects their values back to them, quoting their own words.
 
 It is built by Gejst Studio as a reflective, theatrical tool for thinking about the future — not a quiz with right answers, but a way to notice what you actually value when you're forced to decide.
 
@@ -29,7 +29,7 @@ The product is designed as a piece of dramaturgy, not a form. Every phase has a 
 
 6. **Consequence** — the outcome of that specific choice, plus an optional, always-skippable reflection prompt: *"What would you have wished someone had decided differently here?"* Reflections (typed or spoken) are folded into the final report.
 
-7. **Repeat** — steps 3–6 run five times. The first stop is always in Denmark; every later stop is a different country and a different problem area, so users see a spread of places and stakes rather than five variations on the same theme.
+7. **Repeat** — steps 3–6 run three times. The first stop is always in Denmark; every later stop is a different country and a different problem area, so users see a spread of places and stakes rather than three variations on the same theme.
 
 8. **Future profile report** — a personal, AI-written narrative in second person that reflects the user's values back to them: a headline, a short story of who they are becoming in this 2046, up to three verbatim quotes pulled from their own typed or spoken answers, the patterns across their choices, and a value-profile chart. If AI isn't available, a locally computed summary and the user's own quotes still make it into the report — nothing about the ending depends on a live model.
 

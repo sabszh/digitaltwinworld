@@ -385,8 +385,8 @@ textarea {
   margin-top: -0.04em;
   font-size: var(--intro-title-year-size, var(--intro-title-world-size, inherit));
   font-style: italic;
-  color: var(--world-blue);
-  background-image: linear-gradient(160deg, var(--world-blue-deep) 0%, var(--world-blue) 45%, var(--world-blue-soft) 100%);
+  color: #ffd400;
+  background-image: linear-gradient(160deg, #fff36a 0%, #ffd400 48%, #f2b900 100%);
   -webkit-background-clip: text;
   background-clip: text;
 }
@@ -3014,6 +3014,11 @@ a,
 :is(main[data-phase="intro"], .intro-scope) .horizon-title span {
   font-size: clamp(8.2rem, 18.4vw, 16.6rem);
   font-weight: 700;
+  background-image: linear-gradient(160deg, #eef2f3 0%, #d8e0e3 42%, #a9b8c0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 
 :is(main[data-phase="intro"], .intro-scope) .horizon-title em {

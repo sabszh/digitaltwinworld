@@ -6,16 +6,17 @@ import { DilemmaCard } from "@/components/DilemmaCard";
 import { FinalReport } from "@/components/FinalReport";
 import { IntroScreen } from "@/components/IntroScreen";
 import { ItineraryStrip } from "@/components/ItineraryStrip";
+import { JourneyTimer } from "@/components/JourneyTimer";
 import { LandingScene } from "@/components/LandingScene";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { MapboxGlobeBackdrop } from "@/components/MapboxGlobeBackdrop";
 import { PersonaBuilder } from "@/components/PersonaBuilder";
 import { ConsentScreen } from "@/components/ConsentScreen";
-import { GoodbyeScreen } from "@/components/GoodbyeScreen";
 import { SoundEffects } from "@/components/SoundEffects";
 import { TravelTransition } from "@/components/TravelTransition";
 import { WorldGlobe } from "@/components/WorldGlobe";
 import { SESSION_DILEMMA_COUNT } from "@/data/taxonomies";
+import { uiText } from "@/lib/i18n";
 import { useSessionStore } from "@/lib/session";
 import { worldSound } from "@/lib/sound";
 import { useEffect, useRef, useState } from "react";
@@ -42,9 +43,11 @@ export default function Home() {
   const isPersona = store.phase === "persona";
   const isDarkBackdrop = isInitialTravel || isPersona;
   const isIntro = store.phase === "intro";
+  const showJourneyTimer = ["persona", "traveling", "landing", "dilemma", "consequence"].includes(store.phase);
   const showingDestination = Boolean(store.activeDilemma) && zoomed;
   const introProgressRef = useRef(0);
   const introAnimationFrameRef = useRef<number | null>(null);
+  const thankYouTimeoutRef = useRef<number | null>(null);
   const shouldHoldIntroGlobe =
     store.phase === "intro" ||
     store.phase === "persona" ||
@@ -60,6 +63,7 @@ export default function Home() {
 
   // Impact flash state (consequence reveal)
   const [showFlash, setShowFlash] = useState(false);
+  const [showJourneyThanks, setShowJourneyThanks] = useState(false);
 
   const handleAnswer = (choice: Choice, customAnswer?: string, viaVoice?: boolean) => {
     setShowFlash(true);
@@ -99,8 +103,24 @@ export default function Home() {
       if (introAnimationFrameRef.current !== null) {
         window.cancelAnimationFrame(introAnimationFrameRef.current);
       }
+      if (thankYouTimeoutRef.current !== null) {
+        window.clearTimeout(thankYouTimeoutRef.current);
+      }
     };
   }, []);
+
+  const handleCompleteJourney = () => {
+    worldSound.playButtonTap();
+    store.completeJourney();
+    setShowJourneyThanks(true);
+    if (thankYouTimeoutRef.current !== null) {
+      window.clearTimeout(thankYouTimeoutRef.current);
+    }
+    thankYouTimeoutRef.current = window.setTimeout(() => {
+      setShowJourneyThanks(false);
+      thankYouTimeoutRef.current = null;
+    }, 3000);
+  };
 
   const handleStartJourney = () => {
     if (introAnimationFrameRef.current !== null) {
@@ -148,6 +168,22 @@ export default function Home() {
         )}
       </AnimatePresence>
 
+      <AnimatePresence>
+        {showJourneyThanks && (
+          <motion.div
+            key="journey-thanks"
+            className="pointer-events-none fixed left-1/2 top-8 z-[600] -translate-x-1/2 rounded-2xl border border-black/10 bg-[rgba(255,212,0,0.96)] px-6 py-4 text-center text-lg font-semibold text-black shadow-[0_18px_60px_rgba(0,0,0,0.35)]"
+            role="status"
+            initial={{ opacity: 0, y: -18, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -12, scale: 0.98 }}
+            transition={{ duration: 0.28, ease: "easeOut" }}
+          >
+            {uiText[language].journeyThanks}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {hasMapbox ? (
         <MapboxGlobeBackdrop
           active={store.activeDilemma}
@@ -191,6 +227,7 @@ export default function Home() {
       {isDarkBackdrop ? <div className="bg-vignette pointer-events-none absolute inset-0 z-[2]" /> : null}
       <div className="sky-glow pointer-events-none absolute inset-0 z-[2]" />
       {store.phase === "intro" && <LanguageToggle language={language} onChange={store.setLanguage} />}
+      {showJourneyTimer && <JourneyTimer language={language} />}
       <div
         className={store.phase === "intro" ? "" : "sky-scope"}
         data-tone={dilemmaColorTone || undefined}
@@ -228,8 +265,6 @@ export default function Home() {
                 dilemma={store.activeDilemma}
                 language={language}
                 isFirstTrip={store.completedDilemmas.length === 0}
-                error={store.journeyError}
-                onRetry={() => void store.generateNext()}
                 onArrive={store.enterLanding}
               />
             )}
@@ -237,7 +272,12 @@ export default function Home() {
               <LandingScene dilemma={store.activeDilemma} language={language} onEnter={store.enterDilemma} />
             )}
             {store.phase === "dilemma" && store.activeDilemma && (
-              <DilemmaCard dilemma={store.activeDilemma} language={language} onAnswer={handleAnswer} />
+              <DilemmaCard
+                dilemma={store.activeDilemma}
+                language={language}
+                customAnswerDraft={store.customAnswerDraft}
+                onAnswer={handleAnswer}
+              />
             )}
             {store.phase === "consequence" && (
               <ConsequenceCard
@@ -245,6 +285,7 @@ export default function Home() {
                 dilemma={store.activeDilemma}
                 customAnswer={store.lastCustomAnswer}
                 language={language}
+                isFinalStop={store.completedDilemmas.length >= SESSION_DILEMMA_COUNT}
                 onBack={store.backToDilemma}
                 onContinue={(reflection, viaVoice) => {
                   if (reflection) store.saveReflection(reflection, viaVoice);
@@ -252,9 +293,8 @@ export default function Home() {
                 }}
               />
             )}
-            {store.phase === "report" && <FinalReport result={result} loading={store.reportLoading} error={store.reportError} language={language} onContinue={store.reviewConsent} onRetry={() => void store.finishJourney()} />}
-            {store.phase === "consent" && <ConsentScreen language={language} status={store.consentStatus} onAccept={() => void store.saveConsentedSession()} onDecline={store.declineConsent} onBack={() => useSessionStore.setState({ phase: "report" })} />}
-            {store.phase === "goodbye" && <GoodbyeScreen language={language} status={store.consentStatus === "saved" ? "saved" : "declined"} onFinish={store.restart} />}
+            {store.phase === "report" && <FinalReport result={result} loading={store.reportLoading} error={store.reportError} language={language} onContinue={handleCompleteJourney} onRetry={() => void store.finishJourney()} />}
+            {store.phase === "consent" && <ConsentScreen language={language} status={store.consentStatus} onAccept={() => void store.saveConsentedSession()} onDecline={store.declineConsent} onBack={() => useSessionStore.setState({ phase: "consequence" })} />}
           </motion.div>
         </AnimatePresence>
       </div>

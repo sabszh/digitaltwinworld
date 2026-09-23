@@ -24,21 +24,21 @@ describe("impactsForMatchedChoice", () => {
 
 describe("a journey answered entirely in the traveller's own words", () => {
   // The old behaviour: every written answer stamped +1 trust/localControl/
-  // transparency, so five of them produced one fixed profile for everybody.
+  // transparency, so a full journey produced one fixed profile for everybody.
   const oldStamp = { trust: 1, localControl: 1, transparency: 1 };
 
-  it("no longer collapses five different journeys onto one profile", () => {
-    const stamped = [1, 2, 3, 4, 5].reduce((profile) => addProfiles(profile, oldStamp), emptyValueProfile);
+  it("no longer collapses different journeys onto one profile", () => {
+    const stamped = [1, 2, 3].reduce((profile) => addProfiles(profile, oldStamp), emptyValueProfile);
     expect(getDominantValues(stamped, 3).map(([key]) => key)).toEqual(["trust", "localControl", "transparency"]);
     expect(inferAiAttitude(stamped)).toBe("pragmatisk og undersøgende");
 
     // Scored from matching actions, two travellers who choose different
     // concrete responses land in different places without an invisible scale.
-    const cautious = ["a", "a", "d", "a", "d"].reduce<typeof emptyValueProfile>(
+    const cautious = ["a", "a", "d"].reduce<typeof emptyValueProfile>(
       (profile, choiceId) => addProfiles(profile, impactsForMatchedChoice(choiceId, choices)),
       emptyValueProfile,
     );
-    const liberal = ["b", "b", "c", "b", "c"].reduce<typeof emptyValueProfile>(
+    const liberal = ["b", "b", "c"].reduce<typeof emptyValueProfile>(
       (profile, choiceId) => addProfiles(profile, impactsForMatchedChoice(choiceId, choices)),
       emptyValueProfile,
     );
@@ -48,7 +48,7 @@ describe("a journey answered entirely in the traveller's own words", () => {
   });
 
   it("leaves an all-unscored journey empty rather than inventing a profile", () => {
-    const profile = [1, 2, 3, 4, 5].reduce(
+    const profile = [1, 2, 3].reduce(
       (acc) => addProfiles(acc, impactsForMatchedChoice("unscored", choices)),
       emptyValueProfile,
     );

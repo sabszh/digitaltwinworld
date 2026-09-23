@@ -31,32 +31,32 @@ function baseline(overrides: Record<string, unknown> = {}) {
     technologies: ["personlig læringsassistent"],
     tags: ["skole"],
     severity: "medium",
-    title: "Sofie står nummer fjorten i køen",
-    scenePrompt: "Sofie, 11 år, holder tabletten og venter på sin plads i rækken.",
-    landingScene: "Sofie, 11 år, holder tabletten ved sin plads. Sofie står nummer fjorten i hjælpekøen før fremlæggelsen.",
-    stake: "Sofie risikerer at gå til fremlæggelsen uden den hjælp, hun mangler til den sidste opgave.",
-    question: "Hvad gør du, mens Sofie stadig venter?",
+    title: "Computeren tvivler på Sofie",
+    scenePrompt: "Skolens computer forudsiger, at Sofie vil få svært ved næste års undervisning. Tidlig hjælp virker ofte, men kan også forme hendes muligheder, før hun selv har prøvet.",
+    landingScene: "Du åbner næste års undervisningsplan. Ved Sofies navn anbefaler computeren et lettere fagligt spor.",
+    stake: "Sofie kan få hjælp tidligt, men din beslutning kan ændre, hvad hun og andre tror, hun kan blive til.",
+    question: "Hvordan lader du vurderingen påvirke Sofies opgave?",
     locationType: "folkeskole",
     technology: "personlig læringsassistent",
     country: "Danmark",
     region: "Norden",
     city: "Herning",
     marker: { lat: 56.13, lng: 8.97 },
-    coreTension: { want: "at Sofie får hjælp nu", butAlsoWant: "at resten af klassen også når videre", whyCannotHaveBoth: "Læreren kan kun bruge den næste tid hos én gruppe." },
+    coreTension: { want: "at Sofie får hjælp før hun mister modet", butAlsoWant: "at Sofie får lov at vise hvad hun kan", whyCannotHaveBoth: "En lettere opgave beskytter hende mod nederlag, men fjerner samtidig den udfordring, hvor hun kunne modbevise vurderingen." },
     logic: {
-      rule: "Elevernes plads i hjælpekøen ligger fast fra morgenstunden og følger dem hele dagen.",
-      benefit: "Læreren når flere elever, fordi ingen skal bruge timen på at fordele hjælpen.",
-      trigger: "Sofie, 11 år, holder tabletten, mens hun venter som nummer fjorten i hjælpekøen.",
-      decision: "Læreren skal vælge, om og hvordan Sofie kan flyttes frem i hjælpekøen i dag.",
-      choiceConstraint: "Læreren kan kun bruge den næste arbejdsblok ét sted, før fremlæggelsen begynder.",
+      rule: "Skolens computer forudsiger elevers behov og anbefaler sværhedsgraden på deres kommende opgaver.",
+      benefit: "Elever kan få støtte, før gentagne nederlag får dem til at opgive et fag.",
+      trigger: "Computeren anbefaler, at Sofie får en lettere opgave, selv om hun endnu ikke har prøvet den svære.",
+      decision: "Læreren skal beslutte, hvordan forudsigelsen skal påvirke den opgave, Sofie møder.",
+      choiceConstraint: "At skærme Sofie mod den svære opgave fjerner netop den mulighed, hvor hun kunne vise, at forudsigelsen tager fejl.",
     },
     futurePressureId: "automation",
-    normalized2046: "Elevernes plads i hjælpekøen ligger fast fra morgenstunden og følger dem hele dagen.",
+    normalized2046: "Skolens computer forudsiger elevers kommende vanskeligheder og former deres opgaver, før problemerne viser sig.",
     choices: [
-      { id: "a", label: "Hjælp Sofie først", description: "Du tager Sofie ud til fem minutters hjælp, men de andre grupper må vente.", consequence: "Sofie kan nå fremlæggelsen bedre, mens to andre grupper mister deres tur.", valueImpacts: impacts({ equality: 2, humanContact: 1, efficiency: -1 }) },
-      { id: "b", label: "Lad køen stå", description: "Du følger køen som den er, så alle kender rækkefølgen, men Sofie venter videre.", consequence: "Klassen beholder roen, men Sofie går til fremlæggelsen uden den hjælp hun bad om.", valueImpacts: impacts({ efficiency: 2, trust: 1, equality: -1 }) },
-      { id: "c", label: "Byt med en gruppe", description: "Du spørger én gruppe om at bytte tid med Sofie, men den gruppe mister sin planlagte hjælp.", consequence: "Sofie kommer frem uden at bryde hele køen, men en anden gruppe må ændre sin opgave.", valueImpacts: impacts({ localControl: 1, equality: 1, efficiency: -1 }) },
-      { id: "d", label: "Del hjælpen kort", description: "Du giver alle grupper en kort fælles gennemgang, men ingen får den fulde hjælp nu.", consequence: "Flere får et næste skridt, men Sofies særlige problem bliver kun delvist løst.", valueImpacts: impacts({ equality: 1, efficiency: 1, humanContact: -1 }) },
+      { id: "a", label: "Følg anbefalingen", description: "Du giver Sofie en lettere opgave, men tager chancen for at vise, at vurderingen tager fejl.", consequence: "Sofie får en roligere start, men møder lavere forventninger, før hun selv har prøvet.", valueImpacts: impacts({ safety: 2, efficiency: 1, freedom: -1 }) },
+      { id: "b", label: "Behold den svære opgave", description: "Du lader Sofie møde samme udfordring som de andre, men risikerer at overse en hjælp, der kunne virke.", consequence: "Sofie får mulighed for at overraske, men kan også opleve det nederlag, computeren advarede om.", valueImpacts: impacts({ freedom: 2, equality: 1, safety: -1 }) },
+      { id: "c", label: "Fortæl om vurderingen", description: "Du viser Sofie forudsigelsen og beholder opgaven, men hun skal arbejde med computerens tvivl i hovedet.", consequence: "Sofie ved, hvad der påvirker dig, men vurderingen kan ændre hendes tro på sig selv.", valueImpacts: impacts({ transparency: 2, trust: 1, safety: -1 }) },
+      { id: "d", label: "Skjul vurderingen", description: "Du beholder opgaven og holder forudsigelsen for dig selv, men skjuler noget, der former din støtte.", consequence: "Sofie møder opgaven uden mærkatet, men kan ikke forstå, hvorfor du behandler hende anderledes.", valueImpacts: impacts({ humanContact: 1, safety: 1, transparency: -2 }) },
     ],
     ...overrides,
   };
@@ -105,6 +105,11 @@ describe("validateAiDilemmaDetailed", () => {
       locationType: item.locationType as "folkeskole",
       technology: item.technology as "personlig læringsassistent",
       question: item.question,
+      presented: {
+        title: item.title,
+        scene: item.scenePrompt,
+        choices: item.choices.map(({ id, label, description }) => ({ id, label, description })),
+      },
       selectedChoiceId: "a",
       selectedChoiceLabel: "x",
       valueImpacts: impacts({}),
@@ -135,6 +140,58 @@ describe("validateAiDilemmaDetailed", () => {
     expect(validateAiDilemmaDetailed(dilemma, request)).toEqual({ reason: "incoherent_logic:incomplete" });
   });
 
+  it.each([
+    [
+      "reserved support slot",
+      { scenePrompt: "Sofie har fået en særlig plads på støtteholdet, men pladsen bortfalder, hvis hun ikke siger ja nu." },
+    ],
+    [
+      "arbitrary countdown",
+      { logic: { ...baseline().logic, choiceConstraint: "Du skal vælge inden 10 minutter, før tiden løber ud." } },
+    ],
+    [
+      "invented single slot",
+      { coreTension: { ...baseline().coreTension, whyCannotHaveBoth: "Der er kun én plads, og den går ellers til en anden." } },
+    ],
+    [
+      "game currency",
+      { stake: "Du har kun 3 point til at vælge mellem hjælp og den svære opgave." },
+    ],
+  ])("rejects the artificial conflict mechanic %s", (_name, overrides) => {
+    expect(validateAiDilemmaDetailed(baseline(overrides), request)).toEqual({ reason: "artificial_conflict" });
+  });
+
+  it("allows urgency caused by the real physical situation", () => {
+    expect(
+      validateAiDilemmaDetailed(
+        baseline({
+          problemArea: "Klima, energi og resiliens",
+          validLocationTypes: ["kystby"],
+          locationType: "kystby",
+          title: "Vandet når huset",
+          scenePrompt: "Havet stiger allerede ind over vejen. Familien kan redde minder fra huset eller hjælpe naboen ud, men ikke være begge steder samtidig.",
+          landingScene: "Vandet løber ind i stuen. Din nabo kalder fra huset ved siden af.",
+          stake: "Familiens billeder ødelægges i vandet, mens naboen har brug for din hjælp til at komme ud.",
+          question: "Hvor går du hen?",
+          coreTension: {
+            want: "at redde familiens uerstattelige minder",
+            butAlsoWant: "at hjælpe naboen sikkert ud",
+            whyCannotHaveBoth: "Vandet stiger nu, og husene ligger i hver sin retning.",
+          },
+          logic: {
+            rule: "Kystområdet lever med oversvømmelser, som beskyttelsen ikke længere kan holde helt ude.",
+            benefit: "Byen bruger sin beskyttelse dér, hvor den redder flest hjem og mennesker.",
+            trigger: "Vandet når familiens hus, samtidig med at naboen kalder efter hjælp.",
+            decision: "Spilleren skal vælge, hvilket hus de går mod.",
+            choiceConstraint: "Vandet stiger nu, og de to huse ligger i hver sin retning.",
+          },
+          normalized2046: "Kystområdet lever med jævnlige oversvømmelser, fordi byen ikke længere kan beskytte alle hjem helt.",
+        }),
+        request,
+      ),
+    ).toHaveProperty("dilemma");
+  });
+
   it("rejects a collapsed human conflict", () => {
     expect(validateAiDilemmaDetailed(baseline({ coreTension: { want: "at Sofie får hjælp", butAlsoWant: "at Sofie får hjælp", whyCannotHaveBoth: "Tiden er knap." } }), request)).toEqual({
       reason: "unusable_choice_set:collapsed_human_conflict",
@@ -151,6 +208,17 @@ describe("validateAiDilemmaDetailed", () => {
     const dilemma = baseline();
     dilemma.choices[0].description = "Du ringer Sofie op, så hun kan få hjælp med det samme.";
     expect(validateAiDilemmaDetailed(dilemma, request)).toEqual({ reason: "bad_choices:missing_tradeoff" });
+  });
+
+  it.each([
+    ["Vis mere skolearbejde", "Du viser flere opgaver, men computeren lærer mere om dit privatliv."],
+    ["Byg huset om", "Du bygger huset om, men bruger hele familiens opsparing på forsøget."],
+    ["Lad tjenesten kende dig", "Du skjuler navnet offentligt, men tjenesten gemmer din identitet."],
+    ["Spørg læreren", "Du beder læreren vælge for dig, men opgiver din egen beslutning."],
+  ])("rejects the choice workaround %s", (label, description) => {
+    const dilemma = baseline();
+    dilemma.choices[0] = { ...dilemma.choices[0], label, description };
+    expect(validateAiDilemmaDetailed(dilemma, request)).toEqual({ reason: "unusable_choice_set:workaround" });
   });
 
   it("still allows a title that names two people", () => {
@@ -186,6 +254,45 @@ describe("validateAiDilemmaDetailed", () => {
         { ...request, role: "Barn" },
       ),
     ).toEqual({ reason: "implausible_role" });
+  });
+
+  it("rejects a child question that takes too much working memory", () => {
+    expect(
+      validateAiDilemmaDetailed(
+        baseline({ question: "Hvad vælger du at gøre med computeren, mens resten af klassen venter på jer?" }),
+        { ...request, role: "Barn" },
+      ),
+    ).toEqual({ reason: "child_text_too_complex" });
+  });
+
+  it("accepts a short child-sized version of the same dilemma", () => {
+    expect(
+      validateAiDilemmaDetailed(
+        baseline({
+          title: "Hjælper du Sofie?",
+          scenePrompt: "Skolens computer har lavet en hjælpekø. Sofie når måske ikke sin opgave.",
+          landingScene: "I sidder med en skoleopgave. Sofie står sidst i computerens kø.",
+          stake: "Sofie mangler hjælp, men de andre børn venter også.",
+          question: "Hvad gør du nu?",
+        }),
+        { ...request, role: "Barn" },
+      ),
+    ).toHaveProperty("dilemma");
+  });
+
+  it("rejects a child dilemma with no visible AI or climate connection", () => {
+    expect(
+      validateAiDilemmaDetailed(
+        baseline({
+          title: "Hjælper du Sofie?",
+          scenePrompt: "I skal vælge grupper. Sofie står alene ved bordet.",
+          landingScene: "I sidder med en skoleopgave. Sofie mangler en gruppe.",
+          stake: "Sofie vil være med, men din gruppe er næsten færdig.",
+          question: "Hvad gør du nu?",
+        }),
+        { ...request, role: "Barn" },
+      ),
+    ).toEqual({ reason: "child_missing_everyday_future" });
   });
 
   it("rejects a visible stake that would be cut off in the card", () => {

@@ -3,6 +3,7 @@
 import { ArrowRight, CalendarDays, MapPin, Plane, PlaneTakeoff, Users } from "lucide-react";
 import { useState } from "react";
 import type { Language } from "@/lib/i18n";
+import { useEnterToContinue } from "@/lib/useEnterToContinue";
 import { UX_TIMING } from "@/lib/uxTiming";
 
 export function IntroScreen({
@@ -19,6 +20,8 @@ export function IntroScreen({
     setIsAutoLaunching(true);
     window.setTimeout(onStart, UX_TIMING.searchToBoardingMs);
   };
+
+  useEnterToContinue(launchFromSearch, !isAutoLaunching);
 
   // .intro-scope keeps the intro-only styling applied while this screen plays its
   // exit animation, after main[data-phase] has already advanced to the next phase.

@@ -1,6 +1,6 @@
 # World 2046
 
-Interaktiv webprototype af en varm, futuristisk 3D worldbuilding-oplevelse. Brugeren vælger rolle, rejser via en roterende globus til fem steder i verden og løser korte fremtidsdilemmaer om AI, robotter, data, klima, sundhed, arbejde, mobilitet og digital tillid.
+Interaktiv webprototype af en varm, futuristisk 3D worldbuilding-oplevelse. Brugeren vælger rolle, rejser via en roterende globus til tre steder i verden og løser korte fremtidsdilemmaer om AI, robotter, data, klima, sundhed, arbejde, mobilitet og digital tillid.
 
 ## Kør lokalt
 
@@ -15,7 +15,7 @@ npm run dev
 
 Når en besøgende aktivt giver samtykke efter rapporten, gemmes rejsen som standard i `.data/sessions/`. Hver deltager får sin egen fil: `world2046-<session-id>.json`. Sæt `SESSION_DATA_PATH` i `.env.local`, hvis udstillingscomputeren skal bruge en anden mappe. Afviste sessions skrives ikke til disk.
 
-Hver fil indeholder en komplet, samtykket rejse med samtykke- og tidsmarkering, passagerens valgte rolle/alder/svar, værdiprofilen og fem dilemma-poster. En dilemma-post gemmer både det valgte svar og et deltager-vendt snapshot af det, der blev vist: titel, scene, hvad der stod på spil, ankomsttekst, sted/koordinater og alle fire svarmuligheder. De skjulte værdiscores for de fire muligheder gemmes ikke i dette snapshot.
+Hver fil indeholder en komplet, samtykket rejse med samtykke- og tidsmarkering, passagerens valgte rolle/alder/svar, værdiprofilen og tre dilemma-poster. En dilemma-post gemmer både det valgte svar og et deltager-vendt snapshot af det, der blev vist: titel, scene, hvad der stod på spil, ankomsttekst, sted/koordinater og alle fire svarmuligheder. De skjulte værdiscores for de fire muligheder gemmes ikke i dette snapshot.
 
 ## Kort
 
@@ -30,16 +30,18 @@ NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=din_mapbox_token
 World 2046 tegner det færdige værdikort som et 384 px sort/hvidt billede, passende til 57/58 mm-papir på 384-dot-printere som 5801/5802. Opret først en lokal macOS CUPS-kø med producentens driver og sæt dens kønavn i `.env.local`:
 
 ```bash
-THERMAL_PRINTER_NAME=GEZHI_micro_printer
+THERMAL_PRINTER_NAME=GEZHI_micro_printer_384
 ```
 
 Appen sender billedet til CUPS med 58 mm-mediet. Det lader den installerede driver håndtere Bluetooth-forbindelsen og gør dansk/engelsk, Gejst-logoet og typografien ensartet.
+
+Den aktuelle GEZHI-kø bruger også `scripts/rasterto58SeriesNoFinalReset.py` som CUPS-filter. Det videresender producentens rasterdata, men fjerner dens afsluttende resetsekvens, som på denne printer kunne få starten af det næste værdikort til at blive udskrevet som symboler. Filteret skal installeres lokalt på udstillings-Mac’en og vælges i den pågældende CUPS-køs PPD; det er en maskinopsætning og ikke noget, browseren selv kan ændre.
 
 ## Hvad prototypen gør
 
 - Intro med 3D-globus og dansk tone of voice.
 - Rollevalg: barn, ung, forælder, lærer/pædagog, fagperson eller for alle.
-- Fem dilemmaer pr. session, med første scenarie fast i Danmark.
+- Tre dilemmaer pr. session, med første scenarie fast i Danmark.
 - Valg og egne løsninger gemmes i lokal Zustand session state.
 - Slutrapport opsummerer værdiprofil, AI-holdning, styringsstil og løste dilemmaer.
 - Dev/debug-panel viser session JSON, valgte områder, lande og aggregerede værdier.
